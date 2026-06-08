@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot name="traxxas">
+
+  <link name="base_link"/>
+
+  <link name="traxxas">
+    <inertial>
+      <mass value="3.0"/>
+      <inertia ixx="0.031" ixy="0" ixz="0" iyy="0.090" iyz="0" izz="0.103"/>
+    </inertial>
+  </link>
+
+  <joint name="traxxas_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="traxxas"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="traxxas/base_link"/>
+  <joint name="base_link_joint" type="fixed">
+    <parent link="traxxas"/>
+    <child link="traxxas/base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="traxxas/base_link/rplidar_c1"/>
+  <joint name="rplidar_joint" type="fixed">
+    <parent link="traxxas/base_link"/>
+    <child link="traxxas/base_link/rplidar_c1"/>
+    <origin xyz="0 0 0.228" rpy="0 0 0"/>
+  </joint>
+
+  <link name="traxxas/base_link/imu_sensor"/>
+  <joint name="imu_joint" type="fixed">
+    <parent link="traxxas/base_link"/>
+    <child link="traxxas/base_link/imu_sensor"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="front_left_wheel_link"/>
+  <joint name="front_left_wheel_steering_joint" type="revolute">
+    <parent link="traxxas/base_link"/>
+    <child link="front_left_wheel_link"/>
+    <origin xyz="0.162 0.148 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="30" velocity="1.0"/>
+  </joint>
+
+  <link name="front_right_wheel_link"/>
+  <joint name="front_right_wheel_steering_joint" type="revolute">
+    <parent link="traxxas/base_link"/>
+    <child link="front_right_wheel_link"/>
+    <origin xyz="0.162 -0.148 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="30" velocity="1.0"/>
+  </joint>
+
+  <link name="rear_left_wheel_link"/>
+  <joint name="rear_left_wheel_joint" type="continuous">
+    <parent link="traxxas/base_link"/>
+    <child link="rear_left_wheel_link"/>
+    <origin xyz="-0.162 0.148 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="rear_right_wheel_link"/>
+  <joint name="rear_right_wheel_joint" type="continuous">
+    <parent link="traxxas/base_link"/>
+    <child link="rear_right_wheel_link"/>
+    <origin xyz="-0.162 -0.148 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+</robot>
