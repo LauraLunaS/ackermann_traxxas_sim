@@ -1,0 +1,4 @@
+msg/Map.idl
+msg/Map.msg
+srv/ShareMap.idl
+srv/ShareMap.srv

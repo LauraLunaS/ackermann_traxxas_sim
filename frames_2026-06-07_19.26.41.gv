@@ -1,0 +1,21 @@
+digraph G {
+"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 75.1\nOldest transform: 70.2\n"];
+"traxxas" -> "traxxas/rear_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.823\nMost recent transform: 74.2\nOldest transform: 69.377\n"];
+"odom" -> "traxxas"[label=" Broadcaster: default_authority\nAverage rate: 50.212\nBuffer length: 4.72\nMost recent transform: 74.18\nOldest transform: 69.46\n"];
+"traxxas" -> "traxxas/front_right_wheel_steering_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.823\nMost recent transform: 74.2\nOldest transform: 69.377\n"];
+"traxxas" -> "traxxas/front_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.823\nMost recent transform: 74.2\nOldest transform: 69.377\n"];
+"traxxas" -> "traxxas/front_left_wheel_steering_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.823\nMost recent transform: 74.2\nOldest transform: 69.377\n"];
+"traxxas" -> "traxxas/front_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.823\nMost recent transform: 74.2\nOldest transform: 69.377\n"];
+"traxxas/base_link" -> "traxxas/base_link/rplidar_c1"[label=" Broadcaster: default_authority\nAverage rate: 1000.211\nBuffer length: 4.743\nMost recent transform: 74.2\nOldest transform: 69.457\n"];
+"traxxas" -> "traxxas/base_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.211\nBuffer length: 4.743\nMost recent transform: 74.2\nOldest transform: 69.457\n"];
+"traxxas" -> "traxxas/rear_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.823\nMost recent transform: 74.2\nOldest transform: 69.377\n"];
+"traxxas/base_link" -> "traxxas/base_link/imu_sensor"[label=" Broadcaster: default_authority\nAverage rate: 1000.211\nBuffer length: 4.743\nMost recent transform: 74.2\nOldest transform: 69.457\n"];
+"traxxas/base_link" -> "front_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 20.202\nBuffer length: 4.95\nMost recent transform: 74.15\nOldest transform: 69.2\n"];
+"traxxas/base_link" -> "front_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 20.202\nBuffer length: 4.95\nMost recent transform: 74.15\nOldest transform: 69.2\n"];
+"traxxas/base_link" -> "rear_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 20.202\nBuffer length: 4.95\nMost recent transform: 74.15\nOldest transform: 69.2\n"];
+"traxxas/base_link" -> "rear_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 20.202\nBuffer length: 4.95\nMost recent transform: 74.15\nOldest transform: 69.2\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1780871201.1817768"[ shape=plaintext ] ;
+}->"map";
+}

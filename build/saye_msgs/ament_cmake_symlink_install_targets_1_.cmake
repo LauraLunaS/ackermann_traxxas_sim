@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/lauraluna/ackermann_sim/build/saye_msgs/rosidl_generator_py/saye_msgs/saye_msgs_s__rosidl_typesupport_introspection_c.so" "TARGETS" "saye_msgs_s__rosidl_typesupport_introspection_c" "DESTINATION" "lib/python3.12/site-packages/saye_msgs")

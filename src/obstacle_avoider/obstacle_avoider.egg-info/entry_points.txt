@@ -1,0 +1,3 @@
+[console_scripts]
+camera_info_publisher = obstacle_avoider.camera_info_publisher:main
+obstacle_avoider = obstacle_avoider.ackermann_obstacle_avoider:main

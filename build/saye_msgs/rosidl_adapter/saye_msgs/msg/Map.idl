@@ -1,0 +1,28 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from saye_msgs/msg/Map.msg
+// generated code does not contain a copyright notice
+
+#include "nav2_msgs/msg/Costmap.idl"
+#include "nav2_msgs/msg/CostmapMetaData.idl"
+#include "nav_msgs/msg/MapMetaData.idl"
+#include "nav_msgs/msg/OccupancyGrid.idl"
+#include "nav_msgs/msg/Path.idl"
+#include "std_msgs/msg/Header.idl"
+
+module saye_msgs {
+  module msg {
+    struct Map {
+      nav2_msgs::msg::CostmapMetaData costmap_meta_data;
+
+      nav2_msgs::msg::Costmap costmap;
+
+      nav_msgs::msg::OccupancyGrid occupancy_grid;
+
+      nav_msgs::msg::MapMetaData map_meta_data;
+
+      nav_msgs::msg::Path path;
+
+      std_msgs::msg::Header header;
+    };
+  };
+};

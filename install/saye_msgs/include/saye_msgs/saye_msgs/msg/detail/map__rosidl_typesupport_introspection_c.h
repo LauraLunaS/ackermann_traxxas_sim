@@ -1,0 +1,1 @@
+/home/lauraluna/ackermann_sim/build/saye_msgs/rosidl_typesupport_introspection_c/saye_msgs/msg/detail/map__rosidl_typesupport_introspection_c.h

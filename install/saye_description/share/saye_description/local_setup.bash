@@ -1,0 +1,1 @@
+/home/lauraluna/ackermann_sim/build/saye_description/ament_cmake_environment_hooks/local_setup.bash

@@ -1,0 +1,64 @@
+[0.020s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/lauraluna/ackermann_sim/build/saye_description -- -j32 -l32
+[0.196s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/lauraluna/ackermann_sim/build/saye_description -- -j32 -l32
+[0.204s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/lauraluna/ackermann_sim/build/saye_description
+[0.211s] -- Install configuration: ""
+[0.212s] -- Execute custom install script
+[0.212s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/meshes/A_letter.dae
+[0.212s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/model.config
+[0.212s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/model.sdf
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/thumbnails/A_letter.png
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/meshes/I_letter.dae
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/model.config
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/model.sdf
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/thumbnails/A_letter.png
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/meshes/L_letter.dae
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/model.config
+[0.213s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/model.sdf
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/thumbnails/A_letter.png
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/BaseReduced.dae
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/STL27L.dae
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/TopReduced.dae
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/Wheel.dae
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/sensor_rack_lowres_shallow_laser.dae
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/sensor_rack_support_lowres.dae
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.config
+[0.214s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.sdf
+[0.215s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/body.stl
+[0.215s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_large.stl
+[0.215s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_small.stl
+[0.215s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/model.sdf
+[0.215s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/traxxas.urdf
+[0.215s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/saye_world.sdf
+[0.215s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/simple_world.sdf
+[0.216s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Asphalt010_1K_Color.jpg
+[0.216s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Rough_Square_Concrete_Block.jpg
+[0.216s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Tape001_1K_Color.png
+[0.216s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Terrazzo005_1K_Color.jpg
+[0.216s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/ground.png
+[0.216s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/warehouse.dae
+[0.216s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/warehouse_colision.stl
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/model.config
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/model.sdf
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/1.png
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/2.png
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/3.png
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/4.png
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//hooks/ros_gz_example_description.dsv.in
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//hooks/ros_gz_example_description.sh.in
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//launch/spawn_letters.launch.py
+[0.217s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/package_run_dependencies/saye_description
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/parent_prefix_path/saye_description
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/ament_prefix_path.sh
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/ament_prefix_path.dsv
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/path.sh
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/path.dsv
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.bash
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.sh
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.zsh
+[0.218s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.dsv
+[0.218s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/package.dsv
+[0.226s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/packages/saye_description
+[0.226s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/cmake/saye_descriptionConfig.cmake
+[0.226s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/cmake/saye_descriptionConfig-version.cmake
+[0.226s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/package.xml
+[0.227s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/lauraluna/ackermann_sim/build/saye_description

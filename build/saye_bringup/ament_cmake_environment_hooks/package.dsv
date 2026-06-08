@@ -1,0 +1,4 @@
+source;share/saye_bringup/local_setup.bash
+source;share/saye_bringup/local_setup.dsv
+source;share/saye_bringup/local_setup.sh
+source;share/saye_bringup/local_setup.zsh

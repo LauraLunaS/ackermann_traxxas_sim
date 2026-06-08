@@ -1,0 +1,11 @@
+In file included from [01m[K/home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_control/src/client.cpp:1[m[K:
+[01m[K/home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_control/include/saye_control/control.hpp:[m[K In member function ‘[01m[Kvoid Control::service_callback(saye_msgs::srv::ShareMap_Request_<std::allocator<void> >::SharedPtr, saye_msgs::srv::ShareMap_Response_<std::allocator<void> >::SharedPtr)[m[K’:
+[01m[K/home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_control/include/saye_control/control.hpp:95:83:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Krequest[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+   95 | void Control::service_callback([01;35m[Kconst saye_msgs::srv::ShareMap::Request::SharedPtr request[m[K, const saye_msgs::srv::ShareMap::Response::SharedPtr response)
+      |                                [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~[m[K
+In file included from [01m[K/home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_control/src/main.cpp:1[m[K:
+[01m[K/home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_control/include/saye_control/control.hpp:[m[K In member function ‘[01m[Kvoid Control::service_callback(saye_msgs::srv::ShareMap_Request_<std::allocator<void> >::SharedPtr, saye_msgs::srv::ShareMap_Response_<std::allocator<void> >::SharedPtr)[m[K’:
+[01m[K/home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_control/include/saye_control/control.hpp:95:83:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Krequest[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+   95 | callback([01;35m[Kconst saye_msgs::srv::ShareMap::Request::SharedPtr request[m[K, const saye_msgs::srv::ShareMap::Response::SharedPtr response)
+      |          [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~[m[K
+

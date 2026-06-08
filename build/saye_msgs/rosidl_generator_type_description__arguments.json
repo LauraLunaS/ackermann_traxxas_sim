@@ -1,0 +1,18 @@
+{
+  "package_name": "saye_msgs",
+  "output_dir": "/home/lauraluna/ackermann_sim/build/saye_msgs/rosidl_generator_type_description/saye_msgs",
+  "idl_tuples": [
+    "/home/lauraluna/ackermann_sim/build/saye_msgs/rosidl_adapter/saye_msgs:msg/Map.idl",
+    "/home/lauraluna/ackermann_sim/build/saye_msgs/rosidl_adapter/saye_msgs:srv/ShareMap.idl"
+  ],
+  "include_paths": [
+    "std_msgs:/opt/ros/jazzy/share/std_msgs",
+    "builtin_interfaces:/opt/ros/jazzy/share/builtin_interfaces",
+    "nav_msgs:/opt/ros/jazzy/share/nav_msgs",
+    "geometry_msgs:/opt/ros/jazzy/share/geometry_msgs",
+    "service_msgs:/opt/ros/jazzy/share/service_msgs",
+    "nav2_msgs:/opt/ros/jazzy/share/nav2_msgs",
+    "action_msgs:/opt/ros/jazzy/share/action_msgs",
+    "geographic_msgs:/opt/ros/jazzy/share/geographic_msgs"
+  ]
+}

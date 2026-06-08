@@ -1,0 +1,20 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from saye_msgs/srv/ShareMap.srv
+// generated code does not contain a copyright notice
+
+#include "nav_msgs/msg/OccupancyGrid.idl"
+
+module saye_msgs {
+  module srv {
+    struct ShareMap_Request {
+      string topic_name;
+    };
+    struct ShareMap_Response {
+      boolean is_completed;
+
+      nav_msgs::msg::OccupancyGrid custom_occupany_grid;
+
+      string status_message;
+    };
+  };
+};

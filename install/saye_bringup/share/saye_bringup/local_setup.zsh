@@ -1,0 +1,1 @@
+/home/lauraluna/ackermann_sim/build/saye_bringup/ament_cmake_environment_hooks/local_setup.zsh

@@ -1,0 +1,17 @@
+digraph G {
+"odom" -> "traxxas"[label=" Broadcaster: default_authority\nAverage rate: 50.203\nBuffer length: 4.92\nMost recent transform: 558.68\nOldest transform: 553.76\n"];
+"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 559.6\nOldest transform: 554.7\n"];
+"traxxas" -> "traxxas/rear_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas" -> "traxxas/front_right_wheel_steering_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas" -> "traxxas/front_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas" -> "traxxas/front_left_wheel_steering_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas" -> "traxxas/front_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas/base_link" -> "traxxas/base_link/rplidar_c1"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas" -> "traxxas/base_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas" -> "traxxas/rear_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+"traxxas/base_link" -> "traxxas/base_link/imu_sensor"[label=" Broadcaster: default_authority\nAverage rate: 1000.203\nBuffer length: 4.938\nMost recent transform: 558.699\nOldest transform: 553.761\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1780873630.3359492"[ shape=plaintext ] ;
+}->"map";
+}

@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "saye_msgs/srv/ShareMap_Request",
+      "fields": [
+        {
+          "name": "topic_name",
+          "type": {
+            "type_id": 17,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "saye_msgs/srv/ShareMap_Request",
+      "hash_string": "RIHS01_d634fd680dd1b89f199abd33ad68dbecbc5962dabf4645cf076be601c9926f8d"
+    }
+  ]
+}

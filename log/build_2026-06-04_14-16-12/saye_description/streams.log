@@ -1,0 +1,101 @@
+[0.006s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/lauraluna/ackermann_sim/install/saye_description
+[0.035s] -- The C compiler identification is GNU 11.5.0
+[0.067s] -- The CXX compiler identification is GNU 11.5.0
+[0.075s] -- Detecting C compiler ABI info
+[0.120s] -- Detecting C compiler ABI info - done
+[0.128s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.129s] -- Detecting C compile features
+[0.129s] -- Detecting C compile features - done
+[0.135s] -- Detecting CXX compiler ABI info
+[0.195s] -- Detecting CXX compiler ABI info - done
+[0.203s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.203s] -- Detecting CXX compile features
+[0.203s] -- Detecting CXX compile features - done
+[0.206s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.301s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.337s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.366s] -- Found robot_state_publisher: 3.3.3 (/opt/ros/jazzy/share/robot_state_publisher/cmake)
+[0.394s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.404s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.414s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.426s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.483s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.485s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.539s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[0.557s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[0.574s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.743s] -- Found xacro: 2.1.1 (/opt/ros/jazzy/share/xacro/cmake)
+[0.746s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[0.829s] -- Added test 'flake8' to check Python code syntax and style conventions
+[0.829s] -- Configured 'flake8' exclude dirs and/or files: 
+[0.829s] -- Added test 'lint_cmake' to check CMake code style
+[0.830s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[0.831s] -- Added test 'xmllint' to check XML markup files
+[0.832s] -- Configuring done (0.8s)
+[0.834s] -- Generating done (0.0s)
+[0.835s] -- Build files have been written to: /home/lauraluna/ackermann_sim/build/saye_description
+[0.841s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_description -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/lauraluna/ackermann_sim/install/saye_description
+[0.842s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/lauraluna/ackermann_sim/build/saye_description -- -j32 -l32
+[0.871s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/lauraluna/ackermann_sim/build/saye_description -- -j32 -l32
+[0.877s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/lauraluna/ackermann_sim/build/saye_description
+[0.883s] -- Install configuration: ""
+[0.883s] -- Execute custom install script
+[0.884s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/meshes/A_letter.dae
+[0.889s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/model.config
+[0.895s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/model.sdf
+[0.899s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/thumbnails/A_letter.png
+[0.905s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/meshes/I_letter.dae
+[0.909s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/model.config
+[0.914s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/model.sdf
+[0.921s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/thumbnails/A_letter.png
+[0.927s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/meshes/L_letter.dae
+[0.933s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/model.config
+[0.939s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/model.sdf
+[0.944s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/thumbnails/A_letter.png
+[0.950s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/BaseReduced.dae
+[0.956s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/STL27L.dae
+[0.962s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/TopReduced.dae
+[0.966s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/Wheel.dae
+[0.972s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/sensor_rack_lowres_shallow_laser.dae
+[0.976s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/sensor_rack_support_lowres.dae
+[0.982s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.config
+[0.986s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.sdf
+[0.992s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/body.stl
+[0.998s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_large.stl
+[1.003s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_small.stl
+[1.007s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/model.sdf
+[1.013s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/traxxas.urdf
+[1.019s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/saye_world.sdf
+[1.024s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/simple_world.sdf
+[1.030s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Asphalt010_1K_Color.jpg
+[1.035s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Rough_Square_Concrete_Block.jpg
+[1.040s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Tape001_1K_Color.png
+[1.045s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Terrazzo005_1K_Color.jpg
+[1.050s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/ground.png
+[1.056s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/warehouse.dae
+[1.062s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/warehouse_colision.stl
+[1.067s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/model.config
+[1.071s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/model.sdf
+[1.077s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/1.png
+[1.081s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/2.png
+[1.087s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/3.png
+[1.092s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/4.png
+[1.098s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//hooks/ros_gz_example_description.dsv.in
+[1.103s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//hooks/ros_gz_example_description.sh.in
+[1.108s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//launch/spawn_letters.launch.py
+[1.114s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/package_run_dependencies/saye_description
+[1.120s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/parent_prefix_path/saye_description
+[1.127s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/ament_prefix_path.sh
+[1.132s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/ament_prefix_path.dsv
+[1.136s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/path.sh
+[1.142s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/path.dsv
+[1.145s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.bash
+[1.151s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.sh
+[1.157s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.zsh
+[1.162s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.dsv
+[1.166s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/package.dsv
+[1.172s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/packages/saye_description
+[1.178s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/cmake/saye_descriptionConfig.cmake
+[1.184s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/cmake/saye_descriptionConfig-version.cmake
+[1.189s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/package.xml
+[1.196s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/lauraluna/ackermann_sim/build/saye_description

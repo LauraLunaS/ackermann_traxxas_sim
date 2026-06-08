@@ -1,0 +1,9 @@
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/uninstall.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/saye_bringup_uninstall.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/test.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/edit_cache.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/rebuild_cache.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/list_install_components.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/install.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/install/local.dir
+/home/lauraluna/ackermann_sim/build/saye_bringup/CMakeFiles/install/strip.dir

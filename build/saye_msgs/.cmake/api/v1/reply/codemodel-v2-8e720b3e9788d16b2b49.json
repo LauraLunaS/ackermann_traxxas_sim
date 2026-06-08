@@ -1,0 +1,267 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-0d630f32912ce756bcc2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						15,
+						16,
+						17,
+						18,
+						19
+					]
+				},
+				{
+					"build" : "saye_msgs__py",
+					"jsonFile" : "directory-saye_msgs__py-ad27a6edeb92f281160d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/home/lauraluna/ackermann_sim/build/saye_msgs/saye_msgs__py",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "saye_msgs__rs",
+					"jsonFile" : "directory-saye_msgs__rs-5aa766ee59dd22fe67b0.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/home/lauraluna/ackermann_sim/build/saye_msgs/saye_msgs__rs",
+					"targetIndexes" : 
+					[
+						14
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "saye_msgs",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_saye_msgs_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_saye_msgs_egg-823fdde0e2c5cf51daaa.json",
+					"name" : "ament_cmake_python_build_saye_msgs_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_symlink_saye_msgs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_symlink_saye_msgs-16b9712aadf1692e3018.json",
+					"name" : "ament_cmake_python_symlink_saye_msgs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs-d1fb807506a43255062f.json",
+					"name" : "saye_msgs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__cpp-5aa9457bcc66efc958fd.json",
+					"name" : "saye_msgs__cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "saye_msgs__py::@ca8a4fc28a3ff8d3a69b",
+					"jsonFile" : "target-saye_msgs__py-3169748e9b9c3a9b6f48.json",
+					"name" : "saye_msgs__py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_generator_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_generator_c-5d7944c4b9327f4e0e8f.json",
+					"name" : "saye_msgs__rosidl_generator_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_generator_py::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_generator_py-b8bdfb34756f82280c02.json",
+					"name" : "saye_msgs__rosidl_generator_py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_generator_type_description::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_generator_type_description-4e7ad8cb7da4f94876fb.json",
+					"name" : "saye_msgs__rosidl_generator_type_description",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_typesupport_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_typesupport_c-425ff5c61adc8c239ac3.json",
+					"name" : "saye_msgs__rosidl_typesupport_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_typesupport_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_typesupport_cpp-5954b3e9d4d0a0d1a16e.json",
+					"name" : "saye_msgs__rosidl_typesupport_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_typesupport_fastrtps_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_typesupport_fastrtps_c-4115c14cc9ab5e489dcf.json",
+					"name" : "saye_msgs__rosidl_typesupport_fastrtps_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_typesupport_fastrtps_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_typesupport_fastrtps_cpp-5bb6a8eaf7f076470351.json",
+					"name" : "saye_msgs__rosidl_typesupport_fastrtps_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_typesupport_introspection_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_typesupport_introspection_c-1e13efdea1f350a37e5b.json",
+					"name" : "saye_msgs__rosidl_typesupport_introspection_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs__rosidl_typesupport_introspection_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs__rosidl_typesupport_introspection_cpp-6beb3f3726d4aea2bc9a.json",
+					"name" : "saye_msgs__rosidl_typesupport_introspection_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "saye_msgs__rs::@c98ab903dc83dc983a0a",
+					"jsonFile" : "target-saye_msgs__rs-fb8bb1add49ee192dd31.json",
+					"name" : "saye_msgs__rs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs_s__rosidl_typesupport_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs_s__rosidl_typesupport_c-db28e155a3de05838314.json",
+					"name" : "saye_msgs_s__rosidl_typesupport_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs_s__rosidl_typesupport_fastrtps_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs_s__rosidl_typesupport_fastrtps_c-8fff30ef2e9adc3f1d12.json",
+					"name" : "saye_msgs_s__rosidl_typesupport_fastrtps_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs_s__rosidl_typesupport_introspection_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs_s__rosidl_typesupport_introspection_c-c34c309a6b8c77936a28.json",
+					"name" : "saye_msgs_s__rosidl_typesupport_introspection_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "saye_msgs_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-saye_msgs_uninstall-2893e59bd97742d1fbb4.json",
+					"name" : "saye_msgs_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-d24a52f816cb494cb441.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/lauraluna/ackermann_sim/build/saye_msgs",
+		"source" : "/home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_msgs"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

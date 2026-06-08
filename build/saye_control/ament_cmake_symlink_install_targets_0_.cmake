@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/lauraluna/ackermann_sim/build/saye_control/main" "/home/lauraluna/ackermann_sim/build/saye_control/client" "TARGETS" "main" "client" "DESTINATION" "lib/saye_control")

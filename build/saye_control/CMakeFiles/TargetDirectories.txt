@@ -1,0 +1,11 @@
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/uninstall.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/saye_control_uninstall.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/main.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/client.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/test.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/edit_cache.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/rebuild_cache.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/list_install_components.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/install.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/install/local.dir
+/home/lauraluna/ackermann_sim/build/saye_control/CMakeFiles/install/strip.dir

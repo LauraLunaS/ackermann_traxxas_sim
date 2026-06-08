@@ -1,0 +1,255 @@
+[0.005s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/lauraluna/ackermann_sim/install/saye_msgs
+[0.036s] -- The C compiler identification is GNU 11.5.0
+[0.065s] -- The CXX compiler identification is GNU 11.5.0
+[0.074s] -- Detecting C compiler ABI info
+[0.124s] -- Detecting C compiler ABI info - done
+[0.132s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.132s] -- Detecting C compile features
+[0.132s] -- Detecting C compile features - done
+[0.137s] -- Detecting CXX compiler ABI info
+[0.185s] -- Detecting CXX compiler ABI info - done
+[0.193s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.193s] -- Detecting CXX compile features
+[0.194s] -- Detecting CXX compile features - done
+[0.196s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.289s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.327s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.358s] -- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.388s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.397s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.408s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.419s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.466s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.469s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.522s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[0.533s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[0.549s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.601s] -- Found sensor_msgs: 5.3.7 (/opt/ros/jazzy/share/sensor_msgs/cmake)
+[0.634s] -- Found nav_msgs: 5.3.7 (/opt/ros/jazzy/share/nav_msgs/cmake)
+[0.648s] -- Found nav2_msgs: 1.3.11 (/opt/ros/jazzy/share/nav2_msgs/cmake)
+[0.714s] -- Found rosidl_default_generators: 1.6.0 (/opt/ros/jazzy/share/rosidl_default_generators/cmake)
+[0.728s] -- Found rosidl_adapter: 4.6.7 (/opt/ros/jazzy/share/rosidl_adapter/cmake)
+[1.159s] -- Found ament_cmake_ros: 0.12.0 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+[1.766s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.989s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.992s] -- Found python_cmake_module: 0.11.1 (/opt/ros/jazzy/share/python_cmake_module/cmake)
+[2.075s] -- Found PythonExtra: /usr/bin/python3  
+[2.370s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter Development NumPy Development.Module Development.Embed 
+[2.472s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[2.475s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[2.493s] -- Added test 'lint_cmake' to check CMake code style
+[2.493s] -- Added test 'xmllint' to check XML markup files
+[2.495s] -- Configuring done (2.5s)
+[2.519s] -- Generating done (0.0s)
+[2.525s] -- Build files have been written to: /home/lauraluna/ackermann_sim/build/saye_msgs
+[2.532s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/lauraluna/ackermann_sim/install/saye_msgs
+[2.533s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/lauraluna/ackermann_sim/build/saye_msgs -- -j32 -l32
+[2.560s] [  2%] [34m[1mGenerating type hashes for ROS interfaces[0m
+[2.563s] [  4%] [34m[1mGenerating Rust code for ROS interfaces[0m
+[2.564s] [  4%] Built target ament_cmake_python_symlink_saye_msgs
+[2.673s] [  4%] Built target saye_msgs__rosidl_generator_type_description
+[2.679s] [  4%] Built target saye_msgs__rs
+[2.680s] [  6%] [34m[1mGenerating C code for ROS interfaces[0m
+[2.686s] [  8%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[2.723s] running egg_info
+[2.733s] creating saye_msgs.egg-info
+[2.733s] writing saye_msgs.egg-info/PKG-INFO
+[2.733s] writing dependency_links to saye_msgs.egg-info/dependency_links.txt
+[2.733s] writing top-level names to saye_msgs.egg-info/top_level.txt
+[2.733s] writing manifest file 'saye_msgs.egg-info/SOURCES.txt'
+[2.761s] reading manifest file 'saye_msgs.egg-info/SOURCES.txt'
+[2.762s] writing manifest file 'saye_msgs.egg-info/SOURCES.txt'
+[2.778s] [  8%] Built target ament_cmake_python_build_saye_msgs_egg
+[2.828s] [  8%] Built target saye_msgs__cpp
+[2.843s] [ 11%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_c.dir/rosidl_generator_c/saye_msgs/srv/detail/share_map__functions.c.o[0m
+[2.843s] [ 13%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_c.dir/rosidl_generator_c/saye_msgs/msg/detail/map__functions.c.o[0m
+[2.843s] [ 15%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_c.dir/rosidl_generator_c/saye_msgs/msg/detail/map__description.c.o[0m
+[2.843s] [ 17%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_c.dir/rosidl_generator_c/saye_msgs/msg/detail/map__type_support.c.o[0m
+[2.843s] [ 20%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_c.dir/rosidl_generator_c/saye_msgs/srv/detail/share_map__description.c.o[0m
+[2.843s] [ 22%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_c.dir/rosidl_generator_c/saye_msgs/srv/detail/share_map__type_support.c.o[0m
+[2.879s] [ 24%] [32m[1mLinking C shared library libsaye_msgs__rosidl_generator_c.so[0m
+[2.906s] [ 24%] Built target saye_msgs__rosidl_generator_c
+[2.913s] [ 26%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[2.913s] [ 33%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[2.913s] [ 33%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[2.913s] [ 33%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[2.914s] [ 35%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[2.914s] [ 37%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[3.037s] [ 42%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/saye_msgs/msg/map__type_support.cpp.o[0m
+[3.037s] [ 42%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/saye_msgs/srv/share_map__type_support.cpp.o[0m
+[3.060s] [ 44%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/saye_msgs/srv/detail/share_map__type_support.c.o[0m
+[3.060s] [ 46%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/saye_msgs/msg/detail/map__type_support.c.o[0m
+[3.066s] [ 48%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/saye_msgs/msg/map__type_support.cpp.o[0m
+[3.068s] [ 51%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/saye_msgs/srv/share_map__type_support.cpp.o[0m
+[3.071s] [ 53%] [32m[1mLinking CXX shared library libsaye_msgs__rosidl_typesupport_c.so[0m
+[3.078s] [ 57%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/saye_msgs/srv/detail/share_map__type_support_c.cpp.o[0m
+[3.078s] [ 57%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/saye_msgs/msg/detail/map__type_support_c.cpp.o[0m
+[3.083s] [ 60%] [32m[1mLinking C shared library libsaye_msgs__rosidl_typesupport_introspection_c.so[0m
+[3.105s] [ 60%] Built target saye_msgs__rosidl_typesupport_c
+[3.114s] [ 60%] Built target saye_msgs__rosidl_typesupport_introspection_c
+[3.125s] [ 64%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/saye_msgs/msg/detail/map__type_support.cpp.o[0m
+[3.125s] [ 64%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/saye_msgs/srv/detail/share_map__type_support.cpp.o[0m
+[3.170s] [ 68%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/saye_msgs/srv/detail/dds_fastrtps/share_map__type_support.cpp.o[0m
+[3.170s] [ 68%] [32mBuilding CXX object CMakeFiles/saye_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/saye_msgs/msg/detail/dds_fastrtps/map__type_support.cpp.o[0m
+[3.287s] [ 71%] [32m[1mLinking CXX shared library libsaye_msgs__rosidl_typesupport_cpp.so[0m
+[3.334s] [ 71%] Built target saye_msgs__rosidl_typesupport_cpp
+[3.383s] [ 73%] [32m[1mLinking CXX shared library libsaye_msgs__rosidl_typesupport_introspection_cpp.so[0m
+[3.394s] [ 75%] [32m[1mLinking CXX shared library libsaye_msgs__rosidl_typesupport_fastrtps_c.so[0m
+[3.432s] [ 75%] Built target saye_msgs__rosidl_typesupport_introspection_cpp
+[3.437s] [ 75%] Built target saye_msgs__rosidl_typesupport_fastrtps_c
+[3.509s] [ 77%] [32m[1mLinking CXX shared library libsaye_msgs__rosidl_typesupport_fastrtps_cpp.so[0m
+[3.557s] [ 77%] Built target saye_msgs__rosidl_typesupport_fastrtps_cpp
+[3.569s] [ 77%] Built target saye_msgs
+[3.580s] [ 80%] [34m[1mGenerating Python code for ROS interfaces[0m
+[3.769s] [ 80%] Built target saye_msgs__py
+[3.782s] [ 84%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_py.dir/rosidl_generator_py/saye_msgs/srv/_share_map_s.c.o[0m
+[3.782s] [ 84%] [32mBuilding C object CMakeFiles/saye_msgs__rosidl_generator_py.dir/rosidl_generator_py/saye_msgs/msg/_map_s.c.o[0m
+[3.849s] [ 86%] [32m[1mLinking C shared library libsaye_msgs__rosidl_generator_py.so[0m
+[3.886s] [ 86%] Built target saye_msgs__rosidl_generator_py
+[3.900s] [ 91%] [32mBuilding C object CMakeFiles/saye_msgs_s__rosidl_typesupport_c.dir/rosidl_generator_py/saye_msgs/_saye_msgs_s.ep.rosidl_typesupport_c.c.o[0m
+[3.900s] [ 91%] [32mBuilding C object CMakeFiles/saye_msgs_s__rosidl_typesupport_fastrtps_c.dir/rosidl_generator_py/saye_msgs/_saye_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[3.900s] [ 93%] [32mBuilding C object CMakeFiles/saye_msgs_s__rosidl_typesupport_introspection_c.dir/rosidl_generator_py/saye_msgs/_saye_msgs_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[3.960s] [ 95%] [32m[1mLinking C shared module rosidl_generator_py/saye_msgs/saye_msgs_s__rosidl_typesupport_c.so[0m
+[3.967s] [ 97%] [32m[1mLinking C shared module rosidl_generator_py/saye_msgs/saye_msgs_s__rosidl_typesupport_fastrtps_c.so[0m
+[3.967s] [100%] [32m[1mLinking C shared module rosidl_generator_py/saye_msgs/saye_msgs_s__rosidl_typesupport_introspection_c.so[0m
+[3.985s] [100%] Built target saye_msgs_s__rosidl_typesupport_c
+[3.992s] [100%] Built target saye_msgs_s__rosidl_typesupport_introspection_c
+[3.993s] [100%] Built target saye_msgs_s__rosidl_typesupport_fastrtps_c
+[4.000s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/lauraluna/ackermann_sim/build/saye_msgs -- -j32 -l32
+[4.001s] Invoking command in '/home/lauraluna/ackermann_sim/build/saye_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/lauraluna/ackermann_sim/build/saye_msgs
+[4.006s] -- Install configuration: ""
+[4.007s] -- Execute custom install script
+[4.007s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/ament_index/resource_index/rosidl_interfaces/saye_msgs
+[4.011s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/msg/Map.json
+[4.017s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/srv/ShareMap.json
+[4.023s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__functions.h
+[4.028s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__struct.h
+[4.033s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__type_support.h
+[4.037s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/map.h
+[4.043s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/rosidl_generator_c__visibility_control.h
+[4.048s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__functions.h
+[4.054s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__struct.h
+[4.059s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__type_support.h
+[4.064s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/share_map.h
+[4.068s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/library_path.sh
+[4.074s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/library_path.dsv
+[4.077s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__rosidl_typesupport_fastrtps_c.h
+[4.083s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[4.088s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__rosidl_typesupport_fastrtps_c.h
+[4.092s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__builder.hpp
+[4.097s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__struct.hpp
+[4.103s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__traits.hpp
+[4.108s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__type_support.hpp
+[4.113s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/map.hpp
+[4.119s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
+[4.123s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__builder.hpp
+[4.129s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__struct.hpp
+[4.133s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__traits.hpp
+[4.138s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__type_support.hpp
+[4.144s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/share_map.hpp
+[4.149s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__rosidl_typesupport_fastrtps_cpp.hpp
+[4.154s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[4.160s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__rosidl_typesupport_fastrtps_cpp.hpp
+[4.166s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__rosidl_typesupport_introspection_c.h
+[4.171s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[4.177s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__rosidl_typesupport_introspection_c.h
+[4.183s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/msg/detail/map__rosidl_typesupport_introspection_cpp.hpp
+[4.188s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/include/saye_msgs/saye_msgs/srv/detail/share_map__rosidl_typesupport_introspection_cpp.hpp
+[4.193s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/pythonpath.sh
+[4.199s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/pythonpath.dsv
+[4.204s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs-0.0.0-py3.12.egg-info/PKG-INFO
+[4.210s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs-0.0.0-py3.12.egg-info/SOURCES.txt
+[4.216s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs-0.0.0-py3.12.egg-info/dependency_links.txt
+[4.220s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs-0.0.0-py3.12.egg-info/top_level.txt
+[4.226s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/__init__.py
+[4.231s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/_saye_msgs_s.ep.rosidl_typesupport_c.c
+[4.236s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/_saye_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+[4.240s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/_saye_msgs_s.ep.rosidl_typesupport_introspection_c.c
+[4.243s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/msg/__init__.py
+[4.249s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/msg/_map.py
+[4.253s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/msg/_map_s.c
+[4.259s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/saye_msgs_s__rosidl_typesupport_c.so
+[4.264s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/saye_msgs_s__rosidl_typesupport_fastrtps_c.so
+[4.269s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/saye_msgs_s__rosidl_typesupport_introspection_c.so
+[4.275s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/srv/__init__.py
+[4.280s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/srv/_share_map.py
+[4.284s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/srv/_share_map_s.c
+[4.290s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/saye_msgs_s__rosidl_typesupport_fastrtps_c.so
+[4.290s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/saye_msgs_s__rosidl_typesupport_introspection_c.so
+[4.290s] -- Up-to-date symlink: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/saye_msgs_s__rosidl_typesupport_c.so
+[4.290s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/ament_index/resource_index/rust_packages/saye_msgs
+[4.296s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/rust/Cargo.toml
+[4.300s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/rust/build.rs
+[4.304s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/rust/src/lib.rs
+[4.310s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/rust/src/msg.rs
+[4.315s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/rust/src/msg/rmw.rs
+[4.321s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/rust/src/srv.rs
+[4.326s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/rust/src/srv/rmw.rs
+[4.332s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/msg/Map.idl
+[4.336s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/srv/ShareMap.idl
+[4.342s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/msg/Map.msg
+[4.347s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/srv/ShareMap.srv
+[4.353s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/ament_index/resource_index/package_run_dependencies/saye_msgs
+[4.358s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/ament_index/resource_index/parent_prefix_path/saye_msgs
+[4.364s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/ament_prefix_path.sh
+[4.370s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/ament_prefix_path.dsv
+[4.376s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/path.sh
+[4.382s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/environment/path.dsv
+[4.385s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/local_setup.bash
+[4.390s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/local_setup.sh
+[4.395s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/local_setup.zsh
+[4.400s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/local_setup.dsv
+[4.405s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/package.dsv
+[4.411s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/ament_index/resource_index/packages/saye_msgs
+[4.416s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/rosidl_cmake-extras.cmake
+[4.422s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/ament_cmake_export_dependencies-extras.cmake
+[4.427s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/ament_cmake_export_include_directories-extras.cmake
+[4.432s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/ament_cmake_export_libraries-extras.cmake
+[4.437s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/ament_cmake_export_targets-extras.cmake
+[4.443s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[4.447s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[4.453s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgsConfig.cmake
+[4.458s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgsConfig-version.cmake
+[4.463s] -- Symlinking: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/package.xml
+[4.469s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_generator_c.so
+[4.469s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_generator_c.so" to ""
+[4.469s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_fastrtps_c.so
+[4.469s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_fastrtps_c.so" to ""
+[4.469s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_fastrtps_cpp.so
+[4.469s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_fastrtps_cpp.so" to ""
+[4.469s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_introspection_c.so
+[4.469s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_introspection_c.so" to ""
+[4.469s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_c.so
+[4.470s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_c.so" to ""
+[4.470s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_introspection_cpp.so
+[4.470s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_introspection_cpp.so" to ""
+[4.470s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_cpp.so
+[4.470s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_typesupport_cpp.so" to ""
+[4.492s] Listing '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs'...
+[4.492s] Compiling '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/__init__.py'...
+[4.492s] Listing '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/msg'...
+[4.492s] Compiling '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/msg/__init__.py'...
+[4.493s] Compiling '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/msg/_map.py'...
+[4.493s] Listing '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/srv'...
+[4.493s] Compiling '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/srv/__init__.py'...
+[4.493s] Compiling '/home/lauraluna/ackermann_sim/install/saye_msgs/lib/python3.12/site-packages/saye_msgs/srv/_share_map.py'...
+[4.495s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_generator_py.so
+[4.495s] -- Set non-toolchain portion of runtime path of "/home/lauraluna/ackermann_sim/install/saye_msgs/lib/libsaye_msgs__rosidl_generator_py.so" to ""
+[4.495s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_generator_cExport.cmake
+[4.495s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_generator_cExport-noconfig.cmake
+[4.495s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_typesupport_fastrtps_cExport.cmake
+[4.495s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[4.495s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_generator_cppExport.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_typesupport_fastrtps_cppExport.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_introspection_cExport.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_cExport.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_cExport-noconfig.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_introspection_cppExport.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_cppExport.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/saye_msgs__rosidl_typesupport_cppExport-noconfig.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_generator_pyExport.cmake
+[4.496s] -- Installing: /home/lauraluna/ackermann_sim/install/saye_msgs/share/saye_msgs/cmake/export_saye_msgs__rosidl_generator_pyExport-noconfig.cmake
+[4.497s] Invoked command in '/home/lauraluna/ackermann_sim/build/saye_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lauraluna/turtlebot3_ws/install/waste_detector:/home/lauraluna/turtlebot3_ws/install/turtlebot3_teleop:/home/lauraluna/turtlebot3_ws/install/turtlebot3_example:/home/lauraluna/turtlebot3_ws/install/obstacle_avoider:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/lauraluna/ackermann_sim/build/saye_msgs

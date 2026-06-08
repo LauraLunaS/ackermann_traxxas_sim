@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: obstacle_avoider
+Version: 0.0.1
+Summary: Obstacle avoider for Ackermann vehicle
+Maintainer: lauraluna
+Maintainer-email: lauraluna@todo.todo
+License: MIT
+Requires-Dist: setuptools
+Dynamic: license
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: requires-dist
+Dynamic: summary

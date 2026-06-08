@@ -1,0 +1,17 @@
+package.xml
+setup.cfg
+setup.py
+obstacle_avoider/__init__.py
+obstacle_avoider/ackermann_obstacle_avoider.py
+obstacle_avoider/camera_info_publisher.py
+obstacle_avoider.egg-info/PKG-INFO
+obstacle_avoider.egg-info/SOURCES.txt
+obstacle_avoider.egg-info/dependency_links.txt
+obstacle_avoider.egg-info/entry_points.txt
+obstacle_avoider.egg-info/requires.txt
+obstacle_avoider.egg-info/top_level.txt
+obstacle_avoider.egg-info/zip-safe
+resource/obstacle_avoider
+test/test_copyright.py
+test/test_flake8.py
+test/test_pep257.py

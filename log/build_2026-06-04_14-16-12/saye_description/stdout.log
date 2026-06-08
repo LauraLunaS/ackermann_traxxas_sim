@@ -1,0 +1,95 @@
+-- The C compiler identification is GNU 11.5.0
+-- The CXX compiler identification is GNU 11.5.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+-- Override CMake install command with custom implementation using symlinks instead of copying resources
+-- Found robot_state_publisher: 3.3.3 (/opt/ros/jazzy/share/robot_state_publisher/cmake)
+-- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found xacro: 2.1.1 (/opt/ros/jazzy/share/xacro/cmake)
+-- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Configured 'flake8' exclude dirs and/or files: 
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/lauraluna/ackermann_sim/build/saye_description
+-- Install configuration: ""
+-- Execute custom install script
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/meshes/A_letter.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/model.config
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/model.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/A_letter/thumbnails/A_letter.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/meshes/I_letter.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/model.config
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/model.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/I_letter/thumbnails/A_letter.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/meshes/L_letter.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/model.config
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/model.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/L_letter/thumbnails/A_letter.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/BaseReduced.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/STL27L.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/TopReduced.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/Wheel.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/sensor_rack_lowres_shallow_laser.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/sensor_rack_support_lowres.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.config
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/body.stl
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_large.stl
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_small.stl
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/model.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/traxxas.urdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/saye_world.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/simple_world.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Asphalt010_1K_Color.jpg
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Rough_Square_Concrete_Block.jpg
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Tape001_1K_Color.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Terrazzo005_1K_Color.jpg
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/ground.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/warehouse.dae
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/warehouse_colision.stl
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/model.config
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/model.sdf
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/1.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/2.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/3.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/thumbnails/4.png
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//hooks/ros_gz_example_description.dsv.in
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//hooks/ros_gz_example_description.sh.in
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//launch/spawn_letters.launch.py
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/package_run_dependencies/saye_description
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/parent_prefix_path/saye_description
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/ament_prefix_path.sh
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/ament_prefix_path.dsv
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/path.sh
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/environment/path.dsv
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.bash
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.sh
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.zsh
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/local_setup.dsv
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/package.dsv
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/ament_index/resource_index/packages/saye_description
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/cmake/saye_descriptionConfig.cmake
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/cmake/saye_descriptionConfig-version.cmake
+-- Symlinking: /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description/package.xml

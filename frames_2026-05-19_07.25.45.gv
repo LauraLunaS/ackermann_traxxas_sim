@@ -1,0 +1,21 @@
+digraph G {
+"saye" -> "saye/rear_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"odom" -> "saye"[label=" Broadcaster: default_authority\nAverage rate: 50.208\nBuffer length: 4.8\nMost recent transform: 161.36\nOldest transform: 156.56\n"];
+"saye" -> "saye/base_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye" -> "saye/front_left_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye/base_link" -> "saye/base_link/imu_sensor"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye/base_link" -> "saye/base_link/gpu_lidar"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye" -> "saye/front_right_wheel_steering_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye/base_link" -> "saye/base_link/rs_front"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye" -> "saye/rear_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye/base_link" -> "saye/base_link/camera_front"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye/base_link" -> "saye/base_link/camera_rear"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye/base_link" -> "saye/base_link/camera_left"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye/base_link" -> "saye/base_link/camera_right"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye" -> "saye/front_left_wheel_steering_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+"saye" -> "saye/front_right_wheel_link"[label=" Broadcaster: default_authority\nAverage rate: 1000.207\nBuffer length: 4.821\nMost recent transform: 161.371\nOldest transform: 156.55\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1779186345.5662186"[ shape=plaintext ] ;
+}->"odom";
+}
