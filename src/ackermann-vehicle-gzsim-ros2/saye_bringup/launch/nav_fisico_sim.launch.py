@@ -76,7 +76,6 @@ def generate_launch_description():
     # ld.add_action(map_server_node)
     #ld.add_action(static_transform_publisher_node)
     
-    # === CORREÇÃO: ADICIONADO PARA EXECUTAR O RELAY AUTOMATICAMENTE ===
     ld.add_action(relay_node)
 
     return ld
