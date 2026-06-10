@@ -1,0 +1,8 @@
+{
+  "waypoints": [
+    {"name": "Frente",  "x":  0.5, "y":  1.0, "yaw":  0.0},
+    {"name": "Lado",    "x":  0.5, "y": -0.5, "yaw": -1.57},
+    {"name": "Recua",   "x": -1.0, "y": -0.5, "yaw":  3.14},
+    {"name": "Origem",  "x": -1.0, "y":  1.0, "yaw":  1.57}
+  ]
+}
