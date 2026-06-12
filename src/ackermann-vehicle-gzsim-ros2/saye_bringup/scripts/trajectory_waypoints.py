@@ -36,7 +36,7 @@ def main():
     )
 
     if not os.path.exists(caminho_json):
-        print(f"❌ Arquivo não encontrado: {caminho_json}")
+        print(f"Arquivo não encontrado: {caminho_json}")
         rclpy.shutdown()
         return
 
@@ -78,11 +78,11 @@ def main():
 
     resultado = navigator.getResult()
     if resultado == TaskResult.SUCCEEDED:
-        print("🎉 SUCESSO: O Traxxas visitou todos os pontos!")
+        print("SUCESSO: O Traxxas visitou todos os pontos!")
     elif resultado == TaskResult.CANCELED:
-        print("⚠️ Rota cancelada.")
+        print("Rota cancelada.")
     elif resultado == TaskResult.FAILED:
-        print("❌ ERRO: Falha em algum waypoint.")
+        print("ERRO: Falha em algum waypoint.")
 
     rclpy.shutdown()
 
