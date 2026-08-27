@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <sdf version="1.8">
-  <world name="simple_world">
+  <world name="beach_world">
+    <!-- Plugins do Sistema da Simulação -->
     <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
     <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
     <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
@@ -8,9 +9,12 @@
       <render_engine>ogre2</render_engine>
     </plugin>
 
+    <!-- Plugin para gerenciar animações/movimentos dinâmicos -->
+    <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower"/>
+
     <scene>
       <ambient>0.6 0.6 0.6 1</ambient>
-      <background>0.7 0.85 1.0 1</background>
+      <background>0.5 0.8 1.0 1</background>
       <shadows>true</shadows>
     </scene>
 
@@ -22,110 +26,184 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
 
-    <model name="ground_plane">
+    <!-- Terreno arenoso com relevo real (dune_terrain.obj, gerado localmente),
+         mas SO no visual. A colisao continua um plano perfeitamente liso de
+         proposito: a geometria <heightmap> foi testada e trava o
+         renderizador de profundidade (Ogre2) sempre que o LiDAR (gpu_lidar)
+         ou a camera RealSense (rgbd_camera, saida de profundidade) tentam
+         renderizar uma cena com heightfield neste ambiente ;e isso vale
+         tanto pra heightmap de colisao quanto de puro visual, pois o
+         problema e o material/shader de terreno, nao a fisica. Um mesh comum
+         (.obj) nao usa esse shader especial e renderiza normalmente, como
+         qualquer outro modelo do projeto (carroceria, reboque, letras).
+         Efeito colateral aceito: fisicamente o chao e plano, entao o robo
+         nao "sente" as dunas na suspensao ;e so aparencia. Se um dia for
+         preciso relevo fisico de verdade, ver nota mais abaixo sobre
+         segmentacao de chao via nuvem de pontos da RealSense. -->
+    <model name="sandy_terrain">
       <static>true</static>
       <link name="link">
         <collision name="collision">
-          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+          </surface>
         </collision>
         <visual name="visual">
-          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <geometry>
+            <mesh>
+              <uri>file:///home/lauraluna/ackermann_sim/src/ackermann-vehicle-gzsim-ros2/saye_description/worlds/media/dune_terrain.obj</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
           <material>
-            <ambient>0.85 0.85 0.85 1</ambient>
-            <diffuse>0.85 0.85 0.85 1</diffuse>
-            <specular>0.1 0.1 0.1 1</specular>
+            <ambient>0.76 0.69 0.50 1</ambient>
+            <diffuse>0.80 0.72 0.52 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
           </material>
         </visual>
       </link>
     </model>
 
-    <model name="wall_north">
-      <static>true</static>
-      <pose>0 2.0 0.25 0 0 0</pose>
+    <!-- ========================================== -->
+    <!-- OBSTÁCULO DINÂMICO 1: Pedestre / Obstáculo Vermelho (Movimento Vai e Vem no Eixo Y) -->
+    <!-- ========================================== -->
+    <model name="dynamic_obstacle_sphere">
+      <pose>2.0 0.0 0.5 0 0 0</pose>
+      <static>false</static>
+      
+      <!-- Executa o movimento scriptado sem ser afetado pela gravidade caindo no terreno -->
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <kinematic>true</kinematic>
+        <loop>true</loop>
+        <waypoints>
+          <waypoint>
+            <position>2.0 -3.0 0.5</position>
+            <orientation>0 0 1.57</orientation>
+          </waypoint>
+          <waypoint>
+            <position>2.0 3.0 0.5</position>
+            <orientation>0 0 -1.57</orientation>
+          </waypoint>
+        </waypoints>
+        <velocity>0.8</velocity> <!-- Velocidade em m/s -->
+      </plugin>
+
       <link name="link">
-        <collision name="collision">
-          <geometry><box><size>5.0 0.1 0.5</size></box></geometry>
-        </collision>
         <visual name="visual">
-          <geometry><box><size>5.0 0.1 0.5</size></box></geometry>
+          <geometry>
+            <sphere><radius>0.4</radius></sphere>
+          </geometry>
           <material>
-            <ambient>0.9 0.85 0.70 1</ambient>
-            <diffuse>0.9 0.85 0.70 1</diffuse>
-            <specular>0.2 0.2 0.2 1</specular>
+            <ambient>0.8 0.1 0.1 1</ambient>
+            <diffuse>0.8 0.1 0.1 1</diffuse>
           </material>
         </visual>
+        <collision name="collision">
+          <geometry>
+            <sphere><radius>0.4</radius></sphere>
+          </geometry>
+        </collision>
       </link>
     </model>
 
-    <model name="wall_south">
-      <static>true</static>
-      <pose>0 -2.0 0.25 0 0 0</pose>
+    <!-- ========================================== -->
+    <!-- OBSTÁCULO DINÂMICO 2: Caixote (Movimento Horizontal no Eixo X) -->
+    <!-- ========================================== -->
+    <model name="dynamic_obstacle_box">
+      <pose>5.0 2.0 0.5 0 0 0</pose>
+      <static>false</static>
+
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <kinematic>true</kinematic>
+        <loop>true</loop>
+        <waypoints>
+          <waypoint>
+            <position>3.0 2.0 0.5</position>
+            <orientation>0 0 0</orientation>
+          </waypoint>
+          <waypoint>
+            <position>7.0 2.0 0.5</position>
+            <orientation>0 0 3.14</orientation>
+          </waypoint>
+        </waypoints>
+        <velocity>0.6</velocity>
+      </plugin>
+
       <link name="link">
-        <collision name="collision">
-          <geometry><box><size>5.0 0.1 0.5</size></box></geometry>
-        </collision>
         <visual name="visual">
-          <geometry><box><size>5.0 0.1 0.5</size></box></geometry>
+          <geometry>
+            <box><size>0.6 0.6 0.6</size></box>
+          </geometry>
           <material>
-            <ambient>0.9 0.85 0.70 1</ambient>
-            <diffuse>0.9 0.85 0.70 1</diffuse>
-            <specular>0.2 0.2 0.2 1</specular>
+            <ambient>0.8 0.5 0.1 1</ambient>
+            <diffuse>0.8 0.5 0.1 1</diffuse>
           </material>
         </visual>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.6 0.6 0.6</size></box>
+          </geometry>
+        </collision>
       </link>
     </model>
 
-    <model name="wall_east">
-      <static>true</static>
-      <pose>2.5 0 0.25 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry><box><size>0.1 4.0 0.5</size></box></geometry>
-        </collision>
-        <visual name="visual">
-          <geometry><box><size>0.1 4.0 0.5</size></box></geometry>
-          <material>
-            <ambient>0.9 0.85 0.70 1</ambient>
-            <diffuse>0.9 0.85 0.70 1</diffuse>
-            <specular>0.2 0.2 0.2 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
+    <!-- ========================================== -->
+    <!-- OBSTÁCULO DINÂMICO 3: Barril/Cilindro (Patrulha Retangular em Loop) -->
+    <!-- ========================================== -->
+    <model name="dynamic_obstacle_cylinder">
+      <pose>0.0 0.0 0.5 0 0 0</pose>
+      <static>false</static>
 
-    <model name="wall_west">
-      <static>true</static>
-      <pose>-2.5 0 0.25 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry><box><size>0.1 4.0 0.5</size></box></geometry>
-        </collision>
-        <visual name="visual">
-          <geometry><box><size>0.1 4.0 0.5</size></box></geometry>
-          <material>
-            <ambient>0.9 0.85 0.70 1</ambient>
-            <diffuse>0.9 0.85 0.70 1</diffuse>
-            <specular>0.2 0.2 0.2 1</specular>
-          </material>
-        </visual>
-      </link>
-    </model>
+      <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <kinematic>true</kinematic>
+        <loop>true</loop>
+        <waypoints>
+          <waypoint>
+            <position>1.0 1.0 0.5</position>
+            <orientation>0 0 0</orientation>
+          </waypoint>
+          <waypoint>
+            <position>4.0 1.0 0.5</position>
+            <orientation>0 0 1.57</orientation>
+          </waypoint>
+          <waypoint>
+            <position>4.0 4.0 0.5</position>
+            <orientation>0 0 3.14</orientation>
+          </waypoint>
+          <waypoint>
+            <position>1.0 4.0 0.5</position>
+            <orientation>0 0 -1.57</orientation>
+          </waypoint>
+        </waypoints>
+        <velocity>0.5</velocity>
+      </plugin>
 
-    <model name="central_obstacle">
-      <static>true</static>
-      <pose>0 0 0.25 0 0 0</pose>
       <link name="link">
-        <collision name="collision">
-          <geometry><cylinder><radius>0.3</radius><length>0.5</length></cylinder></geometry>
-        </collision>
         <visual name="visual">
-          <geometry><cylinder><radius>0.3</radius><length>0.5</length></cylinder></geometry>
+          <geometry>
+            <cylinder><radius>0.3</radius><length>0.8</length></cylinder>
+          </geometry>
           <material>
-            <ambient>0.1 0.1 0.8 1</ambient>
-            <diffuse>0.1 0.1 0.8 1</diffuse>
-            <specular>0.3 0.3 0.3 1</specular>
+            <ambient>0.1 0.2 0.8 1</ambient>
+            <diffuse>0.1 0.2 0.8 1</diffuse>
           </material>
         </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder><radius>0.3</radius><length>0.8</length></cylinder>
+          </geometry>
+        </collision>
       </link>
     </model>
 

@@ -18,11 +18,17 @@
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/meshes/sensor_rack_support_lowres.dae
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.config
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/saye/model.sdf
-/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/body.stl
+/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/trailer/model.sdf
+/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/ImageToStl.com_Reboque.stl
+/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/Reboque(sem_roda).stl
+/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/Traxxas Nitro Rustler.obj
+/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/Traxxas_Nitro_Rustler.stl
+/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/uarm.stl
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_large.stl
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/meshes/wheel_small.stl
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/model.sdf
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//models/traxxas/traxxas.urdf
+/home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/media/dune_terrain.obj
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/saye_world.sdf
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/simple_world.sdf
 /home/lauraluna/ackermann_sim/install/saye_description/share/saye_description//worlds/warehouse/meshes/Asphalt010_1K_Color.jpg

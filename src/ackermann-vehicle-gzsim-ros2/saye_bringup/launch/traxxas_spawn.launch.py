@@ -91,6 +91,26 @@ def generate_launch_description():
         ],
         output='screen'
     )
+    # Liga o frame "traxxas" (child_frame_id publicado em /odom, usado como
+    # robot_base_frame no Nav2/slam_toolbox) ao frame "traxxas/base_link"
+    # (pai dos sensores publicado pelo gz-sim-pose-publisher-system). São a
+    # mesma origem física, só com nomes diferentes por causa do gz_frame_id
+    # do model.sdf — sem essa ponte o /scan nunca é transformável para
+    # "traxxas" e o Nav2/SLAM travam sem publicar cmd_vel.
+    static_tf_base_link = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='traxxas_base_link_static_tf',
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'traxxas',
+            '--child-frame-id', 'traxxas/base_link',
+        ],
+        parameters=[{'use_sim_time': True}],
+        output='screen'
+    )
+
     gz_spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -101,15 +121,17 @@ def generate_launch_description():
             '-allow_renaming', 'true',
             '-x', '-1.0',          # ← Move o spawn para o canto esquerdo (comprimento)
             '-y', '1.0',          # ← Move o spawn para baixo (largura)
-            '-z', '0.10'           # ← Ajustado para 0.10m (0.35m faria ele cair de muito alto)
+            '-z', '0.15'          # ← acima do ponto mais alto do relevo visual (dune_terrain.obj, amplitude 7cm)
         ]
     )
+	
     return LaunchDescription([
         gz_sim,
         gz_spawn_entity,
         DeclareLaunchArgument('rviz', default_value='true',
                               description='Open RViz.'),
         bridge,
+        static_tf_base_link,
         #robot_state_publisher,
         #rviz
     ])

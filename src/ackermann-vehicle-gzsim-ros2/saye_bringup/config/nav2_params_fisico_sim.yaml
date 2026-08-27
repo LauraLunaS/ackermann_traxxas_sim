@@ -1,55 +1,8 @@
-amcl:
-  ros__parameters:
-    use_sim_time: true
-    alpha1: 0.2
-    alpha2: 0.2
-    alpha3: 0.2
-    alpha4: 0.2
-    alpha5: 0.2
-    base_frame_id: "traxxas/base_link"         
-    beam_skip_distance: 0.5
-    beam_skip_error_threshold: 0.9
-    beam_skip_threshold: 0.3
-    do_beamskip: false
-    global_frame_id: "map"
-    lambda_short: 0.1
-    laser_likelihood_max_dist: 2.0
-    laser_max_range: 12.0            
-    laser_min_range: 0.1
-    laser_model_type: "likelihood_field"
-    max_beams: 60
-    max_particles: 2000
-    min_particles: 500
-    odom_frame_id: "odom"
-    pf_err: 0.05
-    pf_z: 0.99
-    recovery_alpha_fast: 0.0
-    recovery_alpha_slow: 0.0
-    resample_interval: 1
-    robot_model_type: "nav2_amcl::DifferentialMotionModel"
-    save_pose_rate: 0.5
-    sigma_hit: 0.2
-    tf_broadcast: true
-    transform_tolerance: 1.0
-    update_min_a: 0.2
-    update_min_d: 0.25
-    z_hit: 0.5
-    z_max: 0.05
-    z_rand: 0.5
-    z_short: 0.05
-    scan_topic: /scan
-    set_initial_pose: true
-    initial_pose:
-      x: -1.0
-      y: 1.0
-      z: 0.0
-      yaw: 0.0
-
 bt_navigator:
   ros__parameters:
     use_sim_time: true
     global_frame: map
-    robot_base_frame: traxxas       
+    robot_base_frame: traxxas
     odom_topic: /odom
     bt_loop_duration: 10
     default_server_timeout: 30
@@ -85,11 +38,9 @@ controller_server:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.30
-      # yaw_goal_tolerance: 0.78
       yaw_goal_tolerance: 3.14
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-      #desired_linear_vel: 0.5
       desired_linear_vel: 0.35
       lookahead_dist: 0.3
       min_lookahead_dist: 0.2
@@ -104,10 +55,8 @@ controller_server:
       use_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 0.25
       regulated_linear_scaling_min_speed: 0.20
-      
-
-      use_rotate_to_heading: false    
-      allow_reversing: true                  
+      use_rotate_to_heading: false  
+      allow_reversing: true               
       rotate_to_heading_min_angle: 9.9       
 
 local_costmap:
@@ -117,12 +66,11 @@ local_costmap:
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
-      robot_base_frame: traxxas/base_link
+      robot_base_frame: traxxas
       rolling_window: true
       width: 3
       height: 3
       resolution: 0.05
-      #robot_radius: 0.5
       footprint: "[[0.284, 0.148], [0.284, -0.148], [-0.284, -0.148], [-0.284, 0.148]]"
       plugins: ["obstacle_layer", "inflation_layer"]
       inflation_layer:
@@ -142,7 +90,7 @@ local_costmap:
           raytrace_max_range: 3.0
           raytrace_min_range: 0.0
           obstacle_max_range: 2.5
-          obstacle_min_range: 0.0
+          obstacle_min_range: 0.3
       always_send_full_costmap: True
 
 global_costmap:
@@ -152,12 +100,22 @@ global_costmap:
       update_frequency: 1.0
       publish_frequency: 1.0
       global_frame: map
-      robot_base_frame: traxxas      
-      #robot_radius: 0.6
+      robot_base_frame: traxxas
       footprint: "[[0.284, 0.148], [0.284, -0.148], [-0.284, -0.148], [-0.284, 0.148]]"
       resolution: 0.05
+      # Sem rolling_window/width/height/origin, o Nav2 usa o padrao (grade
+      # fixa 5x5m ancorada em (0,0)-(4.98,4.98)). O robo nasce em (-1, 1) e
+      # pode se mover em area negativa (obstaculos dinamicos do simple_world.sdf
+      # vao ate x=7, y=-3), entao a grade fixa deixava o robo permanentemente
+      # "fora dos limites do costmap" e o planner abortava toda tentativa.
+      rolling_window: false
+      width: 30
+      height: 30
+      origin_x: -15.0
+      origin_y: -15.0
       track_unknown_space: true
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      # Removido 'static_layer' para nao depender de mapa estatico
+      plugins: ["obstacle_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -171,22 +129,12 @@ global_costmap:
           raytrace_max_range: 3.0
           raytrace_min_range: 0.0
           obstacle_max_range: 2.5
-          obstacle_min_range: 0.0
-      static_layer:
-        plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: True
+          obstacle_min_range: 0.3
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
         inflation_radius: 0.7
       always_send_full_costmap: True
-
-map_saver:
-  ros__parameters:
-    save_map_timeout: 5.0
-    free_thresh_default: 0.25
-    occupied_thresh_default: 0.65
-    map_subscribe_transient_local: True
 
 planner_server:
   ros__parameters:
@@ -202,14 +150,11 @@ planner_server:
       max_iterations: -1
       max_on_approach_iterations: 1000
       max_planning_time: 10.0
-      #motion_model_for_search: "DUBIN"
       motion_model_for_search: "REEDS_SHEPP"
       angle_quantization_bins: 72
       analytic_expansion_ratio: 3.5
       minimum_turning_radius: 0.4
-      #reverse_penalty: 2.0
       reverse_penalty: 3.5
-      #change_penalty: 0.05
       change_penalty: 1.5
       non_straight_penalty: 1.2
       cost_penalty: 2.0
@@ -259,7 +204,7 @@ behavior_server:
       plugin: "nav2_behaviors::AssistedTeleop"
     local_frame: odom
     global_frame: map
-    robot_base_frame: traxxas        
+    robot_base_frame: traxxas
     transform_tolerance: 0.1
     simulate_ahead_time: 2.0
     max_rotational_vel: 1.0
@@ -297,7 +242,7 @@ velocity_smoother:
 collision_monitor:
   ros__parameters:
     use_sim_time: true
-    base_frame_id: "traxxas/base_link"          # ← mudado
+    base_frame_id: "traxxas"
     odom_frame_id: "odom"
     cmd_vel_in_topic: "cmd_vel_smoothed"
     cmd_vel_out_topic: "cmd_vel"
@@ -334,7 +279,7 @@ docking_server:
     undock_linear_tolerance: 0.05
     undock_angular_tolerance: 0.1
     max_retries: 3
-    base_frame: "traxxas/base_link"            
+    base_frame: "traxxas"
     fixed_frame: "odom"
     dock_backwards: false
     dock_prestaging_tolerance: 0.5
@@ -365,4 +310,3 @@ docking_server:
       projection_time: 5.0
       simulation_step: 0.1
       dock_collision_threshold: 0.3
-

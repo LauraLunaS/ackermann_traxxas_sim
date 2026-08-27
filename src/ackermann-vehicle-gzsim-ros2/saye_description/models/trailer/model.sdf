@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<!--
+  ============================================================
+  MODELO SDF — Carrocinha
+  
+  Parâmetros medidos fisicamente:
+    Comprimento:              350mm  = 0.350m
+    Largura:                  188.6mm = 0.1886m
+    Altura:                   92.84mm = 0.09284m
+    Distância entre rodas:    220mm  = 0.220m
+    Dist. gancho até eixo:    283mm  = 0.283m
+    Altura do gancho:         102.54mm = 0.10254m
+    Massa total:              ~4kg
+    Raio da roda:             70mm   = 0.070m
+    Largura da roda:          30mm   = 0.030m
+    Massa da roda:            334g   = 0.334kg
+
+  Inércias calculadas:
+    Chassi (caixa 0.350 x 0.1886 x 0.09284, m=4.0kg):
+      Ixx = (1/12)*4*(0.09284²+0.1886²) = 0.02089
+      Iyy = (1/12)*4*(0.350²+0.09284²) = 0.04323
+      Izz = (1/12)*4*(0.350²+0.1886²)  = 0.05231
+
+    Roda (cilindro r=0.070, h=0.030, m=0.334kg):
+      Ixx = Iyy = (1/12)*0.334*(3*0.070²+0.030²) = 0.000584
+      Izz = (1/2)*0.334*0.070²                    = 0.000818
+  ============================================================
+-->
+<sdf version="1.8">
+  <model name="trailer">
+    <self_collide>false</self_collide>
+    <static>false</static>
+
+    <!-- ============================================================
+         CHASSI PRINCIPAL DA CARROCINHA
+         
+         Origem do modelo: ponto de engate (gancho)
+         O chassi fica atrás do gancho em X negativo
+         
+         ground_clearance do Traxxas = 0.047m
+         altura do gancho do Traxxas = 0.10254m
+         => o chassi fica elevado: 0.10254 - 0.09284/2 = 0.05612m do chão
+         ============================================================ -->
+    <link name="trailer_base">
+      <!-- 
+        Pose relativa ao ponto de engate:
+        x = -comprimento/2 - offset = -0.175 - 0.108 = -0.283m (centro do chassi)
+        z = altura_gancho - altura_chassi/2 = 0.10254 - 0.04642 = 0.05612m
+      -->
+      <pose>-0.283 0 0.05612 0 0 0</pose>
+
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <!-- Massa total menos as 2 rodas: 4.0 - 2*0.334 = 3.332kg -->
+        <mass>3.332</mass>
+        <inertia>
+          <ixx>0.02089</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.04323</iyy>
+          <iyz>0</iyz>
+          <izz>0.05231</izz>
+        </inertia>
+      </inertial>
+
+      <!-- Colisão do chassi -->
+      <collision name="trailer_base_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.350 0.1886 0.09284</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+      <!-- Visual do chassi — cinza escuro -->
+      <visual name="trailer_base_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.350 0.1886 0.09284</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+          <specular>0.2 0.2 0.2 1</specular>
+        </material>
+      </visual>
+
+      <!-- Visual do gancho — haste dianteira -->
+      <visual name="trailer_hitch_bar_visual">
+        <!-- Haste que vai do chassi até o ponto de engate -->
+        <!-- comprimento = dist_gancho_eixo - comprimento_chassi/2 = 0.283 - 0.175 = 0.108m -->
+        <pose>0.229 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.108 0.020 0.015</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.15 0.15 0.15 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+
+      <!-- Visual do pino de engate -->
+      <visual name="trailer_hitch_pin_visual">
+        <pose>0.283 0 0.020 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.015</radius>
+            <length>0.040</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.8 0.7 0.0 1</ambient>
+          <diffuse>0.8 0.7 0.0 1</diffuse>
+          <specular>0.5 0.4 0.0 1</specular>
+        </material>
+      </visual>
+
+    </link>
+
+    <!-- ============================================================
+         RODA ESQUERDA
+         
+         Posição relativa ao chassi:
+         x = 0 (centro do chassi no eixo X — eixo das rodas)
+         y = +distancia_entre_rodas/2 = +0.110m
+         z = -(altura_chassi/2 + raio_roda) = -(0.04642 + 0.070) = -0.11642m
+              relativo ao centro do chassi
+         => z absoluto = 0.05612 - 0.11642 = -0.0603m (abaixo do chassi)
+         ============================================================ -->
+    <link name="trailer_wheel_left">
+      <pose>-0.283 0.110 -0.01030 0 0 0</pose>
+
+      <inertial>
+        <mass>0.334</mass>
+        <inertia>
+          <ixx>0.000584</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000584</iyy>
+          <iyz>0</iyz>
+          <izz>0.000818</izz>
+        </inertia>
+      </inertial>
+
+      <gravity>true</gravity>
+
+      <visual name="trailer_wheel_left_visual">
+        <!-- Cilindro deitado no eixo Y -->
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.070</radius>
+            <length>0.030</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.1 0.1 0.1 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+        </material>
+      </visual>
+
+      <collision name="trailer_wheel_left_collision">
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.070</radius>
+            <length>0.030</length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>1.2</mu2>
+              <fdir1>0 0 1</fdir1>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+    </link>
+
+    <!-- Junta da roda esquerda — gira livremente no eixo Y -->
+    <joint name="trailer_wheel_left_joint" type="continuous">
+      <parent>trailer_base</parent>
+      <child>trailer_wheel_left</child>
+      <pose>0 0 0 0 0 0</pose>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1.79769e+308</lower>
+          <upper>1.79769e+308</upper>
+        </limit>
+        <dynamics>
+          <damping>0.01</damping>
+          <friction>0.1</friction>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <!-- ============================================================
+         RODA DIREITA
+         ============================================================ -->
+    <link name="trailer_wheel_right">
+      <pose>-0.283 -0.110 -0.01030 0 0 0</pose>
+
+      <inertial>
+        <mass>0.334</mass>
+        <inertia>
+          <ixx>0.000584</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000584</iyy>
+          <iyz>0</iyz>
+          <izz>0.000818</izz>
+        </inertia>
+      </inertial>
+
+      <gravity>true</gravity>
+
+      <visual name="trailer_wheel_right_visual">
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.070</radius>
+            <length>0.030</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.1 0.1 0.1 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+        </material>
+      </visual>
+
+      <collision name="trailer_wheel_right_collision">
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.070</radius>
+            <length>0.030</length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>1.2</mu2>
+              <fdir1>0 0 1</fdir1>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+    </link>
+
+    <!-- Junta da roda direita — gira livremente no eixo Y -->
+    <joint name="trailer_wheel_right_joint" type="continuous">
+      <parent>trailer_base</parent>
+      <child>trailer_wheel_right</child>
+      <pose>0 0 0 0 0 0</pose>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1.79769e+308</lower>
+          <upper>1.79769e+308</upper>
+        </limit>
+        <dynamics>
+          <damping>0.01</damping>
+          <friction>0.1</friction>
+        </dynamics>
+      </axis>
+    </joint>
+
+  </model>
+</sdf>
