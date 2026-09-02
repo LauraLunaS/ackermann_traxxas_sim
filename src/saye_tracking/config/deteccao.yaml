@@ -1,0 +1,11 @@
+/**/deteccao_node:
+  ros__parameters:
+    modelo: yolov8n-seg.pt
+    topico_imagem: /camera/realsense/image_raw
+    confianca_min: 0.4
+    iou_nms: 0.5
+    imgsz: 640
+    device: ""          # "" = auto, "cpu", "cuda:0"
+    classes: ["person"]  # comecar so com pedestres; adicionar outros agentes depois
+    publicar_debug: true
+    half: false

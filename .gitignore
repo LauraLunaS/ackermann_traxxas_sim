@@ -10,6 +10,11 @@ __pycache__/
 *.pdf
 *.gv
 
+# Pesos de modelos (YOLO etc.) - baixados sob demanda, nao versionar
+*.pt
+*.onnx
+*.engine
+
 # Malhas grandes demais para o limite de 100MB do GitHub (mantidas so localmente)
 src/ackermann-vehicle-gzsim-ros2/saye_description/models/traxxas/meshes/Traxxas Nitro Rustler.obj
 src/ackermann-vehicle-gzsim-ros2/saye_description/models/traxxas/meshes/Traxxas_Nitro_Rustler.stl
