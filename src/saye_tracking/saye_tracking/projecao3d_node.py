@@ -14,10 +14,12 @@ transform para `odom` e a publicacao entram nos submodulos 2.2-2.4.
 """
 
 from message_filters import ApproximateTimeSynchronizer, Subscriber
+import numpy as np
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data, QoSProfile, ReliabilityPolicy
 from sensor_msgs.msg import Image, PointCloud2
+from sensor_msgs_py import point_cloud2 as pc2
 from vision_msgs.msg import Detection2DArray
 
 
@@ -38,6 +40,8 @@ class Projecao3DNode(Node):
         self.declare_parameter('frame_alvo', 'odom')
         self.declare_parameter('sync_slop', 0.08)      # s: folga do sincronizador
         self.declare_parameter('sync_queue', 10)
+        self.declare_parameter('min_pixels_mascara', 20)   # 2.2: min. pixels na mascara
+        self.declare_parameter('min_pixels_validos', 10)   # 2.2: min. pontos 3D finitos
 
         topico_det = self.get_parameter('topico_deteccoes').value
         topico_masc = self.get_parameter('topico_mascaras').value
@@ -45,6 +49,8 @@ class Projecao3DNode(Node):
         self.frame_alvo = self.get_parameter('frame_alvo').value
         slop = float(self.get_parameter('sync_slop').value)
         queue = int(self.get_parameter('sync_queue').value)
+        self.min_pixels_mascara = int(self.get_parameter('min_pixels_mascara').value)
+        self.min_pixels_validos = int(self.get_parameter('min_pixels_validos').value)
 
         # --- QoS por entrada (tem que casar com quem publica) -----------
         qos_confiavel = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
@@ -120,6 +126,53 @@ class Projecao3DNode(Node):
                 f'Mascara {masc.width}x{masc.height} != nuvem '
                 f'{nuvem.width}x{nuvem.height}: precisam da mesma resolucao.',
                 throttle_duration_sec=10.0)
+            return
+
+        # --- 2.2: extrair a posicao 3D de cada deteccao ------------------
+        mascara_arr = np.frombuffer(bytes(masc.data), dtype=np.uint8).reshape(
+            masc.height, masc.width)
+
+        for i, deteccao in enumerate(det.detections):
+            resultado = self.extrair_ponto_3d(nuvem, mascara_arr, i)
+            if resultado is None:
+                self.get_logger().debug(f'deteccao {i}: sem posicao 3D valida')
+                continue
+            posicao, n_mascara, n_validos = resultado
+            classe = deteccao.results[0].hypothesis.class_id if deteccao.results else '?'
+            self.get_logger().info(
+                f'  deteccao {i} ({classe}): posicao_camera='
+                f'({posicao[0]:.2f}, {posicao[1]:.2f}, {posicao[2]:.2f})  '
+                f'pixels_mascara={n_mascara}  pixels_validos={n_validos}',
+                throttle_duration_sec=1.0)
+
+    # ------------------------------------------------------------------
+    def extrair_ponto_3d(self, nuvem: PointCloud2, mascara_arr: np.ndarray,
+                         indice_deteccao: int):
+        """
+        Extrai a posicao 3D de uma deteccao a partir dos pixels da mascara.
+
+        Le os pontos da nuvem organizada (no frame da nuvem, ex.: corpo da
+        camera) nos pixels da mascara. Retorna
+        (posicao_xyz, n_pixels_mascara, n_pixels_validos) ou None se nao
+        houver pixels/pontos suficientes.
+        """
+        ys, xs = np.where(mascara_arr == indice_deteccao + 1)
+        n_mascara = len(xs)
+        if n_mascara < self.min_pixels_mascara:
+            return None
+
+        indices_planos = ys.astype(np.int64) * nuvem.width + xs.astype(np.int64)
+        pontos = pc2.read_points_numpy(
+            nuvem, field_names=('x', 'y', 'z'), uvs=indices_planos)
+
+        finitos = np.isfinite(pontos).all(axis=1)
+        pontos_validos = pontos[finitos]
+        n_validos = len(pontos_validos)
+        if n_validos < self.min_pixels_validos:
+            return None
+
+        posicao = np.median(pontos_validos, axis=0)
+        return posicao, n_mascara, n_validos
 
 
 def main(args=None):
