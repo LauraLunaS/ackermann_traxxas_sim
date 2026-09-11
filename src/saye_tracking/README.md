@@ -34,7 +34,7 @@ que ja vem no frame de corpo `traxxas/base_link/realsense_d435`.
 | 2.0 | Verificar pre-condicoes no sim (K, encoding do depth, cadeia de TF, convencao de eixo) | feito |
 | 2.1 | Assinatura + sincronizacao (deteccoes + mascara + nuvem) por timestamp | feito (`test_2_1_sincronizacao.py`) |
 | 2.2 | Extrair ponto 3D de cada deteccao (pixels da mascara → pontos da nuvem → mediana) | feito (`test_2_2_extracao_3d.py` + validado com frame real do rosbag) |
-| 2.3 | Transformar a posicao para o frame `odom` (tf2) | a fazer |
+| 2.3 | Transformar a posicao para o frame `odom` (tf2) | feito (`test_2_3_transform_odom.py` + validado com o rosbag: erro 0mm vs. `/odom` em 6 instantes com o robo em movimento) |
 | 2.4 | Publicar `Detection3DArray` + `MarkerArray` | a fazer |
 | 2.5 | Validacao com erro vs. ground truth do Gazebo | a fazer |
 

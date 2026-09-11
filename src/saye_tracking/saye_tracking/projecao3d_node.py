@@ -13,13 +13,18 @@ Submodulo 2.1: apenas a assinatura + sincronizacao. A extracao 3D, o
 transform para `odom` e a publicacao entram nos submodulos 2.2-2.4.
 """
 
+from geometry_msgs.msg import PointStamped
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 import numpy as np
 import rclpy
+from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data, QoSProfile, ReliabilityPolicy
+from rclpy.time import Time
 from sensor_msgs.msg import Image, PointCloud2
 from sensor_msgs_py import point_cloud2 as pc2
+from tf2_geometry_msgs import do_transform_point
+import tf2_ros
 from vision_msgs.msg import Detection2DArray
 
 
@@ -42,6 +47,7 @@ class Projecao3DNode(Node):
         self.declare_parameter('sync_queue', 10)
         self.declare_parameter('min_pixels_mascara', 20)   # 2.2: min. pixels na mascara
         self.declare_parameter('min_pixels_validos', 10)   # 2.2: min. pontos 3D finitos
+        self.declare_parameter('tf_timeout', 0.2)          # 2.3: espera pelo TF, em s
 
         topico_det = self.get_parameter('topico_deteccoes').value
         topico_masc = self.get_parameter('topico_mascaras').value
@@ -51,6 +57,11 @@ class Projecao3DNode(Node):
         queue = int(self.get_parameter('sync_queue').value)
         self.min_pixels_mascara = int(self.get_parameter('min_pixels_mascara').value)
         self.min_pixels_validos = int(self.get_parameter('min_pixels_validos').value)
+        self.tf_timeout = float(self.get_parameter('tf_timeout').value)
+
+        # --- 2.3: TF camera -> frame_alvo (odom) -------------------------
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
 
         # --- QoS por entrada (tem que casar com quem publica) -----------
         qos_confiavel = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
@@ -137,13 +148,53 @@ class Projecao3DNode(Node):
             if resultado is None:
                 self.get_logger().debug(f'deteccao {i}: sem posicao 3D valida')
                 continue
-            posicao, n_mascara, n_validos = resultado
+            posicao_cam, n_mascara, n_validos = resultado
             classe = deteccao.results[0].hypothesis.class_id if deteccao.results else '?'
+
+            posicao_odom = self.transformar_para_odom(
+                posicao_cam, nuvem.header.frame_id, det.header.stamp)
+            if posicao_odom is None:
+                continue  # TF ainda nao disponivel para este instante
+
             self.get_logger().info(
-                f'  deteccao {i} ({classe}): posicao_camera='
-                f'({posicao[0]:.2f}, {posicao[1]:.2f}, {posicao[2]:.2f})  '
+                f'  deteccao {i} ({classe}): odom='
+                f'({posicao_odom[0]:.2f}, {posicao_odom[1]:.2f}, {posicao_odom[2]:.2f})  '
+                f'[camera=({posicao_cam[0]:.2f}, {posicao_cam[1]:.2f}, {posicao_cam[2]:.2f})]  '
                 f'pixels_mascara={n_mascara}  pixels_validos={n_validos}',
                 throttle_duration_sec=1.0)
+
+    # ------------------------------------------------------------------
+    def transformar_para_odom(self, posicao_camera: np.ndarray,
+                              frame_origem: str, stamp):
+        """
+        Transforma um ponto 3D do frame da camera para `self.frame_alvo`.
+
+        Retorna None (e loga um aviso, com throttle) se o TF para o instante
+        pedido ainda nao estiver disponivel - comum nos primeiros segundos
+        apos o boot, enquanto a cadeia de TF (que inclui um /tf_static
+        latched) ainda esta se montando.
+        """
+        ponto = PointStamped()
+        ponto.header.frame_id = frame_origem
+        ponto.header.stamp = stamp
+        ponto.point.x = float(posicao_camera[0])
+        ponto.point.y = float(posicao_camera[1])
+        ponto.point.z = float(posicao_camera[2])
+
+        try:
+            transform = self.tf_buffer.lookup_transform(
+                self.frame_alvo, frame_origem, Time.from_msg(stamp),
+                timeout=Duration(seconds=self.tf_timeout))
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException,
+                tf2_ros.ExtrapolationException) as e:
+            self.get_logger().warn(
+                f'TF {frame_origem} -> {self.frame_alvo} indisponivel: '
+                f'{type(e).__name__}: {e}', throttle_duration_sec=5.0)
+            return None
+
+        ponto_alvo = do_transform_point(ponto, transform)
+        return np.array(
+            [ponto_alvo.point.x, ponto_alvo.point.y, ponto_alvo.point.z])
 
     # ------------------------------------------------------------------
     def extrair_ponto_3d(self, nuvem: PointCloud2, mascara_arr: np.ndarray,
