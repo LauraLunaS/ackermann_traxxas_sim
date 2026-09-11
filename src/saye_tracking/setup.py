@@ -26,6 +26,7 @@ setup(
     entry_points={
         'console_scripts': [
             'deteccao_node = saye_tracking.deteccao_node:main',
+            'projecao3d_node = saye_tracking.projecao3d_node:main',
         ],
     },
 )

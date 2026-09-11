@@ -16,11 +16,38 @@ adicionada depois como melhoria aditiva se as deteccoes ficarem ruidosas.
 |-----|----------|--------|
 | 0 | Scaffold do pacote, contrato de mensagens | feito |
 | 1 | `deteccao_node` — YOLOv8-seg → `Detection2DArray` + mascara de instancias | feito |
-| 2 | `projecao3d_node` — deprojeta deteccoes com depth + `camera_info`, TF camera→odom | a fazer |
+| 2 | `projecao3d_node` — le a nuvem organizada nos pixels da mascara, TF camera→odom (Caminho B) | em andamento |
 | 3 | `tracker_node` — OC-SORT 3D (KF `[x,y,vx,vy]` em odom) | a fazer |
 | 4 | Bancada de avaliacao — atores moveis no Gazebo + ground truth via `/model/<ator>/pose` | a fazer |
 | 5 | Costmap dinamico (experimento isolado: `OccupancyGrid` / `MarkerArray`) | a fazer |
 | 6 | Preditor de trajetoria melhor; associacao 2 estagios ByteTrack | a fazer |
+
+### Fase 2 — submodulos
+
+Abordagem "Caminho B": em vez de deprojetar a imagem de profundidade (precisa de
+`camera_info` + correcao de eixo optico), le direto o ponto 3D ja calculado na
+nuvem organizada `/camera/realsense/points` (indice do pixel = `v*width + u`),
+que ja vem no frame de corpo `traxxas/base_link/realsense_d435`.
+
+| Sub | Conteudo | Status |
+|-----|----------|--------|
+| 2.0 | Verificar pre-condicoes no sim (K, encoding do depth, cadeia de TF, convencao de eixo) | feito |
+| 2.1 | Assinatura + sincronizacao (deteccoes + mascara + nuvem) por timestamp | feito (`test_2_1_sincronizacao.py`) |
+| 2.2 | Extrair ponto 3D de cada deteccao (pixels da mascara → pontos da nuvem → mediana) | a fazer |
+| 2.3 | Transformar a posicao para o frame `odom` (tf2) | a fazer |
+| 2.4 | Publicar `Detection3DArray` + `MarkerArray` | a fazer |
+| 2.5 | Validacao com erro vs. ground truth do Gazebo | a fazer |
+
+**Achados do 2.0:** K = fx=fy=337.2, cx=320, cy=240, sem distorcao. Depth `32FC1`
+em metros, sem-retorno = `+inf` (filtrar com `isfinite`). Cadeia de TF
+`odom → traxxas → traxxas/base_link → .../realsense_d435` completa (o `/tf_static`
+e latched, esperar ~1-2 s no boot). A nuvem `/camera/realsense/points` ja vem
+organizada 640x480 no frame de corpo — Caminho B nao precisa de `_optical` nem de K.
+
+**Limitacao de ambiente:** nesta maquina o driver de GPU e antigo demais; a
+renderizacao de sensores do Gazebo (camera, gpu_lidar) trava. Testes que precisam
+de dados de camera ao vivo dependem de gravar um rosbag quando os sensores
+funcionam, ou de rodar em outra maquina.
 
 ## Dependencias
 
