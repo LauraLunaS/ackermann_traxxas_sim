@@ -17,7 +17,7 @@ adicionada depois como melhoria aditiva se as deteccoes ficarem ruidosas.
 | 0 | Scaffold do pacote, contrato de mensagens | feito |
 | 1 | `deteccao_node` — YOLOv8-seg → `Detection2DArray` + mascara de instancias | feito |
 | 2 | `projecao3d_node` — le a nuvem organizada nos pixels da mascara, TF camera→odom (Caminho B) | feito |
-| 3 | `tracker_node` — OC-SORT 3D (KF `[x,y,vx,vy]` em odom) | em andamento |
+| 3 | `tracker_node` — OC-SORT 3D (KF `[x,y,vx,vy]` em odom) | feito |
 | 4 | Bancada de avaliacao — atores moveis no Gazebo + ground truth via `/model/<ator>/pose` | a fazer |
 | 5 | Costmap dinamico (experimento isolado: `OccupancyGrid` / `MarkerArray`) | a fazer |
 | 6 | Preditor de trajetoria melhor; associacao 2 estagios ByteTrack | a fazer |
@@ -78,7 +78,32 @@ um rosbag quando os sensores funcionam, ou de rodar em outra maquina.
 | 3.5 | OCR + ORU - recuperacao de track perdido + re-atualizacao pela trajetoria virtual | feito (`recuperacao.py` + `test_3_5_recuperacao.py`) |
 | 3.6 | Laco do rastreador (predict→associate→recover→update→manage) juntando 3.1-3.5 | feito (`rastreador.py` + `test_3_6_rastreador.py`) |
 | 3.7 | Integracao no no ROS + publicacao (`Detection3DArray` + `MarkerArray` com setas) | feito (`tracker_node.py` + `test_3_7_integracao.py`) |
-| 3.8 | Validacao com os obstaculos do 2.5 em movimento (ID estavel + velocidade correta) | a fazer |
+| 3.8 | Validacao com os obstaculos do 2.5 em movimento (ID estavel) | feito - validado com rosbag real |
+
+**Resultado do 3.8:** alimentando o `Rastreador3D` com a posicao real (ground
+truth) dos 3 obstaculos de `simple_world.sdf` se movendo AO MESMO TEMPO
+(~19s, quase 60Hz, exercitando associacao/OCM de verdade com 3 alvos
+simultaneos), cada objeto manteve **um unico ID do inicio ao fim, sem
+nenhuma troca** - inclusive num teste bem mais exigente do que planejado
+(ver abaixo). A comparacao de velocidade estimada vs. a velocidade nominal
+do SDF nao foi conclusiva - motivo documentado abaixo, e nao e uma falha
+do rastreador.
+
+**Achado no caminho:** os 3 obstaculos tinham `<waypoints>`/`<velocity>`
+configurados mas NUNCA se moviam - faltava `<link_name>` no plugin
+`gz-sim-trajectory-follower-system` de cada um (corrigido, ver commit
+`fix(saye_description)`). Depois do fix eles passaram a se mover, mas de
+forma nao-limpa (a esfera acelerou sem limite ao longo da gravacao,
+chegando a >400m da origem; o cilindro por vezes ainda nao se moveu) -
+parece um problema mais profundo do plugin nesta versao do Gazebo, fora do
+escopo deste submodulo. Por isso a velocidade nominal do SDF (0.8/0.6/0.5
+m/s) nao serve de gabarito confiavel ainda - mas o ponto forte do 3.8, a
+estabilidade de ID, na real ficou mais bem testado: a esfera se movendo
+de forma rapida e erratica e um teste mais duro pro rastreador do que um
+objeto comportado a velocidade constante, e mesmo assim o ID nao trocou.
+Fica registrado para quem for montar a Fase 4 (bancada de avaliacao com
+atores moveis) investigar o comportamento do TrajectoryFollower antes de
+usa-lo pra medir precisao de velocidade.
 
 **Decisao registrada no 3.0 (Opcao B):** sem mensagem customizada por
 enquanto. `saye_tracking` e `ament_python` e nao gera mensagens - isso
