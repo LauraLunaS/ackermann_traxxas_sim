@@ -13,7 +13,7 @@ Submodulo 2.1: apenas a assinatura + sincronizacao. A extracao 3D, o
 transform para `odom` e a publicacao entram nos submodulos 2.2-2.4.
 """
 
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import Point, PointStamped, Vector3
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 import numpy as np
 import rclpy
@@ -23,9 +23,24 @@ from rclpy.qos import qos_profile_sensor_data, QoSProfile, ReliabilityPolicy
 from rclpy.time import Time
 from sensor_msgs.msg import Image, PointCloud2
 from sensor_msgs_py import point_cloud2 as pc2
+from std_msgs.msg import ColorRGBA
 from tf2_geometry_msgs import do_transform_point
 import tf2_ros
-from vision_msgs.msg import Detection2DArray
+from vision_msgs.msg import (
+    BoundingBox3D,
+    Detection2DArray,
+    Detection3D,
+    Detection3DArray,
+    ObjectHypothesisWithPose,
+)
+from visualization_msgs.msg import Marker, MarkerArray
+
+# 2.4: tamanho de bbox 3D por classe (x, y, z em metros); usa "default" p/
+# classes nao listadas. Estimativa grosseira - refina quando tiver Fase 4/5.
+TAMANHOS_BBOX = {
+    'person': (0.5, 0.5, 1.7),
+    'default': (0.5, 0.5, 1.0),
+}
 
 
 def _stamp_ns(stamp) -> int:
@@ -78,6 +93,12 @@ class Projecao3DNode(Node):
             [self.sub_det, self.sub_masc, self.sub_nuvem],
             queue_size=queue, slop=slop)
         self.sync.registerCallback(self.callback_sincronizado)
+
+        # --- 2.4: publicacao do resultado --------------------------------
+        self.pub_deteccoes_3d = self.create_publisher(
+            Detection3DArray, '~/deteccoes_3d', 10)
+        self.pub_marcadores = self.create_publisher(
+            MarkerArray, '~/marcadores', 10)
 
         # --- Diagnostico: contadores individuais + timer ---------------
         self.n_det = self.n_masc = self.n_nuvem = self.n_sync = 0
@@ -139,22 +160,28 @@ class Projecao3DNode(Node):
                 throttle_duration_sec=10.0)
             return
 
-        # --- 2.2: extrair a posicao 3D de cada deteccao ------------------
+        # --- 2.2/2.3: extrair a posicao 3D de cada deteccao e levar p/ odom
         mascara_arr = np.frombuffer(bytes(masc.data), dtype=np.uint8).reshape(
             masc.height, masc.width)
 
+        processadas = []  # lista de (id_str, classe, score, posicao_odom)
         for i, deteccao in enumerate(det.detections):
             resultado = self.extrair_ponto_3d(nuvem, mascara_arr, i)
             if resultado is None:
                 self.get_logger().debug(f'deteccao {i}: sem posicao 3D valida')
                 continue
             posicao_cam, n_mascara, n_validos = resultado
-            classe = deteccao.results[0].hypothesis.class_id if deteccao.results else '?'
 
             posicao_odom = self.transformar_para_odom(
                 posicao_cam, nuvem.header.frame_id, det.header.stamp)
             if posicao_odom is None:
                 continue  # TF ainda nao disponivel para este instante
+
+            if deteccao.results:
+                classe = deteccao.results[0].hypothesis.class_id
+                score = deteccao.results[0].hypothesis.score
+            else:
+                classe, score = '?', 0.0
 
             self.get_logger().info(
                 f'  deteccao {i} ({classe}): odom='
@@ -162,6 +189,87 @@ class Projecao3DNode(Node):
                 f'[camera=({posicao_cam[0]:.2f}, {posicao_cam[1]:.2f}, {posicao_cam[2]:.2f})]  '
                 f'pixels_mascara={n_mascara}  pixels_validos={n_validos}',
                 throttle_duration_sec=1.0)
+
+            processadas.append((deteccao.id, classe, score, posicao_odom))
+
+        # --- 2.4: publicar Detection3DArray + MarkerArray ----------------
+        self.publicar_deteccoes_3d(det.header.stamp, processadas)
+        self.publicar_marcadores(det.header.stamp, processadas)
+
+    # ------------------------------------------------------------------
+    def publicar_deteccoes_3d(self, stamp, processadas):
+        msg = Detection3DArray()
+        msg.header.stamp = stamp
+        msg.header.frame_id = self.frame_alvo
+
+        for id_str, classe, score, posicao in processadas:
+            d = Detection3D()
+            d.header = msg.header
+            d.id = id_str
+
+            hip = ObjectHypothesisWithPose()
+            hip.hypothesis.class_id = classe
+            hip.hypothesis.score = float(score)
+            hip.pose.pose.position = Point(
+                x=float(posicao[0]), y=float(posicao[1]), z=float(posicao[2]))
+            d.results.append(hip)
+
+            tamanho = TAMANHOS_BBOX.get(classe, TAMANHOS_BBOX['default'])
+            bbox = BoundingBox3D()
+            bbox.center.position = hip.pose.pose.position
+            bbox.size = Vector3(x=tamanho[0], y=tamanho[1], z=tamanho[2])
+            d.bbox = bbox
+
+            msg.detections.append(d)
+
+        self.pub_deteccoes_3d.publish(msg)
+
+    # ------------------------------------------------------------------
+    def publicar_marcadores(self, stamp, processadas):
+        marcadores = MarkerArray()
+
+        # limpa os marcadores do frame anterior antes de desenhar os novos -
+        # senao, quando uma deteccao some, a bolinha dela fica presa no RViz.
+        apagar_tudo = Marker()
+        apagar_tudo.header.frame_id = self.frame_alvo
+        apagar_tudo.header.stamp = stamp
+        apagar_tudo.action = Marker.DELETEALL
+        marcadores.markers.append(apagar_tudo)
+
+        for i, (id_str, classe, score, posicao) in enumerate(processadas):
+            tamanho = TAMANHOS_BBOX.get(classe, TAMANHOS_BBOX['default'])
+
+            esfera = Marker()
+            esfera.header.frame_id = self.frame_alvo
+            esfera.header.stamp = stamp
+            esfera.ns = 'deteccoes_3d'
+            esfera.id = i
+            esfera.type = Marker.SPHERE
+            esfera.action = Marker.ADD
+            esfera.pose.position = Point(
+                x=float(posicao[0]), y=float(posicao[1]), z=float(posicao[2]))
+            esfera.pose.orientation.w = 1.0
+            esfera.scale = Vector3(x=0.2, y=0.2, z=0.2)  # marca a posicao, nao o bbox
+            esfera.color = ColorRGBA(r=1.0, g=0.8, b=0.0, a=0.85)
+            marcadores.markers.append(esfera)
+
+            texto = Marker()
+            texto.header.frame_id = self.frame_alvo
+            texto.header.stamp = stamp
+            texto.ns = 'deteccoes_3d_label'
+            texto.id = i
+            texto.type = Marker.TEXT_VIEW_FACING
+            texto.action = Marker.ADD
+            texto.pose.position = Point(
+                x=float(posicao[0]), y=float(posicao[1]),
+                z=float(posicao[2]) + tamanho[2] / 2 + 0.2)
+            texto.pose.orientation.w = 1.0
+            texto.scale.z = 0.25
+            texto.color = ColorRGBA(r=1.0, g=1.0, b=1.0, a=1.0)
+            texto.text = f'{classe} {score:.2f} #{id_str}'
+            marcadores.markers.append(texto)
+
+        self.pub_marcadores.publish(marcadores)
 
     # ------------------------------------------------------------------
     def transformar_para_odom(self, posicao_camera: np.ndarray,

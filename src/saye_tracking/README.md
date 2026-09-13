@@ -35,7 +35,7 @@ que ja vem no frame de corpo `traxxas/base_link/realsense_d435`.
 | 2.1 | Assinatura + sincronizacao (deteccoes + mascara + nuvem) por timestamp | feito (`test_2_1_sincronizacao.py`) |
 | 2.2 | Extrair ponto 3D de cada deteccao (pixels da mascara → pontos da nuvem → mediana) | feito (`test_2_2_extracao_3d.py` + validado com frame real do rosbag) |
 | 2.3 | Transformar a posicao para o frame `odom` (tf2) | feito (`test_2_3_transform_odom.py` + validado com o rosbag: erro 0mm vs. `/odom` em 6 instantes com o robo em movimento) |
-| 2.4 | Publicar `Detection3DArray` + `MarkerArray` | a fazer |
+| 2.4 | Publicar `Detection3DArray` + `MarkerArray` | feito (`test_2_4_publicacao.py` + validado ponta-a-ponta com o rosbag) |
 | 2.5 | Validacao com erro vs. ground truth do Gazebo | a fazer |
 
 **Achados do 2.0:** K = fx=fy=337.2, cx=320, cy=240, sem distorcao. Depth `32FC1`
@@ -44,10 +44,14 @@ em metros, sem-retorno = `+inf` (filtrar com `isfinite`). Cadeia de TF
 e latched, esperar ~1-2 s no boot). A nuvem `/camera/realsense/points` ja vem
 organizada 640x480 no frame de corpo — Caminho B nao precisa de `_optical` nem de K.
 
-**Limitacao de ambiente:** nesta maquina o driver de GPU e antigo demais; a
-renderizacao de sensores do Gazebo (camera, gpu_lidar) trava. Testes que precisam
-de dados de camera ao vivo dependem de gravar um rosbag quando os sensores
-funcionam, ou de rodar em outra maquina.
+**Limitacao de ambiente:** nesta maquina (2 GPUs, PRIME) a renderizacao de
+sensores do Gazebo (camera, gpu_lidar) as vezes trava (`libEGL: failed to
+create dri2 screen`) - nao e falta de driver (GPU RTX 5070, driver 570.211,
+CUDA 12.8, tudo presente), e uma questao de qual GPU o processo do Gazebo usa
+para renderizar. (A parte de o YOLO cair para CPU e outro problema, tambem de
+versao: o torch instalado e compilado para CUDA 13.0, mas o driver so suporta
+ate 12.8.) Testes que precisam de dados de camera ao vivo dependem de gravar
+um rosbag quando os sensores funcionam, ou de rodar em outra maquina.
 
 ## Dependencias
 
@@ -118,3 +122,48 @@ Para ter algo para detectar, adicione um ator/pedestre ao mundo do Gazebo
 | `device` | `""` | `""` = auto, `cpu`, `cuda:0` |
 | `classes` | `["person"]` | nomes COCO; adicionar `car`, `bicycle`, etc. depois |
 | `publicar_debug` | `true` | overlay so e gerado se houver assinante |
+
+## Fase 2 — projecao 3D
+
+```bash
+# Terminal 1: simulacao
+ros2 launch saye_bringup traxxas_spawn.launch.py
+
+# Terminal 2: deteccao
+ros2 launch saye_tracking deteccao.launch.py
+
+# Terminal 3: projecao 3D
+ros2 launch saye_tracking projecao3d.launch.py
+```
+
+### Topicos
+
+| Topico | Tipo | Conteudo |
+|--------|------|----------|
+| `/camera/realsense/points` (entrada) | `sensor_msgs/PointCloud2` | nuvem organizada da RealSense simulada, ja no frame de corpo |
+| `/projecao3d_node/deteccoes_3d` | `vision_msgs/Detection3DArray` | posicao + classe + score, no frame `odom` |
+| `/projecao3d_node/marcadores` | `visualization_msgs/MarkerArray` | bolinha + texto por deteccao, para o RViz |
+
+### Verificar
+
+```bash
+ros2 topic echo /projecao3d_node/deteccoes_3d --once
+# no RViz: Fixed Frame = odom, adicionar um display MarkerArray no topico
+# /projecao3d_node/marcadores
+```
+
+Assim como na Fase 1, precisa de algo pra detectar na cena — sem ator/pedestre
+no mundo, `deteccoes_3d` sai vazio (o pipeline roda, so nao ha o que projetar).
+
+### Parametros (`projecao3d_node`)
+
+| Parametro | Padrao | Nota |
+|-----------|--------|------|
+| `topico_deteccoes` | `/deteccao_node/deteccoes` | |
+| `topico_mascaras` | `/deteccao_node/mascaras` | |
+| `topico_nuvem` | `/camera/realsense/points` | |
+| `frame_alvo` | `odom` | referencial de saida das posicoes |
+| `sync_slop` | `0.08` (s) | folga do sincronizador entre as 3 entradas |
+| `min_pixels_mascara` | `20` | rejeita deteccao com mascara pequena demais |
+| `min_pixels_validos` | `10` | rejeita deteccao sem retorno de profundidade suficiente |
+| `tf_timeout` | `0.2` (s) | espera pelo TF antes de desistir do instante |
