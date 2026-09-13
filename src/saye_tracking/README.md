@@ -71,7 +71,7 @@ um rosbag quando os sensores funcionam, ou de rodar em outra maquina.
 | Sub | Conteudo | Status |
 |-----|----------|--------|
 | 3.0 | Decisao de contrato de saida + scaffold do `tracker_node` (assina `Detection3DArray`, so loga) | feito (`test_3_0_scaffold.py`) |
-| 3.1 | Filtro de Kalman de 1 track (`predict`/`update`, estado `[x,y,vx,vy]`) | a fazer |
+| 3.1 | Filtro de Kalman de 1 track (`predict`/`update`, estado `[x,y,vx,vy]`), puro numpy, sem ROS | feito (`kalman.py` + `test_3_1_kalman.py`) |
 | 3.2 | Ciclo de vida do track (tentativo/confirmado/perdido/apagado, por tempo) | a fazer |
 | 3.3 | Associacao: matriz de custo + gate + Hungaro | a fazer |
 | 3.4 | OCM - termo de consistencia de direcao na associacao | a fazer |
