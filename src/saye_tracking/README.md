@@ -76,7 +76,7 @@ um rosbag quando os sensores funcionam, ou de rodar em outra maquina.
 | 3.3 | Associacao: matriz de custo + gate + Hungaro | feito (`associacao.py` + `test_3_3_associacao.py`) |
 | 3.4 | OCM - termo de consistencia de direcao na associacao | feito (`ocm.py` + `Track.direcao_momentum` + `test_3_4_ocm.py`) |
 | 3.5 | OCR + ORU - recuperacao de track perdido + re-atualizacao pela trajetoria virtual | feito (`recuperacao.py` + `test_3_5_recuperacao.py`) |
-| 3.6 | Laco do rastreador (predict→associate→recover→update→manage) juntando 3.1-3.5 | a fazer |
+| 3.6 | Laco do rastreador (predict→associate→recover→update→manage) juntando 3.1-3.5 | feito (`rastreador.py` + `test_3_6_rastreador.py`) |
 | 3.7 | Integracao no no ROS + publicacao (`Detection3DArray` + `MarkerArray` com setas) | a fazer |
 | 3.8 | Validacao com os obstaculos do 2.5 em movimento (ID estavel + velocidade correta) | a fazer |
 
