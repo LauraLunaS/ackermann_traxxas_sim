@@ -36,7 +36,20 @@ que ja vem no frame de corpo `traxxas/base_link/realsense_d435`.
 | 2.2 | Extrair ponto 3D de cada deteccao (pixels da mascara → pontos da nuvem → mediana) | feito (`test_2_2_extracao_3d.py` + validado com frame real do rosbag) |
 | 2.3 | Transformar a posicao para o frame `odom` (tf2) | feito (`test_2_3_transform_odom.py` + validado com o rosbag: erro 0mm vs. `/odom` em 6 instantes com o robo em movimento) |
 | 2.4 | Publicar `Detection3DArray` + `MarkerArray` | feito (`test_2_4_publicacao.py` + validado ponta-a-ponta com o rosbag) |
-| 2.5 | Validacao com erro vs. ground truth do Gazebo | a fazer |
+| 2.5 | Validacao com erro vs. ground truth do Gazebo | feito (`test_2_5_vies_superficie.py` + validado com o rosbag contra os 3 obstaculos do `simple_world.sdf`) |
+
+**Resultado do 2.5 (medido com o rosbag):** usando os 3 obstaculos ja
+presentes no mundo (`dynamic_obstacle_sphere/box/cylinder`, posicao real via
+`/world/.../dynamic_pose/info`) como alvos de posicao conhecida, o pipeline
+completo (2.1→2.4) errou em media **7.6 cm** (mediana 7.7 cm, maximo 12.3 cm)
+em 6 amostras entre 2.5 e 5.8 m de distancia - apos corrigir pelo raio do
+objeto (ver abaixo). Sem correcao o "erro" seria de ~30-40 cm, mas isso nao e
+bug: e o fato de a nuvem so enxergar a face voltada pra camera, entao a
+mediana da deteccao fica perto da **superficie visivel**, nao do centro
+geometrico do objeto (`test_2_5_vies_superficie.py` formaliza e mede esse
+vies com dado sintetico). Isso e esperado e relevante pra Fase 3/4: o
+rastreador segue o centroide da superficie visivel de uma pessoa, nao o
+centro de massa dela.
 
 **Achados do 2.0:** K = fx=fy=337.2, cx=320, cy=240, sem distorcao. Depth `32FC1`
 em metros, sem-retorno = `+inf` (filtrar com `isfinite`). Cadeia de TF
