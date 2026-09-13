@@ -82,25 +82,39 @@
       <pose>2.0 0.0 0.5 0 0 0</pose>
       <static>false</static>
       
-      <!-- Executa o movimento scriptado sem ser afetado pela gravidade caindo no terreno -->
+      <!-- Esquema real do plugin (conferido nos simbolos do .so e no exemplo
+           oficial /usr/share/gz/gz-sim8/worlds/trajectory_follower.sdf, e
+           confirmado direto na string "Unable to find <waypoints><waypoint>"
+           dentro do .so do plugin): o CONTAINER <waypoints> e obrigatorio
+           (nao e so enfeite), cada <waypoint> filho e "x y" direto (sem
+           <position>/<orientation> aninhados - esses campos nao existem e
+           eram ignorados em silencio), e o plugin empurra o link com
+           <force>/<torque> ate cada alvo (nao teleporta - <kinematic> e
+           <velocity> tambem nao sao campos reais deste plugin). -->
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
         <link_name>link</link_name>
-        <kinematic>true</kinematic>
         <loop>true</loop>
+        <force>15</force>
+        <torque>15</torque>
         <waypoints>
-          <waypoint>
-            <position>2.0 -3.0 0.5</position>
-            <orientation>0 0 1.57</orientation>
-          </waypoint>
-          <waypoint>
-            <position>2.0 3.0 0.5</position>
-            <orientation>0 0 -1.57</orientation>
-          </waypoint>
+          <waypoint>2.0 -3.0</waypoint>
+          <waypoint>2.0 3.0</waypoint>
         </waypoints>
-        <velocity>0.8</velocity> <!-- Velocidade em m/s -->
       </plugin>
 
       <link name="link">
+        <!-- TrajectoryFollower empurra o link com forca/torque fisicos -
+             sem <inertial>, o corpo nao tem massa/inercia pro solver
+             integrar, e o plugin nao move nada (achado ao investigar o
+             3.8 do saye_tracking). Esfera solida: I = (2/5) m r^2. -->
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.064</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.064</iyy><iyz>0</iyz>
+            <izz>0.064</izz>
+          </inertia>
+        </inertial>
         <visual name="visual">
           <geometry>
             <sphere><radius>0.4</radius></sphere>
@@ -114,6 +128,14 @@
           <geometry>
             <sphere><radius>0.4</radius></sphere>
           </geometry>
+          <!-- o terreno tem mu=100 (calibrado pro atrito do rover); sem
+               isso aqui o obstaculo herda esse atrito enorme e nenhuma
+               forca razoavel do TrajectoryFollower consegue move-lo -->
+          <surface>
+            <friction>
+              <ode><mu>1.0</mu><mu2>1.0</mu2></ode>
+            </friction>
+          </surface>
         </collision>
       </link>
     </model>
@@ -127,22 +149,26 @@
 
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
         <link_name>link</link_name>
-        <kinematic>true</kinematic>
         <loop>true</loop>
+        <force>15</force>
+        <torque>15</torque>
         <waypoints>
-          <waypoint>
-            <position>3.0 2.0 0.5</position>
-            <orientation>0 0 0</orientation>
-          </waypoint>
-          <waypoint>
-            <position>7.0 2.0 0.5</position>
-            <orientation>0 0 3.14</orientation>
-          </waypoint>
+          <waypoint>3.0 2.0</waypoint>
+          <waypoint>7.0 2.0</waypoint>
         </waypoints>
-        <velocity>0.6</velocity>
       </plugin>
 
       <link name="link">
+        <!-- ver nota de <inertial> no obstaculo esfera. Caixa solida:
+             Ixx=Iyy=Izz = (1/12) m (a^2+a^2) p/ cubo de lado a. -->
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.06</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.06</iyy><iyz>0</iyz>
+            <izz>0.06</izz>
+          </inertia>
+        </inertial>
         <visual name="visual">
           <geometry>
             <box><size>0.6 0.6 0.6</size></box>
@@ -156,6 +182,11 @@
           <geometry>
             <box><size>0.6 0.6 0.6</size></box>
           </geometry>
+          <surface>
+            <friction>
+              <ode><mu>1.0</mu><mu2>1.0</mu2></ode>
+            </friction>
+          </surface>
         </collision>
       </link>
     </model>
@@ -169,30 +200,28 @@
 
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
         <link_name>link</link_name>
-        <kinematic>true</kinematic>
         <loop>true</loop>
+        <force>15</force>
+        <torque>15</torque>
         <waypoints>
-          <waypoint>
-            <position>1.0 1.0 0.5</position>
-            <orientation>0 0 0</orientation>
-          </waypoint>
-          <waypoint>
-            <position>4.0 1.0 0.5</position>
-            <orientation>0 0 1.57</orientation>
-          </waypoint>
-          <waypoint>
-            <position>4.0 4.0 0.5</position>
-            <orientation>0 0 3.14</orientation>
-          </waypoint>
-          <waypoint>
-            <position>1.0 4.0 0.5</position>
-            <orientation>0 0 -1.57</orientation>
-          </waypoint>
+          <waypoint>1.0 1.0</waypoint>
+          <waypoint>4.0 1.0</waypoint>
+          <waypoint>4.0 4.0</waypoint>
+          <waypoint>1.0 4.0</waypoint>
         </waypoints>
-        <velocity>0.5</velocity>
       </plugin>
 
       <link name="link">
+        <!-- ver nota de <inertial> no obstaculo esfera. Cilindro solido
+             (eixo em z): Ixx=Iyy=(1/12)m(3r^2+h^2), Izz=(1/2)m r^2. -->
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.0758</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.0758</iyy><iyz>0</iyz>
+            <izz>0.045</izz>
+          </inertia>
+        </inertial>
         <visual name="visual">
           <geometry>
             <cylinder><radius>0.3</radius><length>0.8</length></cylinder>
@@ -206,6 +235,11 @@
           <geometry>
             <cylinder><radius>0.3</radius><length>0.8</length></cylinder>
           </geometry>
+          <surface>
+            <friction>
+              <ode><mu>1.0</mu><mu2>1.0</mu2></ode>
+            </friction>
+          </surface>
         </collision>
       </link>
     </model>
