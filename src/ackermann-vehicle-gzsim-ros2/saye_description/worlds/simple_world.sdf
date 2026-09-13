@@ -84,6 +84,7 @@
       
       <!-- Executa o movimento scriptado sem ser afetado pela gravidade caindo no terreno -->
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name>
         <kinematic>true</kinematic>
         <loop>true</loop>
         <waypoints>
@@ -125,6 +126,7 @@
       <static>false</static>
 
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name>
         <kinematic>true</kinematic>
         <loop>true</loop>
         <waypoints>
@@ -166,6 +168,7 @@
       <static>false</static>
 
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
+        <link_name>link</link_name>
         <kinematic>true</kinematic>
         <loop>true</loop>
         <waypoints>
