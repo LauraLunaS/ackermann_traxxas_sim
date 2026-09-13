@@ -16,8 +16,8 @@ adicionada depois como melhoria aditiva se as deteccoes ficarem ruidosas.
 |-----|----------|--------|
 | 0 | Scaffold do pacote, contrato de mensagens | feito |
 | 1 | `deteccao_node` — YOLOv8-seg → `Detection2DArray` + mascara de instancias | feito |
-| 2 | `projecao3d_node` — le a nuvem organizada nos pixels da mascara, TF camera→odom (Caminho B) | em andamento |
-| 3 | `tracker_node` — OC-SORT 3D (KF `[x,y,vx,vy]` em odom) | a fazer |
+| 2 | `projecao3d_node` — le a nuvem organizada nos pixels da mascara, TF camera→odom (Caminho B) | feito |
+| 3 | `tracker_node` — OC-SORT 3D (KF `[x,y,vx,vy]` em odom) | em andamento |
 | 4 | Bancada de avaliacao — atores moveis no Gazebo + ground truth via `/model/<ator>/pose` | a fazer |
 | 5 | Costmap dinamico (experimento isolado: `OccupancyGrid` / `MarkerArray`) | a fazer |
 | 6 | Preditor de trajetoria melhor; associacao 2 estagios ByteTrack | a fazer |
@@ -65,6 +65,26 @@ para renderizar. (A parte de o YOLO cair para CPU e outro problema, tambem de
 versao: o torch instalado e compilado para CUDA 13.0, mas o driver so suporta
 ate 12.8.) Testes que precisam de dados de camera ao vivo dependem de gravar
 um rosbag quando os sensores funcionam, ou de rodar em outra maquina.
+
+### Fase 3 — submodulos
+
+| Sub | Conteudo | Status |
+|-----|----------|--------|
+| 3.0 | Decisao de contrato de saida + scaffold do `tracker_node` (assina `Detection3DArray`, so loga) | feito (`test_3_0_scaffold.py`) |
+| 3.1 | Filtro de Kalman de 1 track (`predict`/`update`, estado `[x,y,vx,vy]`) | a fazer |
+| 3.2 | Ciclo de vida do track (tentativo/confirmado/perdido/apagado, por tempo) | a fazer |
+| 3.3 | Associacao: matriz de custo + gate + Hungaro | a fazer |
+| 3.4 | OCM - termo de consistencia de direcao na associacao | a fazer |
+| 3.5 | OCR + ORU - recuperacao de track perdido + re-atualizacao pela trajetoria virtual | a fazer |
+| 3.6 | Laco do rastreador (predict→associate→recover→update→manage) juntando 3.1-3.5 | a fazer |
+| 3.7 | Integracao no no ROS + publicacao (`Detection3DArray` + `MarkerArray` com setas) | a fazer |
+| 3.8 | Validacao com os obstaculos do 2.5 em movimento (ID estavel + velocidade correta) | a fazer |
+
+**Decisao registrada no 3.0 (Opcao B):** sem mensagem customizada por
+enquanto. `saye_tracking` e `ament_python` e nao gera mensagens - isso
+exigiria um pacote `ament_cmake` irmao (como o `saye_msgs` do outro repo).
+A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
+(costmap dinamico) precisar consumir o numero de verdade, nao so exibi-lo.
 
 ## Dependencias
 
