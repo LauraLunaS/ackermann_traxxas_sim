@@ -19,14 +19,18 @@ from scipy.optimize import linear_sum_assignment
 _PENALIDADE_FORA_DO_GATE = 1e6
 
 
-def associar(predicoes_xy, deteccoes_xy, gate_max_distancia=1.5):
+def associar(predicoes_xy, deteccoes_xy, gate_max_distancia=1.5, custo_extra=None):
     """
     Casa tracks previstos com deteccoes novas pela menor distancia total.
 
     predicoes_xy: (N, 2) - posicao prevista de cada track
     deteccoes_xy: (M, 2) - posicao de cada deteccao nova
     gate_max_distancia: acima disso (metros), o par nunca casa - "pessoa
-        nao teleporta"
+        nao teleporta". O gate SEMPRE usa a distancia crua, mesmo quando
+        `custo_extra` e passado - o gate e uma restricao fisica (admissivel
+        ou nao), custo_extra e so uma preferencia (o que o Hungaro otimiza).
+    custo_extra: (N, M) opcional, somado ao custo de distancia ANTES do
+        Hungaro - ex.: a penalidade de direcao do OCM (`ocm.custo_direcao`).
 
     Retorna (matches, tracks_sem_par, deteccoes_sem_par):
       matches: lista de (indice_track, indice_deteccao)
@@ -40,11 +44,12 @@ def associar(predicoes_xy, deteccoes_xy, gate_max_distancia=1.5):
     if n == 0 or m == 0:
         return [], list(range(n)), list(range(m))
 
-    custo = np.linalg.norm(
+    custo_distancia = np.linalg.norm(
         predicoes_xy[:, np.newaxis, :] - deteccoes_xy[np.newaxis, :, :], axis=2)
+    custo_total = custo_distancia if custo_extra is None else custo_distancia + custo_extra
 
-    custo_com_gate = np.where(custo > gate_max_distancia,
-                              _PENALIDADE_FORA_DO_GATE, custo)
+    custo_com_gate = np.where(custo_distancia > gate_max_distancia,
+                              _PENALIDADE_FORA_DO_GATE, custo_total)
 
     indices_track, indices_deteccao = linear_sum_assignment(custo_com_gate)
 
@@ -52,7 +57,7 @@ def associar(predicoes_xy, deteccoes_xy, gate_max_distancia=1.5):
     tracks_casados = set()
     deteccoes_casadas = set()
     for it, idet in zip(indices_track, indices_deteccao):
-        if custo[it, idet] <= gate_max_distancia:
+        if custo_distancia[it, idet] <= gate_max_distancia:
             matches.append((int(it), int(idet)))
             tracks_casados.add(it)
             deteccoes_casadas.add(idet)

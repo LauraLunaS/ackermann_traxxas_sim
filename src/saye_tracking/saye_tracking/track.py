@@ -20,10 +20,15 @@ Estados:
 
 Sem ROS - so a maquina de estados e o Kalman por baixo.
 """
+from collections import deque
 from enum import Enum
 import itertools
 
+import numpy as np
+
 from saye_tracking.kalman import FiltroKalman
+
+TAMANHO_HISTORICO_MOMENTUM = 5  # quantas observacoes reais guardar p/ o OCM (3.4)
 
 
 class EstadoTrack(Enum):
@@ -55,6 +60,14 @@ class Track:
         self._tolerancia_tentativo = tolerancia_tentativo_segundos
         self._tolerancia_perdido = tolerancia_perdido_segundos
 
+        # 3.4 (OCM): historico de observacoes REAIS (nao do Kalman) - o
+        # OC-SORT usa observacoes, nao o estado do filtro, pra estimar a
+        # direcao do movimento (mais estavel que a velocidade do Kalman
+        # logo apos uma oclusao)
+        self.historico = deque(
+            [(tempo_criacao, np.array(posicao_inicial, dtype=np.float64))],
+            maxlen=TAMANHO_HISTORICO_MOMENTUM)
+
     # ------------------------------------------------------------------
     @property
     def posicao(self):
@@ -77,6 +90,7 @@ class Track:
         self.kalman.update(posicao_xy)
         self.hits += 1
         self.tempo_ultima_observacao = tempo_atual
+        self.historico.append((tempo_atual, np.array(posicao_xy, dtype=np.float64)))
 
         if self.estado == EstadoTrack.TENTATIVO:
             if self.hits >= self._min_hits_confirmar:
@@ -100,3 +114,24 @@ class Track:
         limite = (self._tolerancia_tentativo if self.estado == EstadoTrack.TENTATIVO
                   else self._tolerancia_perdido)
         return tempo_sem_ver > limite
+
+    # ------------------------------------------------------------------
+    def direcao_momentum(self):
+        """
+        Estima a direcao do movimento a partir de observacoes reais.
+
+        Usa OBSERVACOES reais (nao o Kalman) - da mais antiga a mais
+        recente do historico.
+
+        None se ainda nao ha pelo menos 2 observacoes reais, ou se o track
+        nao se moveu o suficiente pra ter uma direcao definida (parado).
+        """
+        if len(self.historico) < 2:
+            return None
+        _, posicao_antiga = self.historico[0]
+        _, posicao_recente = self.historico[-1]
+        vetor = posicao_recente - posicao_antiga
+        norma = np.linalg.norm(vetor)
+        if norma < 1e-6:
+            return None
+        return vetor / norma

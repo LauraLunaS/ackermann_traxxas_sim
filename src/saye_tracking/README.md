@@ -74,7 +74,7 @@ um rosbag quando os sensores funcionam, ou de rodar em outra maquina.
 | 3.1 | Filtro de Kalman de 1 track (`predict`/`update`, estado `[x,y,vx,vy]`), puro numpy, sem ROS | feito (`kalman.py` + `test_3_1_kalman.py`) |
 | 3.2 | Ciclo de vida do track (tentativo/confirmado/perdido/apagado, por tempo) | feito (`track.py` + `test_3_2_ciclo_de_vida.py`) |
 | 3.3 | Associacao: matriz de custo + gate + Hungaro | feito (`associacao.py` + `test_3_3_associacao.py`) |
-| 3.4 | OCM - termo de consistencia de direcao na associacao | a fazer |
+| 3.4 | OCM - termo de consistencia de direcao na associacao | feito (`ocm.py` + `Track.direcao_momentum` + `test_3_4_ocm.py`) |
 | 3.5 | OCR + ORU - recuperacao de track perdido + re-atualizacao pela trajetoria virtual | a fazer |
 | 3.6 | Laco do rastreador (predict→associate→recover→update→manage) juntando 3.1-3.5 | a fazer |
 | 3.7 | Integracao no no ROS + publicacao (`Detection3DArray` + `MarkerArray` com setas) | a fazer |
