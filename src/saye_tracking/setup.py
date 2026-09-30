@@ -29,6 +29,7 @@ setup(
             'projecao3d_node = saye_tracking.projecao3d_node:main',
             'tracker_node = saye_tracking.tracker_node:main',
             'gravador_node = saye_tracking.gravador_node:main',
+            'comparador = saye_tracking.comparador:main',
         ],
     },
 )

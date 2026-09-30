@@ -117,7 +117,7 @@ A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
 |-----|----------|--------|
 | 4.0 | Pessoa detectavel no mundo (Gazebo Fuel, no lugar de `<actor>` - ver achado abaixo) | feito |
 | 4.1 | `gravador_node` — grava hipoteses do tracker + verdade do Gazebo em CSV | feito (`test_4_1_gravador.py` + validado ao vivo) |
-| 4.2 | Comparador com `motmetrics` (MOTA, trocas de ID, FP/FN) | a fazer |
+| 4.2 | Comparador com `motmetrics` (MOTA, trocas de ID, FP/FN) | feito (`test_4_2_comparador.py` + validado ao vivo) |
 | 4.3 | Suite de cenarios (parado, linear, curva, oclusao, cruzamento, entra/sai do FOV) | a fazer |
 | 4.4 | Rodar a suite e gerar relatorio | a fazer |
 
@@ -153,18 +153,54 @@ frente pro spawn do robo.
    projecao3d + tracker + gravador, ~12s): `hipoteses.csv` e `verdade.csv`
    saem com posicoes coerentes (verdade constante em `(2.0, 1.0)` pra pessoa
    parada; hipotese do track que segue ela fica bem proxima disso).
-   Observacao cosmetica, nao-bloqueante: as primeiras 1-2 mensagens do
-   `deteccao_node` logo apos o boot as vezes saem com timestamp de relogio
-   de parede em vez de tempo de sim (bug pre-existente no boot da ponte
-   `/camera/realsense/image_raw`, se autocorrige em milissegundos) - o 4.2
-   deve descartar outliers de tempo ao sincronizar os dois CSVs.
+
+**Achado importante (revisado no 4.2 - corrige o que o 4.1 tinha registrado
+como "cosmetico"):** o `header.stamp` que sai do `deteccao_node` (propagado
+de `/camera/realsense/image_raw`) alterna entre tempo de sim correto e
+timestamp de RELOGIO DE PAREDE (epoch Unix) - e nao e raro: em gravacoes
+reais, a MAIORIA das mensagens (~90%) saiu com o timestamp errado, nao so
+as primeiras. Confirmado que nao e processo duplicado (refeito do zero com
+verificacao rigorosa de 1 unica instancia de cada no em cada etapa, mesmo
+resultado). E um bug de verdade na ponte `ros_gz_bridge`/sensor de camera
+do Gazebo nesta maquina - mesma familia da flakiness de renderizacao ja
+documentada (`libEGL: failed to create dri2 screen`, ver
+[[env-gpu-sim]]) - fora do escopo do `saye_tracking` consertar. Efeito
+pratico: o `comparador` (4.2) tem que descartar essas leituras contaminadas
+por um TETO ABSOLUTO de tempo (nao por desvio da mediana - com 90% de
+contaminacao a mediana vira relogio de parede e um filtro relativo
+descartaria as leituras BOAS por engano). Quem for investigar essa ponte
+de verdade: comecar comparando o timestamp que a Gazebo bota no sensor de
+camera com o que chega no lado ROS, sensor a sensor.
+
+**Resultado do 4.2:** `comparador.py` (sem ROS, so `motmetrics` + os CSVs
+do 4.1) agrupa hipotese/verdade em frames de largura fixa (`round()`, nao
+`int()` - truncar quebra por erro de ponto flutuante, ex.: `0.3/0.1 ==
+2.9999999999999996`), mapeia nome->numero pra verdade (`motmetrics` exige
+id numerico, nao aceita string), e descarta timestamps de relogio de
+parede por teto absoluto antes de comparar. 7 testes sinteticos (match
+perfeito, falso negativo, falso positivo, gate de distancia, troca de ID,
+outlier isolado, maioria contaminada) + validado ao vivo 2x (pipeline
+completo rodando de verdade, com verificacao de instancia unica de cada
+no): primeira rodada deu metricas absurdas (MOTA -3.08) por causa do
+achado de timestamp acima (a maioria das linhas sendo descartada por
+engano por um filtro relativo a mediana testado inicialmente); com o filtro
+corrigido pra teto absoluto, a segunda rodada deu MOTA=0.29, motp=0.0099
+(~10cm de erro medio nos matches - boa precisao posicional), 18 trocas de
+ID - mas a cena tinha 2 tracks fantasmas extras (falsos positivos de
+"person" no rastreador, ja visto no 4.0/4.1: outros objetos da cena
+ocasionalmente classificados como pessoa) poluindo a comparacao contra o
+unico alvo real. Isso e esperado dado o cenario de teste atual (so 1
+pessoa parada + obstaculos que as vezes confundem o YOLO) - o 4.3 deve
+desenhar cenarios mais controlados (e talvez filtrar/rotular essas
+deteccoes fantasmas) pra medir a precisao do rastreador isoladamente.
+CLI pronta pra uso manual: `ros2 run saye_tracking comparador <diretorio>`.
 
 ## Dependencias
 
-`ultralytics` nao tem rosdep key — instale via pip (convencao do workspace):
+`ultralytics` e `motmetrics` nao tem rosdep key — instale via pip (convencao do workspace):
 
 ```bash
-pip install ultralytics --break-system-packages
+pip install ultralytics motmetrics --break-system-packages
 ```
 
 O restante e resolvido por rosdep:
