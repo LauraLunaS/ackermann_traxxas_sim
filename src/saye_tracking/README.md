@@ -18,7 +18,7 @@ adicionada depois como melhoria aditiva se as deteccoes ficarem ruidosas.
 | 1 | `deteccao_node` — YOLOv8-seg → `Detection2DArray` + mascara de instancias | feito |
 | 2 | `projecao3d_node` — le a nuvem organizada nos pixels da mascara, TF camera→odom (Caminho B) | feito |
 | 3 | `tracker_node` — OC-SORT 3D (KF `[x,y,vx,vy]` em odom) | feito |
-| 4 | Bancada de avaliacao — atores moveis no Gazebo + ground truth via `/model/<ator>/pose` | a fazer |
+| 4 | Bancada de avaliacao — atores moveis no Gazebo + ground truth via `/model/<ator>/pose` | em andamento |
 | 5 | Costmap dinamico (experimento isolado: `OccupancyGrid` / `MarkerArray`) | a fazer |
 | 6 | Preditor de trajetoria melhor; associacao 2 estagios ByteTrack | a fazer |
 
@@ -110,6 +110,54 @@ enquanto. `saye_tracking` e `ament_python` e nao gera mensagens - isso
 exigiria um pacote `ament_cmake` irmao (como o `saye_msgs` do outro repo).
 A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
 (costmap dinamico) precisar consumir o numero de verdade, nao so exibi-lo.
+
+### Fase 4 — submodulos
+
+| Sub | Conteudo | Status |
+|-----|----------|--------|
+| 4.0 | Pessoa detectavel no mundo (Gazebo Fuel, no lugar de `<actor>` - ver achado abaixo) | feito |
+| 4.1 | `gravador_node` — grava hipoteses do tracker + verdade do Gazebo em CSV | feito (`test_4_1_gravador.py` + validado ao vivo) |
+| 4.2 | Comparador com `motmetrics` (MOTA, trocas de ID, FP/FN) | a fazer |
+| 4.3 | Suite de cenarios (parado, linear, curva, oclusao, cruzamento, entra/sai do FOV) | a fazer |
+| 4.4 | Rodar a suite e gerar relatorio | a fazer |
+
+**Achado do 4.0:** o sistema de `<actor>` do Gazebo (mesh animado tipo
+Collada) carrega normalmente e aparece na GUI, mas **nao renderiza pra
+camera de sensor** nesta maquina (testado isolado, com controle: uma caixa
+na mesma pose renderiza perfeita, o ator na mesma pose fica com o frame em
+branco). Resolvido trocando por um `<model>` estatico do Gazebo Fuel
+("Standing person", OpenRobotics/MakeHuman, com textura real) - este
+renderiza normalmente e o YOLOv8 detecta como "person" (0.93 de confianca
+isolado, 0.45 pelo pipeline real de producao - a diferenca e porque um dos
+obstaculos dinamicos passou na frente da pessoa bem na hora da captura,
+oclusao parcial por coincidencia, nao um bug). Modelo incluido em
+`simple_world.sdf` como `pessoa_detectavel`, parado em `(2.0, 1.0)`, de
+frente pro spawn do robo.
+
+**Achado do 4.1 (importante pro 4.2 tambem):**
+1. Comparado ao vivo: `/odom` do robo e IDENTICO a pose dele no `world` do
+   Gazebo (mesmos valores, sem casas decimais de diferenca) - spawn em
+   yaw=0, entao o frame `odom` deste projeto E o frame `world`, sem
+   deslocamento nem rotacao. Isso permite comparar a saida do tracker (que
+   sai em `odom`) direto com a verdade do Gazebo (que sai em `world`), sem
+   nenhuma conta de transformacao.
+2. A ponte `ros_gz_bridge` de `gz.msgs.Pose_V` para `tf2_msgs/TFMessage`
+   **nao preenche nome nem timestamp de cada transform** (ambos ficam
+   vazios/zero) - so a ORDEM e a posicao vem certas. Por isso a verdade e
+   identificada por indice (posicao na lista, ver docstring do
+   `gravador_node.py`), nao por nome, e o tempo de cada leitura usa o
+   relogio do proprio no (`use_sim_time`) em vez do timestamp da mensagem.
+   Essa mesma limitacao ja tinha aparecido no 2.5/3.8 (usaram "ordem fixa"
+   pelo mesmo motivo) - agora esta documentada de vez.
+3. Validado ao vivo com o pipeline completo rodando (sim + deteccao +
+   projecao3d + tracker + gravador, ~12s): `hipoteses.csv` e `verdade.csv`
+   saem com posicoes coerentes (verdade constante em `(2.0, 1.0)` pra pessoa
+   parada; hipotese do track que segue ela fica bem proxima disso).
+   Observacao cosmetica, nao-bloqueante: as primeiras 1-2 mensagens do
+   `deteccao_node` logo apos o boot as vezes saem com timestamp de relogio
+   de parede em vez de tempo de sim (bug pre-existente no boot da ponte
+   `/camera/realsense/image_raw`, se autocorrige em milissegundos) - o 4.2
+   deve descartar outliers de tempo ao sincronizar os dois CSVs.
 
 ## Dependencias
 
