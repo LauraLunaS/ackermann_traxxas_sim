@@ -118,7 +118,7 @@ A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
 | 4.0 | Pessoa detectavel no mundo (Gazebo Fuel, no lugar de `<actor>` - ver achado abaixo) | feito |
 | 4.1 | `gravador_node` — grava hipoteses do tracker + verdade do Gazebo em CSV | feito (`test_4_1_gravador.py` + validado ao vivo) |
 | 4.2 | Comparador com `motmetrics` (MOTA, trocas de ID, FP/FN) | feito (`test_4_2_comparador.py` + validado ao vivo) |
-| 4.3 | Suite de cenarios (parado, linear, curva, oclusao, cruzamento, entra/sai do FOV) | a fazer |
+| 4.3 | Suite de cenarios (parado, linear, curva, entra/sai do FOV, oclusao) | feito (`test_4_3_cenarios.py` + validado ao vivo) |
 | 4.4 | Rodar a suite e gerar relatorio | a fazer |
 
 **Achado do 4.0:** o sistema de `<actor>` do Gazebo (mesh animado tipo
@@ -186,14 +186,92 @@ achado de timestamp acima (a maioria das linhas sendo descartada por
 engano por um filtro relativo a mediana testado inicialmente); com o filtro
 corrigido pra teto absoluto, a segunda rodada deu MOTA=0.29, motp=0.0099
 (~10cm de erro medio nos matches - boa precisao posicional), 18 trocas de
-ID - mas a cena tinha 2 tracks fantasmas extras (falsos positivos de
-"person" no rastreador, ja visto no 4.0/4.1: outros objetos da cena
-ocasionalmente classificados como pessoa) poluindo a comparacao contra o
-unico alvo real. Isso e esperado dado o cenario de teste atual (so 1
-pessoa parada + obstaculos que as vezes confundem o YOLO) - o 4.3 deve
-desenhar cenarios mais controlados (e talvez filtrar/rotular essas
-deteccoes fantasmas) pra medir a precisao do rastreador isoladamente.
+ID e 2 tracks extras poluindo a cena.
+
+**Correcao importante (feita no 4.3): os "2 tracks fantasmas" NAO eram
+YOLO confundindo outros objetos com pessoa** - essa hipotese, registrada
+aqui originalmente, estava errada. A causa real: um script de teste do
+scratchpad (`adaptador_gt_para_deteccoes.py`, criado la na validacao do
+3.8 pra alimentar o rastreador com ground truth em vez de deteccao real)
+tinha ficado **rodando havia muitas sessoes**, publicando silenciosamente
+na mesma `/projecao3d_node/deteccoes_3d` que o no de verdade. Descoberto
+no 4.3 com `ros2 topic info <topico> -v`, que mostrou 2 publishers no
+mesmo topico - a checagem de "so 1 instancia" feita ate entao so conferia
+processos pelo NOME do executavel esperado (`deteccao_node`,
+`tracker_node`, etc.), que nunca pegaria um script solto com outro nome.
+Depois de matar esse processo, o mesmo cenario saiu limpo (1 so track,
+zero falso positivo, zero troca de ID) - ver resultado do 4.3 abaixo.
 CLI pronta pra uso manual: `ros2 run saye_tracking comparador <diretorio>`.
+
+**Licao de processo (registrada tambem em memoria):** verificar "so 1
+instancia" por nome de processo NAO E SUFICIENTE - um script solto do
+scratchpad com outro nome passa batido. A forma confiavel e perguntar ao
+proprio ROS: `ros2 topic info <topico> -v` mostra TODOS os publishers
+reais de um topico, non-negociavel antes de confiar em qualquer gravacao.
+
+`cenarios.py` (sem ROS) define roteiros de `/cmd_vel` (`vx, wz, duracao`)
+pra cada cenario - como so existe uma pessoa DETECTAVEL e ela e ESTATICA
+(4.0), os cenarios de movimento sao feitos movendo o ROBO (a camera), nao
+a pessoa; do ponto de vista do rastreamento relativo camera-alvo da no
+mesmo. `executar_cenario_node.py` liga isso ao `/cmd_vel` de verdade, via
+contagem de ticks do timer (nao subtracao de `Time` absoluto - o mesmo
+problema do `self.get_clock().now()` vindo zerado no `__init__`, antes do
+1o `/clock` chegar, fazia o cenario "terminar" na primeira chamada do
+timer, ~1.7s depois de iniciado em vez de 8s; achado e corrigido ao vivo).
+6 testes sinteticos (roteiros bem formados, duracao total, comando por
+instante nas fronteiras dos segmentos).
+
+**Resultado do 4.3 (com o publisher fantasma do 4.1/4.2 devidamente morto):**
+- `parado` (10s, baseline): MOTA=0.82, motp=0.032 (~18cm), 0 trocas de ID,
+  0 falsos positivos, 27/147 frames sem deteccao (~18% de "buraco" mesmo
+  com camera e alvo parados - falta investigar se e confianca do YOLO
+  oscilando perto do limiar ou instabilidade da mascara/profundidade).
+- `linear` (8s, robo avança 0.4m/s em direcao a pessoa e passa por ela):
+  MOTA=0.11, motp=0.037, 0 trocas de ID, 0 falsos positivos, mas 115/129
+  frames sem deteccao - o rastreador perde a pessoa na maior parte do
+  percurso (plausivel: de perto/no angulo errado a mascara de segmentacao
+  piora, e depois que o robo passa a pessoa sai do campo de visao). ID
+  nunca trocou nas duas rodadas - a garantia mais importante do
+  rastreador (nao confundir alvos) se sustenta mesmo quando a deteccao
+  falha bastante.
+- `curva` e `entra_sai_fov`: roteiros prontos e testados (unitario +
+  `executar_cenario_node` rodando via `ros2 launch saye_tracking
+  cenario.launch.py cenario:=<nome>`), mas ainda NAO validados ao vivo
+  (fica pro 4.4, que roda a suite inteira e agrega os resultados).
+- `oclusao_obstaculo`: roteiro existe mas e MELHOR ESFORCO - depende dos
+  obstaculos dinamicos do mundo cruzarem a linha de visao por conta
+  propria (patrulha sozinha, ja documentada como nao-limpa desde o 3.8),
+  nao e determinístico. Cruzamento (2 alvos se cruzando) foi DEIXADO DE
+  FORA - exigiria uma segunda pessoa movel, que esbarra no mesmo problema
+  do `TrajectoryFollower` ja aceito como limitacao desde o 3.8.
+
+### Rodando um cenario manualmente
+
+```bash
+# Terminal 1: simulacao (+ ponte de ground truth, ver 4.1)
+ros2 launch saye_bringup traxxas_spawn.launch.py
+ros2 run ros_gz_bridge parameter_bridge \
+  '/world/beach_world/pose/info@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V' \
+  --ros-args -r /world/beach_world/pose/info:=/gt/pose_info
+
+# Terminal 2-4: pipeline
+ros2 launch saye_tracking deteccao.launch.py
+ros2 launch saye_tracking projecao3d.launch.py
+ros2 launch saye_tracking tracker.launch.py
+
+# Terminal 5: gravador (comeca a gravar)
+ros2 launch saye_tracking gravador.launch.py diretorio_saida:=/tmp/cenario_X
+
+# Terminal 6: roda o cenario (encerra sozinho quando acabar)
+ros2 launch saye_tracking cenario.launch.py cenario:=linear
+
+# depois do cenario acabar: salva e calcula metricas
+ros2 service call /gravador_node/salvar std_srvs/srv/Trigger "{}"
+ros2 run saye_tracking comparador /tmp/cenario_X
+```
+
+Cenarios disponiveis (`saye_tracking/cenarios.py`: `CENARIOS`): `parado`,
+`linear`, `curva`, `entra_sai_fov`, `oclusao_obstaculo`.
 
 ## Dependencias
 

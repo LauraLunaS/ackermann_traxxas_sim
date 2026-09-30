@@ -30,6 +30,7 @@ setup(
             'tracker_node = saye_tracking.tracker_node:main',
             'gravador_node = saye_tracking.gravador_node:main',
             'comparador = saye_tracking.comparador:main',
+            'executar_cenario_node = saye_tracking.executar_cenario_node:main',
         ],
     },
 )

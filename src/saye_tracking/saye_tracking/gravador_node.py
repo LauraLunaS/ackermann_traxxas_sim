@@ -18,14 +18,24 @@ Achado 2 (limitacao do `ros_gz_bridge` nesta versao, ja conhecida desde o
 NAO preenche `child_frame_id` (fica sempre `''`) nem o timestamp de cada
 transform (fica sempre zero) - so a ORDEM e a posicao vem corretas.
 Por isso a verdade e identificada por INDICE dentro da lista (nao por
-nome), e o tempo de cada leitura usa o relogio do proprio no (que com
-`use_sim_time:=true` reflete o tempo simulado) em vez do campo do
-timestamp (que viria sempre zero). O indice de cada objeto e a posicao
-dele na ordem de declaracao dos `<model>`/`<include>` de nivel 1 no
-`simple_world.sdf`: 0=sandy_terrain, 1=pessoa_detectavel,
-2=dynamic_obstacle_sphere, 3=...box, 4=...cylinder, 5=traxxas (confirmado
-lendo `gz topic -e -t /world/beach_world/pose/info` lado a lado com o
-topico bridgeado).
+nome). O indice de cada objeto e a posicao dele na ordem de declaracao dos
+`<model>`/`<include>` de nivel 1 no `simple_world.sdf`: 0=sandy_terrain,
+1=pessoa_detectavel, 2=dynamic_obstacle_sphere, 3=...box, 4=...cylinder,
+5=traxxas (confirmado lendo `gz topic -e -t /world/beach_world/pose/info`
+lado a lado com o topico bridgeado).
+
+Achado 3 (achado no 4.3, impacto maior do que o registrado no 4.1/4.2):
+o `header.stamp` que sai do `deteccao_node` (propagado da camera, ver
+[[env-gpu-sim]] no README) fica com timestamp de relogio de parede boa
+parte do tempo - em cenarios com o robo se movendo, chegou a **98% das
+mensagens** perdidas por esse motivo, o suficiente pra esvaziar quase toda
+a gravacao. Por isso NENHUM dos dois lados usa o timestamp vindo da
+mensagem: tanto hipotese quanto verdade usam `self.get_clock().now()` (o
+relogio do proprio `gravador_node`, sincronizado com `/clock` via
+`use_sim_time:=true`) no instante em que a mensagem CHEGA - o atraso de
+processamento do pipeline inteiro (deteccao->projecao3d->tracker) e
+pequeno (dezenas de ms) comparado ao `tamanho_frame_segundos` usado no
+comparador (4.2, padrao 0.1s), entao nao atrapalha a sincronizacao.
 
 Para gerar o topico de verdade, faca a ponte Gazebo->ROS (nome do mundo e
 "beach_world" no `simple_world.sdf`):
@@ -84,7 +94,10 @@ class GravadorNode(Node):
 
     # ------------------------------------------------------------------
     def callback_tracks(self, msg: Detection3DArray):
-        tempo = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
+        # ver "Achado 3" no topo do arquivo: nao usa msg.header.stamp
+        # (propagado da camera, contaminado com relogio de parede boa
+        # parte do tempo) - usa o instante de chegada no proprio no.
+        tempo = self.get_clock().now().nanoseconds * 1e-9
         for d in msg.detections:
             if not d.results:
                 continue
