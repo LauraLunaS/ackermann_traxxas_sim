@@ -76,6 +76,22 @@
     </model>
 
     <!-- ========================================== -->
+    <!-- PESSOA DETECTAVEL (Fase 4, submodulo 4.0): modelo estatico do Gazebo
+         Fuel (nao um <actor> - o sistema de ator do Gazebo nao renderiza pra
+         camera de sensor nesta maquina, testado e confirmado isolado antes
+         de adicionar aqui). Malha feita com MakeHuman, textura real de
+         pele/roupa - YOLOv8 detecta como "person" com ~0.93 de confianca no
+         teste isolado. Parada a ~3m a frente do spawn do robo, de frente
+         pra camera. -->
+    <!-- ========================================== -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Standing person</uri>
+      <name>pessoa_detectavel</name>
+      <pose>2.0 1.0 0 0 0 -1.5708</pose>
+      <static>true</static>
+    </include>
+
+    <!-- ========================================== -->
     <!-- OBSTÁCULO DINÂMICO 1: Pedestre / Obstáculo Vermelho (Movimento Vai e Vem no Eixo Y) -->
     <!-- ========================================== -->
     <model name="dynamic_obstacle_sphere">
