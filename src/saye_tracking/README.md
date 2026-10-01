@@ -18,7 +18,7 @@ adicionada depois como melhoria aditiva se as deteccoes ficarem ruidosas.
 | 1 | `deteccao_node` — YOLOv8-seg → `Detection2DArray` + mascara de instancias | feito |
 | 2 | `projecao3d_node` — le a nuvem organizada nos pixels da mascara, TF camera→odom (Caminho B) | feito |
 | 3 | `tracker_node` — OC-SORT 3D (KF `[x,y,vx,vy]` em odom) | feito |
-| 4 | Bancada de avaliacao — atores moveis no Gazebo + ground truth via `/model/<ator>/pose` | em andamento |
+| 4 | Bancada de avaliacao — deteccao real + ground truth + metricas motmetrics + suite de cenarios | feito |
 | 5 | Costmap dinamico (experimento isolado: `OccupancyGrid` / `MarkerArray`) | a fazer |
 | 6 | Preditor de trajetoria melhor; associacao 2 estagios ByteTrack | a fazer |
 
@@ -119,7 +119,7 @@ A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
 | 4.1 | `gravador_node` — grava hipoteses do tracker + verdade do Gazebo em CSV | feito (`test_4_1_gravador.py` + validado ao vivo) |
 | 4.2 | Comparador com `motmetrics` (MOTA, trocas de ID, FP/FN) | feito (`test_4_2_comparador.py` + validado ao vivo) |
 | 4.3 | Suite de cenarios (parado, linear, curva, entra/sai do FOV, oclusao) | feito (`test_4_3_cenarios.py` + validado ao vivo) |
-| 4.4 | Rodar a suite e gerar relatorio | a fazer |
+| 4.4 | Rodar a suite e gerar relatorio | feito (`test_4_4_relatorio.py` + validado ao vivo, suite inteira) |
 
 **Achado do 4.0:** o sistema de `<actor>` do Gazebo (mesh animado tipo
 Collada) carrega normalmente e aparece na GUI, mas **nao renderiza pra
@@ -272,6 +272,79 @@ ros2 run saye_tracking comparador /tmp/cenario_X
 
 Cenarios disponiveis (`saye_tracking/cenarios.py`: `CENARIOS`): `parado`,
 `linear`, `curva`, `entra_sai_fov`, `oclusao_obstaculo`.
+
+### 4.4 — roda a suite inteira e gera o relatorio
+
+`relatorio.py` (sem ROS) formata os resumos do `comparador` numa tabela
+Markdown - testavel com dados sinteticos. `rodar_suite.py` automatiza o
+que o 4.3 fazia manualmente: para cada cenario, reseta a pose do robo
+(`/world/<mundo>/set_pose` via `gz service` - sem isso cenarios em
+sequencia comecariam de onde o anterior parou), sobe um `gravador_node`
+num diretorio proprio, roda o cenario, salva, calcula metricas, e no final
+imprime a tabela com todos.
+
+```bash
+# com a simulacao + pipeline + ponte de ground truth ja rodando
+# (ver "Rodando um cenario manualmente" acima)
+ros2 run saye_tracking rodar_suite --diretorio-base /tmp/minha_suite
+# ou so alguns cenarios:
+ros2 run saye_tracking rodar_suite --cenarios parado linear
+```
+
+**Achado ao automatizar:** `Popen.terminate()` (SIGTERM) no processo do
+`ros2 launch` do gravador NAO derruba o `gravador_node` filho - numa
+primeira tentativa, 4 instancias ficaram orfas rodando ao mesmo tempo
+(todas assinando os mesmos topicos), e o 4o cenario da suite falhou por
+causa disso (o servico `~/salvar` foi atendido por uma instancia errada).
+Trocado para `send_signal(SIGINT)` - o mesmo que Ctrl+C no terminal, que
+`ros2 launch` trata corretamente pra cascatear o desligamento pros filhos.
+`rodar_suite.py` tambem confere que os dois CSVs existem antes de seguir
+pro proximo cenario, em vez de so confiar que o servico respondeu OK.
+
+**Resultado da suite completa** (pipeline verificado limpo via `ros2 topic
+info -v` antes de rodar, pose do robo resetada entre cada cenario):
+
+| cenario | frames | MOTA | MOTP | trocas ID | falsos positivos | perdas | acertos |
+|---|---|---|---|---|---|---|---|
+| parado | 156 | 0.910 | 0.031 | 0 | 0 | 14 | 142 |
+| linear | 131 | 0.305 | 0.033 | 0 | 0 | 91 | 40 |
+| curva | 144 | 0.317 | 0.033 | 0 | 2 | 95 | 47 |
+| entra_sai_fov | 116 | 0.793 | 0.032 | 0 | 0 | 24 | 92 |
+| oclusao_obstaculo | 209 | 0.938 | 0.031 | 0 | 0 | 13 | 196 |
+
+**Leitura dos resultados:**
+- **Zero trocas de ID em TODOS os 5 cenarios** - a garantia mais importante
+  do rastreador (nunca confundir alvos) se sustenta mesmo sob rotacao da
+  camera (`curva`), entrada/saida do campo de visao (`entra_sai_fov`) e
+  grande perda de deteccao (`linear`).
+- MOTP (erro de posicao nos acertos) e estavel entre ~3.1-3.3cm em todos
+  os cenarios - a precisao posicional nao degrada com o movimento.
+- MOTA varia muito mais que MOTP: `parado` e `oclusao_obstaculo` (que, na
+  pratica, teve pouca ou nenhuma oclusao real - ver nota de "melhor
+  esforco" no 4.3) ficam acima de 0.9; `linear` e `curva` ficam abaixo de
+  0.32, dominados por PERDAS de deteccao (nao falsos positivos nem trocas
+  de ID). Ou seja: o gargalo atual nao e o RASTREADOR, e a DETECCAO -
+  especificamente, manter a pessoa detectada de perto e em angulos
+  variados. Candidatos a investigar depois (fora do escopo do
+  `saye_tracking` em si): `confianca_min` do YOLO (0.4 pode estar cortando
+  deteccoes validas em angulos ruins), ou o proprio modelo (`yolov8n-seg`
+  e o menor da familia).
+- `entra_sai_fov` com MOTA alto (0.79) apesar de ter perdas por design
+  (a pessoa sai do quadro de proposito) sugere que a deteccao e boa
+  QUANDO a pessoa esta de frente/perto do centro da imagem - reforca que
+  o problema do `linear`/`curva` e mais sobre angulo/distancia do que
+  sobre o pipeline de deteccao estar quebrado.
+
+**Nota de ruido (nao-bloqueante):** ao receber o SIGINT, o `gravador_node`
+as vezes loga um traceback (`RuntimeError: Unable to convert call
+argument...`) numa corrida entre o shutdown do rclpy e uma mensagem
+chegando - mas em todos os casos observados os CSVs ja tinham sido salvos
+ANTES do traceback aparecer, entao nao perde dado; e um comportamento
+conhecido do rclpy/pybind11 no shutdown, nao um bug do `saye_tracking`.
+
+Isso fecha a Fase 4 (bancada de avaliacao MOT) completa: deteccao real
+(YOLO, nao ground truth), gravacao, metricas via `motmetrics`, e suite de
+cenarios automatizada com relatorio.
 
 ## Dependencias
 
