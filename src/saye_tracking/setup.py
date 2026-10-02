@@ -32,6 +32,7 @@ setup(
             'comparador = saye_tracking.comparador:main',
             'executar_cenario_node = saye_tracking.executar_cenario_node:main',
             'rodar_suite = saye_tracking.rodar_suite:main',
+            'mover_pessoa_node = saye_tracking.mover_pessoa_node:main',
         ],
     },
 )

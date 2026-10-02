@@ -76,13 +76,29 @@
     </model>
 
     <!-- ========================================== -->
-    <!-- PESSOA DETECTAVEL (Fase 4, submodulo 4.0): modelo estatico do Gazebo
-         Fuel (nao um <actor> - o sistema de ator do Gazebo nao renderiza pra
-         camera de sensor nesta maquina, testado e confirmado isolado antes
-         de adicionar aqui). Malha feita com MakeHuman, textura real de
-         pele/roupa - YOLOv8 detecta como "person" com ~0.93 de confianca no
-         teste isolado. Parada a ~3m a frente do spawn do robo, de frente
-         pra camera. -->
+    <!-- PESSOA DETECTAVEL (Fase 4, submodulo 4.0): malha do Gazebo Fuel
+         "Standing person" (MakeHuman, textura real - YOLOv8 detecta como
+         "person" com ~0.93 de confianca no teste isolado). NAO e um
+         <actor> - o sistema de ator do Gazebo nao renderiza pra camera de
+         sensor nesta maquina (testado e confirmado isolado).
+
+         TENTATIVA DESCARTADA (registrada aqui pra nao repetir): mover ela
+         com o plugin TrajectoryFollower (forca/torque fisicos), igual aos
+         3 obstaculos dinamicos abaixo. Diferente deles (baixos e
+         simetricos - esfera/caixa/cilindro), um corpo ALTO com centro de
+         massa a quase 1m do chao TOMBA sob forca/torque bruto sem
+         amortecimento - testado com varias combinacoes de forca, torque,
+         tamanho de base e inercia rotacional (ate 20x maior que o valor
+         real), sempre ou tombava ou saia deslizando sem controle. Virou
+         um problema de modelagem fisica (precisaria de uma junta
+         restringindo so o eixo de guinada, tipo um "carrinho" por baixo),
+         nao so de ajuste de parametro - abandonado em favor de mover ela
+         CINEMATICAMENTE (teleporte direto via `/world/.../set_pose`, o
+         mesmo servico usado pra resetar o robo na Fase 4.4), que nao tem
+         fisica nenhuma envolvida e portanto nao tomba. Ver
+         `saye_tracking/mover_pessoa_node.py`. Por isso ela continua
+         <static>true</static> aqui - "estatica" pro solver de fisica, mas
+         o teleporte externo ainda reposiciona ela livremente. -->
     <!-- ========================================== -->
     <include>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Standing person</uri>
@@ -91,22 +107,19 @@
       <static>true</static>
     </include>
 
-    <!-- ========================================== -->
-    <!-- OBSTÁCULO DINÂMICO 1: Pedestre / Obstáculo Vermelho (Movimento Vai e Vem no Eixo Y) -->
-    <!-- ========================================== -->
+    <!-- Os 3 obstaculos dinamicos (esfera/caixa/cilindro) ficam comentados
+         a partir de agora - a Fase 4 passou a trabalhar so com deteccao
+         de "person", e esses obstaculos geometricos nao sao dessa classe
+         (as vezes eram confundidos com "person" pelo YOLO por engano,
+         poluindo as metricas - ver achado do 4.2/4.3 no README do
+         saye_tracking). Mantidos aqui comentados (nao apagados) caso
+         sejam uteis de novo numa fase futura (ex.: obstaculos genericos
+         pro costmap dinamico da Fase 5).
+
     <model name="dynamic_obstacle_sphere">
       <pose>2.0 0.0 0.5 0 0 0</pose>
       <static>false</static>
-      
-      <!-- Esquema real do plugin (conferido nos simbolos do .so e no exemplo
-           oficial /usr/share/gz/gz-sim8/worlds/trajectory_follower.sdf, e
-           confirmado direto na string "Unable to find <waypoints><waypoint>"
-           dentro do .so do plugin): o CONTAINER <waypoints> e obrigatorio
-           (nao e so enfeite), cada <waypoint> filho e "x y" direto (sem
-           <position>/<orientation> aninhados - esses campos nao existem e
-           eram ignorados em silencio), e o plugin empurra o link com
-           <force>/<torque> ate cada alvo (nao teleporta - <kinematic> e
-           <velocity> tambem nao sao campos reais deste plugin). -->
+
       <plugin filename="gz-sim-trajectory-follower-system" name="gz::sim::systems::TrajectoryFollower">
         <link_name>link</link_name>
         <loop>true</loop>
@@ -119,10 +132,6 @@
       </plugin>
 
       <link name="link">
-        <!-- TrajectoryFollower empurra o link com forca/torque fisicos -
-             sem <inertial>, o corpo nao tem massa/inercia pro solver
-             integrar, e o plugin nao move nada (achado ao investigar o
-             3.8 do saye_tracking). Esfera solida: I = (2/5) m r^2. -->
         <inertial>
           <mass>1.0</mass>
           <inertia>
@@ -144,9 +153,6 @@
           <geometry>
             <sphere><radius>0.4</radius></sphere>
           </geometry>
-          <!-- o terreno tem mu=100 (calibrado pro atrito do rover); sem
-               isso aqui o obstaculo herda esse atrito enorme e nenhuma
-               forca razoavel do TrajectoryFollower consegue move-lo -->
           <surface>
             <friction>
               <ode><mu>1.0</mu><mu2>1.0</mu2></ode>
@@ -156,9 +162,6 @@
       </link>
     </model>
 
-    <!-- ========================================== -->
-    <!-- OBSTÁCULO DINÂMICO 2: Caixote (Movimento Horizontal no Eixo X) -->
-    <!-- ========================================== -->
     <model name="dynamic_obstacle_box">
       <pose>5.0 2.0 0.5 0 0 0</pose>
       <static>false</static>
@@ -175,8 +178,6 @@
       </plugin>
 
       <link name="link">
-        <!-- ver nota de <inertial> no obstaculo esfera. Caixa solida:
-             Ixx=Iyy=Izz = (1/12) m (a^2+a^2) p/ cubo de lado a. -->
         <inertial>
           <mass>1.0</mass>
           <inertia>
@@ -207,9 +208,6 @@
       </link>
     </model>
 
-    <!-- ========================================== -->
-    <!-- OBSTÁCULO DINÂMICO 3: Barril/Cilindro (Patrulha Retangular em Loop) -->
-    <!-- ========================================== -->
     <model name="dynamic_obstacle_cylinder">
       <pose>0.0 0.0 0.5 0 0 0</pose>
       <static>false</static>
@@ -228,8 +226,6 @@
       </plugin>
 
       <link name="link">
-        <!-- ver nota de <inertial> no obstaculo esfera. Cilindro solido
-             (eixo em z): Ixx=Iyy=(1/12)m(3r^2+h^2), Izz=(1/2)m r^2. -->
         <inertial>
           <mass>1.0</mass>
           <inertia>
@@ -259,6 +255,7 @@
         </collision>
       </link>
     </model>
+    -->
 
   </world>
 </sdf>

@@ -120,6 +120,7 @@ A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
 | 4.2 | Comparador com `motmetrics` (MOTA, trocas de ID, FP/FN) | feito (`test_4_2_comparador.py` + validado ao vivo) |
 | 4.3 | Suite de cenarios (parado, linear, curva, entra/sai do FOV, oclusao) | feito (`test_4_3_cenarios.py` + validado ao vivo) |
 | 4.4 | Rodar a suite e gerar relatorio | feito (`test_4_4_relatorio.py` + validado ao vivo, suite inteira) |
+| 4.5 | Pessoa detectavel ANDANDO de verdade (alvo com movimento proprio, nao so a camera se movendo) | feito (`test_4_5_caminhada.py` + validado ao vivo) |
 
 **Achado do 4.0:** o sistema de `<actor>` do Gazebo (mesh animado tipo
 Collada) carrega normalmente e aparece na GUI, mas **nao renderiza pra
@@ -345,6 +346,63 @@ conhecido do rclpy/pybind11 no shutdown, nao um bug do `saye_tracking`.
 Isso fecha a Fase 4 (bancada de avaliacao MOT) completa: deteccao real
 (YOLO, nao ground truth), gravacao, metricas via `motmetrics`, e suite de
 cenarios automatizada com relatorio.
+
+### 4.5 — pessoa andando de verdade (alvo com movimento proprio)
+
+Limitacao percebida apos o 4.4: em todos os 5 cenarios, quem se movia era
+o ROBO (a camera) - a pessoa (`pessoa_detectavel`) ficava sempre parada em
+`(2.0, 1.0)`. Isso nunca testou o rastreador contra um alvo que anda
+sozinho, detectado de verdade pelo YOLO (so o 3.8, na Fase 3, testou alvo
+em movimento - 3 obstaculos, mas via ground truth, nao deteccao real).
+
+**Tentativa descartada - fisica de verdade (`TrajectoryFollower`):**
+primeira ideia foi mover a pessoa com o mesmo plugin de forca/torque ja
+usado pelos 3 obstaculos dinamicos (fase 3.8). Diferente deles (esfera,
+caixa, cilindro - baixos e simetricos), a pessoa e um corpo ALTO com
+centro de massa perto de 1m do chao: empurrado por forca/torque bruto
+sem nenhum amortecimento, ela **tomba** (confirmado pelo quaternion
+resultante - rotacao de ~180° em torno de um eixo horizontal, deitada no
+chao). Tentado:
+- Remover a colisao da malha do corpo (deixar so uma caixa "pes" como
+  colisao fisica, igual aos obstaculos) - ainda tombava, só mais devagar.
+- Aumentar a base de apoio (0.5x0.35 -> 1.0x1.0) e a inercia rotacional
+  em x/y ate 20x o valor real (pra resistir mais a tombar) - piorou:
+  deslizamentos erraticos (posicao chegou a `x=16` fora do caminho
+  pretendido de `x=2`).
+- Varias combinacoes de forca/torque (40 ate 5000) - ou ficava
+  praticamente parada (forca fraca demais pra vencer o atrito), ou
+  tombava rapido (forca forte demais), sem um meio-termo confiavel.
+
+Virou um problema de MODELAGEM FISICA (precisaria de uma junta
+restringindo a rotacao a só o eixo de guinada - tipo um "carrinho" por
+baixo do corpo visual), nao so de ajuste de parametro. Abandonado.
+
+**Solucao adotada - teleporte cinematico (sem fisica nenhuma):**
+`caminhada.py` (sem ROS) calcula a posicao de um vai-e-vem entre dois
+pontos a velocidade constante, em funcao do tempo - puro calculo,
+testavel sem Gazebo. `mover_pessoa_node.py` liga isso ao Gazebo chamando
+o servico `/world/<mundo>/set_pose` (o MESMO servico ja usado pra
+resetar a pose do robo na Fase 4.4) direto via `gz-transport` em Python
+(`gz.transport13`/`gz.msgs10`, ja disponiveis no ambiente - sem
+subprocess, sem overhead), num timer a 10Hz. Como e teleporte puro (nao
+fisica), **nao ha como tombar, nao ha friccao, nao ha overshoot** - o
+movimento sai perfeitamente limpo e prederminado.
+
+```bash
+ros2 launch saye_tracking mover_pessoa.launch.py
+# ou com outra velocidade:
+ros2 launch saye_tracking mover_pessoa.launch.py velocidade:=0.5
+```
+
+**Resultado validado ao vivo:** com o pipeline completo rodando (sim +
+deteccao + projecao3d + tracker, instancia unica confirmada via `ros2
+topic info -v`), a pessoa andou um ciclo inteiro vai-e-vem (incluindo as
+DUAS viradas de direcao) em ~13s. YOLO manteve deteccao consistente o
+tempo todo (359 deteccoes em 18s, confianca ~0.88-0.92, bem mais estavel
+que o teste parado isolado do 4.0). O rastreador manteve **um unico ID do
+inicio ao fim**, inclusive atravessando as duas reversoes de direcao -
+primeiro teste real de alvo com movimento proprio, detectado de verdade,
+sem trocar de identidade.
 
 ## Dependencias
 
