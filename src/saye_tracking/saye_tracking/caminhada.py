@@ -43,3 +43,57 @@ def posicao_no_instante(
     x = inicio[0] + (fim[0] - inicio[0]) * fracao
     y = inicio[1] + (fim[1] - inicio[1]) * fracao
     return (x, y)
+
+
+def direcao_no_instante(
+        tempo, origem=ORIGEM_PADRAO, destino=DESTINO_PADRAO,
+        velocidade=VELOCIDADE_PADRAO):
+    """Angulo (rad) de frente pro sentido do trecho atual (ida ou volta)."""
+    dx = destino[0] - origem[0]
+    dy = destino[1] - origem[1]
+    distancia = math.hypot(dx, dy)
+    duracao_trecho = distancia / velocidade
+    fase = tempo % (2 * duracao_trecho)
+    indo = fase <= duracao_trecho
+    return math.atan2(dy, dx) if indo else math.atan2(-dy, -dx)
+
+
+def indice_quadro(tempo, velocidade, n_quadros, comprimento_passada=1.2):
+    """
+    Calcula o indice do quadro de caminhada (0..n_quadros-1) pro "flipbook" de poses.
+
+    Baseado na distancia percorrida (nao no tempo bruto) - velocidade e
+    constante, entao distancia = velocidade * tempo. `comprimento_passada`
+    e o quanto o corpo "anda" por ciclo completo dos N quadros extraidos
+    (ver `saye_tracking/scripts` / README da Fase 4.6).
+    """
+    distancia = velocidade * tempo
+    fase = (distancia % comprimento_passada) / comprimento_passada
+    return int(fase * n_quadros) % n_quadros
+
+
+def posicao_no_caminho(distancia, waypoints):
+    """
+    Posicao (x, y) e yaw (rad) de um alvo andando num caminho fechado de waypoints.
+
+    `distancia` e o quanto ja foi andado; o caminho e percorrido em loop
+    (o ultimo waypoint volta pro primeiro). Trechos de comprimento zero sao ignorados.
+    """
+    pontos = [tuple(p) for p in waypoints]
+    trechos = list(zip(pontos, pontos[1:] + pontos[:1]))
+    comprimentos = [math.hypot(b[0] - a[0], b[1] - a[1]) for a, b in trechos]
+    total = sum(comprimentos)
+    restante = distancia % total
+
+    for (a, b), comprimento in zip(trechos, comprimentos):
+        if comprimento == 0.0:
+            continue
+        if restante <= comprimento:
+            fracao = restante / comprimento
+            x = a[0] + (b[0] - a[0]) * fracao
+            y = a[1] + (b[1] - a[1]) * fracao
+            return (x, y, math.atan2(b[1] - a[1], b[0] - a[0]))
+        restante -= comprimento
+
+    a, b = trechos[-1]
+    return (b[0], b[1], math.atan2(b[1] - a[1], b[0] - a[0]))

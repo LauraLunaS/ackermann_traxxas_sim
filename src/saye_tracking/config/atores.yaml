@@ -1,0 +1,28 @@
+# Atores da simulacao e seus caminhos. Waypoints em (x, y) no frame odom/world,
+# percorridos em loop. Caminhos podem se cruzar: os atores nao colidem.
+#
+# tipo: andando  -> flipbook de quadros de caminhada (mover_pessoa_animada_node)
+atores:
+  - nome: pessoa_1
+    tipo: andando
+    prefixo_modelo: pessoa_andando_1_frame_
+    n_quadros: 29
+    comprimento_passada: 0.302
+    velocidade: 0.3
+    waypoints: [[2.0, 0.0], [2.0, 2.0]]
+
+  - nome: pessoa_2
+    tipo: andando
+    prefixo_modelo: pessoa_andando_2_frame_
+    n_quadros: 27
+    comprimento_passada: 0.281
+    velocidade: 0.25
+    waypoints: [[1.0, 1.0], [3.0, 1.0], [3.0, 3.0], [1.0, 3.0]]
+
+  - nome: pessoa_3
+    tipo: andando
+    prefixo_modelo: pessoa_andando_3_frame_
+    n_quadros: 30
+    comprimento_passada: 1.384
+    velocidade: 0.24
+    waypoints: [[3.5, 0.0], [3.5, 2.0]]

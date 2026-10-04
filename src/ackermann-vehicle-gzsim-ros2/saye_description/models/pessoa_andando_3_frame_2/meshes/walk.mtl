@@ -1,0 +1,48 @@
+newmtl walk_skin-mat
+Ka 1 1 1
+Kd 0.8 0.55 0.39
+Ks 0.2 0.2 0.2
+Ns 10
+d 1
+illum 2
+
+newmtl walk_sweater-green
+Ka 1 1 1
+Kd 0.1 0.14 0.26
+Ks 0.2 0.2 0.2
+Ns 10
+d 1
+illum 2
+
+newmtl walk_jeans-blue
+Ka 1 1 1
+Kd 0.07 0.08 0.12
+Ks 0.2 0.2 0.2
+Ns 10
+d 1
+illum 2
+
+newmtl walk_eyes-white
+Ka 1 1 1
+Kd 0.62 0.62 0.64
+Ks 0.2 0.2 0.2
+Ns 10
+d 1
+illum 2
+
+newmtl walk_eyes-brown
+Ka 1 1 1
+Kd 0.2 0.08 0.04
+Ks 0.2 0.2 0.2
+Ns 10
+d 1
+illum 2
+
+newmtl walk_eyes-black
+Ka 1 1 1
+Kd 0.02 0.02 0.02
+Ks 0.2 0.2 0.2
+Ns 10
+d 1
+illum 2
+

@@ -121,6 +121,7 @@ A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
 | 4.3 | Suite de cenarios (parado, linear, curva, entra/sai do FOV, oclusao) | feito (`test_4_3_cenarios.py` + validado ao vivo) |
 | 4.4 | Rodar a suite e gerar relatorio | feito (`test_4_4_relatorio.py` + validado ao vivo, suite inteira) |
 | 4.5 | Pessoa detectavel ANDANDO de verdade (alvo com movimento proprio, nao so a camera se movendo) | feito (`test_4_5_caminhada.py` + validado ao vivo) |
+| 4.6 | Multiplas pessoas, visualmente diferentes, com CICLO DE CAMINHADA real (pernas se movendo) | feito (validado ao vivo) |
 
 **Achado do 4.0:** o sistema de `<actor>` do Gazebo (mesh animado tipo
 Collada) carrega normalmente e aparece na GUI, mas **nao renderiza pra
@@ -403,6 +404,93 @@ que o teste parado isolado do 4.0). O rastreador manteve **um unico ID do
 inicio ao fim**, inclusive atravessando as duas reversoes de direcao -
 primeiro teste real de alvo com movimento proprio, detectado de verdade,
 sem trocar de identidade.
+
+### 4.6 — multiplas pessoas, diferentes, com pernas se movendo de verdade
+
+Pedido explicito do usuario: 1) multiplos pedestres ao mesmo tempo
+(objetivo do projeto - rastreamento + simulacao dinamica), 2) aparencia
+DIFERENTE entre eles (uma mesma pessoa 3x nao valida a associacao
+visualmente), 3) **caminhada de verdade** (pernas alternando), nao so a
+pose 4.5 deslizando.
+
+**Tentativa 1 - usar o repositorio sugerido
+(`gazebo-ros-actor-plugin`):** investigado a fundo (nao so descartado de
+cara). O plugin controla bem o MOVIMENTO de um `<actor>` (velocidade ou
+caminho), mas isso nunca foi o problema - o problema e RENDERIZACAO.
+Testado com o skin exato do repositorio (`DoctorFemaleWalk`):
+- Numa camera `camera` (RGB simples) de perto (1.5m), invisivel - mesmo
+  resultado da Fase 4.0.
+- Numa camera `camera` mais longe (3m+), o ator RENDERIZA normalmente -
+  ou seja, nao e "nunca renderiza".
+- Mas em `rgbd_camera` **e** `depth_camera` (os dois tipos que geram
+  profundidade - o que o robo real usa), o ator **nunca** aparece, em
+  nenhuma distancia testada - confirmado olhando o mapa de profundidade
+  bruto (so o chao e objetos comuns aparecem, nenhum pixel do ator).
+
+Consequencia pro projeto: mesmo que o YOLO detectasse o ator na imagem
+RGB, o `projecao3d_node` nunca acharia profundidade valida pra ele - a
+deteccao cairia sempre no filtro de `pixels_validos`. Atores continuam
+descartados - nao e so "nao aparece bonito", e um problema que quebra a
+extracao 3D de qualquer jeito.
+
+**Solucao - extrair o ciclo de caminhada real e "tocar" como flipbook de
+malhas estaticas:** como atores tem o MOVIMENTO certo (esqueleto
+articulado) mas nao SAO VISIVEIS pro robo, e modelos estaticos SAO
+visiveis mas nao tem movimento de pernas - a solucao foi tirar o melhor
+dos dois: extrair N poses REAIS do ciclo de caminhada de um `.dae` com
+esqueleto (via skinning manual, nao um exportador pronto - nenhuma
+ferramenta disponivel no ambiente importava COLLADA com esqueleto direito;
+`pycollada` fez o parsing, o algoritmo de linear blend skinning foi
+implementado na mao em `scripts/bake_walk_frames.py`) e "tocar" essas N
+malhas estaticas em sequencia, trocando qual fica visivel com base na
+DISTANCIA percorrida - um flipbook 3D.
+
+```bash
+pip install pycollada --break-system-packages  # so pro script de bake, nao e dependencia do pacote
+
+scripts/bake_walk_frames.py entrada.dae textura.png saida_dir/ n_quadros
+scripts/empacotar_quadros.py saida_dir/ textura.png nome_pessoa n_quadros
+```
+O primeiro extrai os quadros (skinning manual: hierarquia de juntas do
+`<visual_scene>`, matrizes de bind/animacao de `<source>`/`<sampler>`/
+`<channel>`, aplica LBS e exporta cada pose como `.obj`); o segundo
+empacota cada quadro como um modelo Gazebo (`model.config` + `model.sdf`)
+dentro de `saye_description/models/`.
+
+`mover_pessoa_animada_node.py` (novo, ao lado do `mover_pessoa_node.py` da
+4.5) gerencia os N modelos-quadro de uma pessoa: a cada tick, calcula a
+posicao (igual a 4.5) e o INDICE DO QUADRO ativo
+(`caminhada.indice_quadro`, baseado em distancia percorrida / comprimento
+de passada), teleporta so o quadro ativo pra posicao real e estaciona os
+outros em `z=-50` (fora de qualquer camera).
+
+```bash
+ros2 launch saye_tracking mover_pessoas_animadas.launch.py
+```
+
+**Achado tecnico no caminho:** o primeiro bake pareceu quebrado (malha
+toda deformada/colapsada) - mas era bug no PREVIEW (o importador de `.obj`
+do Blender aplica conversao Y-up->Z-up por padrao, destruindo a pose só na
+visualizacao); os dados exportados sempre estiveram corretos (confirmado
+comparando a caixa delimitadora calculada em Python puro antes de
+qualquer import). Validado de verdade so depois de desligar essa conversao
+no import. A textura (PNG via MTL) nao carregou dentro do Gazebo (malha
+sai branca) - aceito como limitacao conhecida, ja que a forma/silhueta
+(cabelo, roupa, corpo) ja basta pra distinguir as pessoas visualmente e
+nao atrapalha a deteccao do YOLO.
+
+**Resultado validado ao vivo:** pipeline completo (sim + deteccao +
+projecao3d + tracker, publishers verificados via `ros2 topic info -v`), 3
+pessoas com aparencias diferentes (DoctorFemaleWalk, MaleVisitorWalk,
+Scrubs) andando ao mesmo tempo, 2 delas com o flipbook de 6 quadros - as
+pernas alternam de verdade entre capturas sucessivas da camera de debug.
+YOLO detecta as 3 simultaneamente (confianca 0.73-0.92). O rastreador
+mantem ate 3 tracks simultaneos, mas com mais troca de ID (7 IDs vistos em
+~23s pra 3 pessoas) do que nos cenarios de alvo unico da 4.4/4.5 -
+resultado esperado e ja discutido: a cena agora tem oclusao visual real
+entre pedestres e ruido de deteccao com multiplos alvos, algo que nenhum
+cenario anterior expunha. Fica registrado como alvo pra investigar a
+robustez da associacao sob essas condicoes mais realistas.
 
 ## Dependencias
 

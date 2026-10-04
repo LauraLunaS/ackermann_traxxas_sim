@@ -15,34 +15,29 @@ from gz.msgs10.pose_pb2 import Pose
 from gz.transport13 import Node as NodeGz
 import rclpy
 from rclpy.node import Node
-from saye_tracking.caminhada import (
-    DESTINO_PADRAO,
-    ORIGEM_PADRAO,
-    posicao_no_instante,
-    VELOCIDADE_PADRAO,
-)
+from saye_tracking.caminhada import posicao_no_caminho
 
 YAW_PADRAO = -1.5708  # mesma orientacao original da pessoa em simple_world.sdf
+OFFSET_YAW = YAW_PADRAO - 1.5708  # o caminho original andava em +y (yaw pi/2)
 
 
 class MoverPessoaNode(Node):
-    """Fase 4 - teleporta a pessoa detectavel num vai-e-vem continuo."""
+    """Fase 4 - teleporta a pessoa detectavel seguindo waypoints em loop."""
 
     def __init__(self, **kwargs):
         super().__init__('mover_pessoa_node', **kwargs)
 
         self.declare_parameter('mundo', 'beach_world')
         self.declare_parameter('nome_modelo', 'pessoa_detectavel')
-        self.declare_parameter('origem', list(ORIGEM_PADRAO))
-        self.declare_parameter('destino', list(DESTINO_PADRAO))
-        self.declare_parameter('velocidade', VELOCIDADE_PADRAO)
+        self.declare_parameter('waypoints', [3.5, 0.0, 3.5, 2.0])
+        self.declare_parameter('velocidade', 0.35)
         self.declare_parameter('taxa_hz', 10.0)
 
         self.servico = (
             f"/world/{self.get_parameter('mundo').value}/set_pose")
         self.nome_modelo = self.get_parameter('nome_modelo').value
-        self.origem = tuple(self.get_parameter('origem').value)
-        self.destino = tuple(self.get_parameter('destino').value)
+        flat = self.get_parameter('waypoints').value
+        self.waypoints = [(flat[i], flat[i + 1]) for i in range(0, len(flat), 2)]
         self.velocidade = self.get_parameter('velocidade').value
 
         self.no_gz = NodeGz()
@@ -52,24 +47,23 @@ class MoverPessoaNode(Node):
 
         self.get_logger().info(
             f'mover_pessoa_node iniciado (Fase 4). "{self.nome_modelo}" '
-            f'vai-e-vem {self.origem} <-> {self.destino} a {self.velocidade} m/s '
+            f'em loop por {self.waypoints} a {self.velocidade} m/s '
             f'via "{self.servico}".')
 
     def _callback_timer(self):
         tempo = self.n_ticks / self.taxa_hz
         self.n_ticks += 1
 
-        x, y = posicao_no_instante(
-            tempo, origem=self.origem, destino=self.destino,
-            velocidade=self.velocidade)
+        x, y, yaw_caminho = posicao_no_caminho(self.velocidade * tempo, self.waypoints)
+        yaw = yaw_caminho + OFFSET_YAW
 
         req = Pose()
         req.name = self.nome_modelo
         req.position.x = x
         req.position.y = y
         req.position.z = 0.0
-        req.orientation.z = math.sin(YAW_PADRAO / 2.0)
-        req.orientation.w = math.cos(YAW_PADRAO / 2.0)
+        req.orientation.z = math.sin(yaw / 2.0)
+        req.orientation.w = math.cos(yaw / 2.0)
 
         self.no_gz.request(self.servico, req, Pose, Boolean, 200)
 
