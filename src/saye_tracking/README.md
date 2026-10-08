@@ -122,6 +122,8 @@ A velocidade sai so visualmente (seta no `MarkerArray`) ate a Fase 5
 | 4.4 | Rodar a suite e gerar relatorio | feito (`test_4_4_relatorio.py` + validado ao vivo, suite inteira) |
 | 4.5 | Pessoa detectavel ANDANDO de verdade (alvo com movimento proprio, nao so a camera se movendo) | feito (`test_4_5_caminhada.py` + validado ao vivo) |
 | 4.6 | Multiplas pessoas, visualmente diferentes, com CICLO DE CAMINHADA real (pernas se movendo) | feito (validado ao vivo) |
+| 4.7 | Supressao de duplicata no rastreador - corrige ids fantasmas perto de cruzamentos (ver achado abaixo) | feito (`test_4_7_supressao_duplicata.py`) |
+| 4.8 | Gate adaptativo + OCM na recuperacao (OCR) - corrige troca de id entre pessoas DIFERENTES (ver achado abaixo) | feito (`test_4_8_gate_adaptativo_recuperacao.py`); limitacao residual conhecida em cruzamento geometrico real |
 
 **Achado do 4.0:** o sistema de `<actor>` do Gazebo (mesh animado tipo
 Collada) carrega normalmente e aparece na GUI, mas **nao renderiza pra
@@ -491,6 +493,102 @@ resultado esperado e ja discutido: a cena agora tem oclusao visual real
 entre pedestres e ruido de deteccao com multiplos alvos, algo que nenhum
 cenario anterior expunha. Fica registrado como alvo pra investigar a
 robustez da associacao sob essas condicoes mais realistas.
+
+### 4.7 — supressao de duplicata (corrige ids fantasmas do 4.6)
+
+Investigacao do item deixado pendente no 4.6: gravados 45s de
+`/tracker_node/tracks` ao vivo com as 3 pessoas do 4.6 andando
+simultaneamente (`gravador_node`/leitura direta do topico). Agrupando por
+id, 3 ids de vida longa (quase os 45s inteiros) correspondem claramente
+as 3 pessoas reais - a associacao funciona bem na maior parte do tempo.
+Mas apareceram 3 ids "fantasma" de vida curta (um instantaneo em t=0, um
+de ~10s em t≈16s, um de <1s em t≈42s) - **todos na mesma regiao
+espacial**, perto de onde o caminho vertical de uma pessoa cruza
+geometricamente o caminho retangular de outra.
+
+**Causa raiz:** no ciclo em que uma pessoa real tem sua deteccao casada
+normalmente com o track dela (turno 1 ou 2 da associacao), uma SEGUNDA
+deteccao da MESMA pessoa surge a poucos centimetros da primeira (silhueta
+particionada pela proximidade com a outra pessoa, ou um frame do
+"flipbook" de caminhada capturado em transicao) e sobra sem par. O laco
+principal (`rastreador.py`) tratava TODA deteccao sem par como objeto
+novo, nascendo um track `TENTATIVO` bem em cima do track que ja existe -
+o id fantasma.
+
+**Correcao:** `Rastreador3D._filtrar_duplicatas` (novo, submodulo 4.7) -
+antes de abrir track novo pra uma deteccao sem par, descarta ela se
+estiver a `raio_supressao_duplicata` metros (padrao 0.5m, parametro ROS
+`raio_supressao_duplicata` do `tracker_node`) ou menos de um track que JA
+foi observado/atualizado NESTA MESMA rodada. So considera tracks
+atualizados agora (nao qualquer track parado/antigo), pra nao impedir uma
+pessoa nova de abrir track proprio so por aparecer perto de um track
+velho sem atualizacao recente. Validado com cenarios fabricados
+(`test_4_7_supressao_duplicata.py`): deteccao fantasma a 15cm de um track
+recem-atualizado nao cria track novo; deteccao de verdade longe de tudo
+continua criando; duas pessoas reais a 0.8m uma da outra (mais que o raio
+de 0.5m) continuam confirmando como tracks distintos.
+
+### 4.8 — gate adaptativo + OCM na recuperacao (corrige troca de id)
+
+Pedido explicito do usuario: testar se o rastreador respeita o principio
+basico de MOT de manter o MESMO id por pessoa ao longo do tempo quando
+nao ha oclusao real - e corrigir se nao respeitar.
+
+**Teste ao vivo (97s, pipeline limpo, 1 publisher confirmado por topico
+via `ros2 topic info -v`):** resultado inicial pior do que o esperado - um
+unico id sobrevivia a janela TODA (parecia perfeito), mas tracando a
+trajetoria dele apareciam saltos de 0.6-1.0m em 0.2-0.3s (2.7-3.4 m/s,
+~10x a velocidade maxima de qualquer pessoa configurada). O id estava
+pulando silenciosamente entre pessoas DIFERENTES.
+
+**Causa raiz:** o `gate_distancia` (1.5m, usado tanto no turno normal de
+associacao quanto no OCR de recuperacao) era maior que a menor distancia
+real entre pessoas distintas na cena (`atores.yaml`): pessoa_2-pessoa_3
+ficam a so 0.5m, pessoa_1-pessoa_2 chegam a 1.0m (e literalmente SE
+CRUZAM em (2,1) e (2,3) - distancia zero nesses 2 pontos). Alem disso, o
+OCR (`recuperacao.recuperar_perdidos`) usava esse MESMO gate fixo
+independente de ha quanto tempo o track estava perdido, e ignorava o
+custo de direcao do OCM (3.4) - exatamente o mecanismo feito pra
+desambiguar por movimento, nao so posicao.
+
+**Correcao (2 iteracoes, cada uma medida ao vivo antes de seguir pra
+proxima):**
+1. OCR ganhou um gate ADAPTATIVO (`velocidade_maxima_esperada * tempo_perdido
+   + margem_gate`, nunca acima de `gate_distancia`) em vez do gate fixo, e
+   passou a somar o custo de direcao do OCM na recuperacao, nao so na
+   associacao normal (`recuperacao.recuperar_perdidos`, `associacao.associar`
+   generalizado pra aceitar um gate por track). Testado ao vivo de novo:
+   melhorou (saltos ficaram menores, 0.3-0.5m), mas nao resolveu - o
+   `gate_distancia` do turno NORMAL (nao so o OCR) ainda estava em 1.5m,
+   deixando a associacao comum por si so casar o track com a deteccao de
+   OUTRA pessoa em varios passos pequenos, cada um dentro do gate.
+2. `gate_distancia` reduzido de 1.5m para 0.4m (abaixo da menor distancia
+   real entre pessoas DIFERENTES, 0.5m, com margem de seguranca) - e os
+   parametros do gate adaptativo do OCR junto (`velocidade_maxima_esperada`
+   0.6→0.25, `margem_gate_recuperacao` 0.3→0.1), todos ainda bem acima do
+   deslocamento real esperado entre 2 deteccoes consecutivas (pessoas andam
+   a <=0.3 m/s a ~10-20Hz).
+
+**Resultado validado ao vivo (97.7s, apos a 2a iteracao):** pessoa_3 (que
+nunca se cruza geometricamente com ninguem, so fica a 0.5m de pessoa_2)
+ficou limpa - nenhuma contaminacao entre ela e as outras 2 em toda a
+gravacao. Pessoa_2 (retangulo) tambem aparece como tracks coerentes com
+o formato certo do caminho. Ainda restam trocas de id ocasionais
+especificamente pessoa_1↔pessoa_2 bem no ponto (2,1)/(2,3) - **e la elas
+se cruzam de verdade** (distancia fisica zero no instante do cruzamento,
+nao so "perto"): nenhum gate de distancia, por menor que seja, pode
+diferenciar 2 objetos que estao literalmente na mesma posicao num motion-only
+tracker sem ReID. Isso e consistente com o principio testado, nao uma
+violacao dele - "sem oclusao real" exclui exatamente esse caso, porque 2
+corpos na mesma posicao AO MESMO TEMPO sao, pela definicao de deteccao por
+silhueta, uma forma de oclusao mutua. Registrado como limitacao conhecida,
+nao como bug pendente.
+
+Testes: `test_4_8_gate_adaptativo_recuperacao.py` (via `Rastreador3D`
+completo - 2 pessoas reais a 1.0m uma da outra nao trocam de id so por 1
+frame perdido; recuperacao legitima de oclusao longa continua funcionando)
++ `test_3_5_recuperacao.py` (unitario - gate adaptativo rejeita deslocamento
+fisicamente impossivel mesmo dentro do gate global).
 
 ## Dependencias
 

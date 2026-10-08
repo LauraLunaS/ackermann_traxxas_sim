@@ -18,6 +18,13 @@ def _rastreador(**kwargs):
         'tolerancia_tentativo_segundos': 0.35,
         'tolerancia_perdido_segundos': 1.0,
         'gate_distancia': 1.0,
+        # estes testes usam velocidades bem maiores que qualquer pessoa real
+        # configurada (e.g. 2.0 m/s na trajetoria cruzando, Fase 3) so pra
+        # caber poucos ciclos e rodar rapido - o gate adaptativo da
+        # recuperacao (4.8) precisa de uma velocidade maxima esperada
+        # compativel com ISSO, nao com a velocidade de pessoas reais
+        # (0.4 m/s, o padrao de producao do tracker_node).
+        'velocidade_maxima_esperada': 3.0,
     }
     padrao.update(kwargs)
     return Rastreador3D(**padrao)

@@ -17,7 +17,9 @@ def _track_perdido(posicao_inicial=(0.0, 0.0), tempo_criacao=0.0):
 def test_recupera_perdido_perto_da_ultima_observacao_real():
     t = _track_perdido(posicao_inicial=(5.0, 0.0))
 
-    matches, sem_track, sem_det = recuperar_perdidos([t], [(5.2, 0.0)])
+    # perdido ha 0.3s (tempo_atual=0.4, ultima obs em 0.1) - a 0.6m/s
+    # maximos (padrao), 0.2m de deslocamento cabem no gate adaptativo
+    matches, sem_track, sem_det = recuperar_perdidos([t], [(5.2, 0.0)], tempo_atual=0.4)
 
     assert matches == [(0, 0)]
     assert sem_track == []
@@ -28,7 +30,28 @@ def test_gate_rejeita_recuperacao_muito_longe():
     t = _track_perdido(posicao_inicial=(5.0, 0.0))
 
     matches, sem_track, sem_det = recuperar_perdidos(
-        [t], [(50.0, 0.0)], gate_max_distancia=1.5)
+        [t], [(50.0, 0.0)], tempo_atual=0.4, gate_max_distancia=1.5)
+
+    assert matches == []
+    assert sem_track == [0]
+    assert sem_det == [0]
+
+
+def test_gate_adaptativo_rejeita_deslocamento_fisicamente_impossivel():
+    """
+    Fase 4.8 - gate adaptativo rejeita deslocamento fisicamente impossivel.
+
+    Mesmo DENTRO do `gate_distancia` global (1.5m), uma
+    deteccao a 1.2m de um track perdido ha so 0.1s tem que ser rejeitada:
+    a 0.6 m/s maximos (padrao de `velocidade_maxima_esperada`), em 0.1s
+    o objeto so pode ter andado ~0.06m (+ margem). Antes da 4.8, isso
+    teria casado (so checava o gate global de 1.5m) - esse era exatamente
+    o mecanismo que deixava um id "pular" pra uma pessoa diferente perto.
+    """
+    t = _track_perdido(posicao_inicial=(0.0, 0.0))
+
+    matches, sem_track, sem_det = recuperar_perdidos(
+        [t], [(1.2, 0.0)], tempo_atual=0.2, gate_max_distancia=1.5)
 
     assert matches == []
     assert sem_track == [0]
@@ -44,8 +67,10 @@ def test_usa_ultima_observacao_e_nao_a_previsao_do_kalman_desviada():
     t.prever(tempo_atual=5.0)
     assert np.linalg.norm(t.posicao) > 40  # previsao bem longe, como esperado
 
+    # perdido ha 5s - gate adaptativo (0.6*5+0.3=3.3m) ainda cobre a
+    # deteccao a 0.3m, sem precisar do gate global de 1.5m
     matches, sem_track, sem_det = recuperar_perdidos(
-        [t], [(0.3, 0.0)], gate_max_distancia=1.5)
+        [t], [(0.3, 0.0)], tempo_atual=5.1, gate_max_distancia=1.5)
 
     assert matches == [(0, 0)]  # recuperou apesar da previsao ruim
 

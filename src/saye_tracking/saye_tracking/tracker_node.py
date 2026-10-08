@@ -48,9 +48,12 @@ class TrackerNode(Node):
 
         self.declare_parameter('topico_deteccoes_3d', '/projecao3d_node/deteccoes_3d')
         self.declare_parameter('frame_saida', 'odom')
-        self.declare_parameter('gate_distancia', 1.5)
+        self.declare_parameter('gate_distancia', 0.4)
         self.declare_parameter('peso_ocm', 1.0)
         self.declare_parameter('n_passos_oru', 5)
+        self.declare_parameter('raio_supressao_duplicata', 0.5)
+        self.declare_parameter('velocidade_maxima_esperada', 0.25)
+        self.declare_parameter('margem_gate_recuperacao', 0.1)
         self.declare_parameter('min_hits_confirmar', 3)
         self.declare_parameter('tolerancia_tentativo_segundos', 0.4)
         self.declare_parameter('tolerancia_perdido_segundos', 1.5)
@@ -62,6 +65,10 @@ class TrackerNode(Node):
             gate_distancia=self.get_parameter('gate_distancia').value,
             peso_ocm=self.get_parameter('peso_ocm').value,
             n_passos_oru=int(self.get_parameter('n_passos_oru').value),
+            raio_supressao_duplicata=self.get_parameter('raio_supressao_duplicata').value,
+            velocidade_maxima_esperada=self.get_parameter(
+                'velocidade_maxima_esperada').value,
+            margem_gate_recuperacao=self.get_parameter('margem_gate_recuperacao').value,
             min_hits_confirmar=int(self.get_parameter('min_hits_confirmar').value),
             tolerancia_tentativo_segundos=self.get_parameter(
                 'tolerancia_tentativo_segundos').value,
