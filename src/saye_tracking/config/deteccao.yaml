@@ -1,5 +1,13 @@
 /**/deteccao_node:
   ros__parameters:
+    # modelo fine-tuned no KITTI (yolov8n-seg-kitti-pessoas-v2.pt) testado em
+    # producao e revertido: comparado direto nos MESMOS frames da simulacao,
+    # ele detectou bem menos gente (16/20 frames vs 20/20, confianca media
+    # 0.51 vs 0.79) que o COCO original - o KITTI e foto real de rua, a
+    # pessoa do Gazebo e renderizacao sintetica, e o fine-tuning especializou
+    # o modelo pro dominio errado pra ESTE ambiente. Ver README (fase
+    # "Treinando o detector") - o checkpoint do KITTI deve ser revisitado
+    # quando o robo rodar com camera real no mundo real, nao na simulacao.
     modelo: yolov8n-seg.pt
     topico_imagem: /camera/realsense/image_raw
     confianca_min: 0.4

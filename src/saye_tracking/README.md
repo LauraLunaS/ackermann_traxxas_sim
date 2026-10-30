@@ -722,6 +722,83 @@ Para ter algo para detectar, adicione um ator/pedestre ao mundo do Gazebo
 | `classes` | `["person"]` | nomes COCO; adicionar `car`, `bicycle`, etc. depois |
 | `publicar_debug` | `true` | overlay so e gerado se houver assinante |
 
+### Treinando o detector com o KITTI (tentativa - revertida em producao)
+
+O `yolov8n-seg.pt` em producao e o checkpoint generico do ultralytics
+(pre-treinado so no COCO). Tentamos fine-tuning com o
+[KITTI](https://docs.ultralytics.com/datasets/detect/kitti/) (dataset de
+deteccao 2D, mirror pronto do proprio ultralytics - 5985 imagens de treino
++ 1496 de validacao, baixado direto de
+`https://github.com/ultralytics/assets/releases/download/v0.0.0/kitti.zip`,
+sem cadastro, ~390MB) esperando melhorar deteccao de pedestre. **Resultado:
+piorou a deteccao na simulacao - revertido pro `yolov8n-seg.pt` original.**
+Fica documentado porque o motivo do fracasso e especifico e vale saber
+antes de tentar de novo.
+
+**Pipeline usado:**
+```bash
+# os scripts/preparar_dataset_kitti.py + treinar_yolo_kitti.py documentados
+# anteriormente tambem funcionam (pro KITTI Tracking Benchmark oficial,
+# que exige cadastro em cvlibs.net) - o que foi USADO de fato na pratica
+# foi o mirror do ultralytics, mais simples:
+
+# 1. baixa o mirror (ja vem com images/{train,val} + labels/{train,val}
+#    em formato YOLO de DETECCAO - caixa, nao poligono)
+curl -L -o kitti.zip https://github.com/ultralytics/assets/releases/download/v0.0.0/kitti.zip
+unzip kitti.zip -d kitti_extraido
+
+# 2. converte caixa -> poligono (mesma razao do preparar_dataset_kitti.py:
+#    projecao3d_node precisa de mascara) e filtra so pedestrian+Person_sitting
+python3 scripts/converter_deteccao_para_seg.py \
+    --origem kitti_extraido --saida dataset_kitti_pessoas_seg
+
+# 3. fine-tuning (CPU, maquina sem GPU)
+python3 scripts/treinar_yolo_kitti.py --dataset dataset_kitti_pessoas_seg/dataset.yaml
+```
+
+**Duas rodadas de treino**, cada uma validada contra o proprio conjunto
+de validacao do KITTI antes de seguir:
+
+| | COCO (sem fine-tuning) | v1 (640px, freeze=10, 15 epocas, 2h46) | v2 (960px, freeze=5, 25 epocas, 12h38) |
+|---|---|---|---|
+| mAP50 (caixa) | 0,416 | 0,616 | **0,756** |
+| mAP50-95 (caixa) | 0,150 | 0,307 | **0,402** |
+| mAP50 (mascara) | 0,042 | 0,502 | **0,634** |
+
+Cada rodada melhorou de verdade **no proprio benchmark do KITTI** -
+reduzir o `freeze`, aumentar `imgsz` e rodar mais epocas funcionou
+exatamente como esperado para esse objetivo.
+
+**O problema: essa validacao mede o dominio errado.** O KITTI e fotografia
+real de camera de carro. As pessoas que o robo ve sao modelos 3D
+RENDERIZADOS pelo Gazebo (fase 4.6) - um visual bem diferente (sem a
+textura/ruido/iluminacao de foto real). Comparando os dois modelos nos
+MESMOS 20 frames capturados ao vivo da simulacao (nao do KITTI):
+
+| | COCO original | v2 (fine-tuned KITTI) |
+|---|---|---|
+| Frames com deteccao | 20/20 | 16/20 |
+| Deteccoes totais | 51 | 21 |
+| Confianca media | 0,790 | 0,512 |
+
+O fine-tuning especializou o modelo pra reconhecer foto real de rua, e
+isso o tornou PIOR em reconhecer gente sintetica do Gazebo - o COCO
+generalista, por acaso, generaliza melhor pro visual estilizado da
+simulacao do que um modelo nichado em fotografia real. Efeito colateral
+observado no rastreador: menos deteccao por frame -> mais tracks indo
+`PERDIDO` -> ids novos nascendo bem mais rapido (contador global passou de
+~260 em poucos minutos de simulacao, varias vezes mais rapido que com o
+COCO original).
+
+**Licao:** validar um fine-tuning so no benchmark de origem (aqui, o
+proprio KITTI) nao basta quando o dominio de implantacao e diferente -
+precisa comparar nos dados reais de onde o modelo vai rodar. Os checkpoints
+`models/yolov8n-seg-kitti-pessoas{,-v2}.pt` ficam guardados (nao
+commitados - grandes demais / regenerar com o pipeline acima) para o dia
+em que o robo rodar com camera de verdade no mundo real, onde o dominio do
+KITTI (foto real de rua) faz sentido de novo. `config/deteccao.yaml`
+permanece com `yolov8n-seg.pt` (o original) em producao na simulacao.
+
 ## Fase 2 — projecao 3D
 
 ```bash
