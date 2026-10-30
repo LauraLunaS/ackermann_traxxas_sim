@@ -37,7 +37,7 @@ class Rastreador3D:
     """Mantem uma populacao de Tracks e os atualiza a cada rodada de deteccoes."""
 
     def __init__(self, gate_distancia=0.4, peso_ocm=1.0, n_passos_oru=5,
-                 raio_supressao_duplicata=0.5, velocidade_maxima_esperada=0.25,
+                 raio_supressao_duplicata=0.5, velocidade_maxima_esperada=0.35,
                  margem_gate_recuperacao=0.1, **kwargs_track):
         self.tracks = []
         # 4.8: o `gate_distancia` original (1.5m) era maior que a MENOR
@@ -62,7 +62,14 @@ class Rastreador3D:
         # ver docstring de `recuperacao.recuperar_perdidos` - o gate da
         # recuperacao (OCR) escala com o tempo perdido em vez de usar sempre
         # `gate_distancia` cheio, pra nao "recuperar" um track com a
-        # deteccao de OUTRA pessoa que por acaso esta por perto.
+        # deteccao de OUTRA pessoa que por acaso esta por perto. Valor tem
+        # que ficar ACIMA da pessoa mais rapida de `atores.yaml` (pessoa_1,
+        # 0.3 m/s) - um valor de 0.25 (usado antes do 4.9) deixava o gate
+        # de recuperacao da pessoa_1 pequeno demais pra ela mesma, e o
+        # Kalman ocasionalmente travava com velocidade quase zero apos
+        # qualquer gap breve, sem recuperar a oscilacao real - resultado
+        # dependia de sorte de timing entre rodadas do MESMO combo de
+        # teste (MOTA variando de -0.14 a 0.55).
         self.velocidade_maxima_esperada = velocidade_maxima_esperada
         self.margem_gate_recuperacao = margem_gate_recuperacao
         # 4.7: raio (m) abaixo do qual uma deteccao sem par NAO abre track

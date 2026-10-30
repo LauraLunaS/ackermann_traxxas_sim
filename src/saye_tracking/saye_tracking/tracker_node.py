@@ -52,7 +52,17 @@ class TrackerNode(Node):
         self.declare_parameter('peso_ocm', 1.0)
         self.declare_parameter('n_passos_oru', 5)
         self.declare_parameter('raio_supressao_duplicata', 0.5)
-        self.declare_parameter('velocidade_maxima_esperada', 0.25)
+        # 0.25 (valor anterior) era MENOR que a velocidade real da pessoa_1
+        # na bancada multi-pessoa (atores.yaml: 0.3 m/s) - achado
+        # investigando instabilidade de MOTA so no combo "1 pessoa
+        # andando" (ver README, 4.9): o gate adaptativo do OCR fica
+        # pequeno demais pra reagarrar o track dela apos qualquer gap
+        # breve, e o Kalman as vezes trava com velocidade quase zero
+        # (nao recupera a oscilacao real da trajetoria) - resultado
+        # dependia de sorte de timing entre rodadas (MOTA variando de
+        # -0.14 a 0.55 pra exatamente o MESMO combo). 0.35 fica acima da
+        # pessoa mais rapida configurada, com uma margem pequena.
+        self.declare_parameter('velocidade_maxima_esperada', 0.35)
         self.declare_parameter('margem_gate_recuperacao', 0.1)
         self.declare_parameter('min_hits_confirmar', 3)
         self.declare_parameter('tolerancia_tentativo_segundos', 0.4)
