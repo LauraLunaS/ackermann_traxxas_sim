@@ -590,6 +590,68 @@ frame perdido; recuperacao legitima de oclusao longa continua funcionando)
 + `test_3_5_recuperacao.py` (unitario - gate adaptativo rejeita deslocamento
 fisicamente impossivel mesmo dentro do gate global).
 
+### 4.9 — bancada de avaliacao multi-pessoa
+
+Estende a bancada original (4.1-4.4, 1 pessoa estatica + robo se movendo)
+pro que o projeto realmente precisa validar: VARIAS pessoas andando (4.6)
++ robo parado OU andando. Novo em `saye_tracking/`: `verdade_atores.py`
+(verdade analitica - recalcula a posicao de cada ator com a mesma formula
+que `mover_pessoa_animada_node` usa, em vez de ler de volta do Gazebo,
+fragil pro flipbook de quadros), `gravador_atores_node.py` (grava
+hipotese do tracker + essa verdade), `rodar_suite_pessoas.py`
+(orquestrador: pra cada combinacao de quantidade de pessoas (1/2/3) x
+robo (parado/andando) - sempre os mesmos N primeiros atores de
+`atores.yaml`, na mesma ordem, garantindo trajetoria identica entre
+testes com quantidades diferentes).
+
+**3 achados**, cada um achado rodando a bancada de verdade e vendo o
+resultado nao bater com o esperado - nao adivinhados de antemao:
+
+1. **Atores fantasma**: os atores com flipbook (4.6) ja vem spawnados no
+   `simple_world.sdf` (quadro 0 de cada um, parado); um teste com so 1 das
+   3 pessoas deixaria as outras 2 visiveis e PARADAS, contaminando a
+   deteccao. Corrigido estacionando (teleporta pra z=-50) TODO quadro de
+   TODO ator antes de cada combinacao, religando so os N que o teste
+   precisa.
+2. **Contaminacao entre testes via `tracker_node`**: ele e um processo de
+   vida longa, nunca reiniciado entre combinacoes - um track `PERDIDO` de
+   uma combinacao anterior podia sobreviver e ser "recuperado" (OCR) por
+   engano contra a cena NOVA. Confirmado rodando a bancada inteira 2x: o
+   MOTA de uma MESMA combinacao variou de -0.16 a 0.55 entre rodadas, e
+   QUAL combinacao "dava errado" mudava a cada rodada - sintoma de
+   contaminacao ordem-dependente, nao dificuldade real de alguma
+   combinacao especifica. Corrigido com um servico novo,
+   `/tracker_node/resetar` (`TrackerNode.callback_resetar`), chamado
+   antes de cada combinacao.
+3. **`/cmd_vel` residual entre testes**: mesmo apos o achado 2, sobrava
+   instabilidade nos testes "andando" (MOTA entre -0.09 e 0.60 em rodadas
+   diferentes). A suspeita inicial foi o bug ja documentado de timestamp
+   de camera (`gravador_node.py`, Achado 3 - `header.stamp` as vezes vem
+   com relogio de parede) - testado DIRETO (comparando `/clock` com o
+   `header.stamp` da imagem, parado e andando, com os 3 atores andando
+   junto pra replicar a carga real da bancada) e **nao reproduziu**
+   (maior diferenca vista: 24ms, sempre normal). A causa real, achada
+   reproduzindo sem querer: teleportar a pose do robo nao para as rodas -
+   se `/cmd_vel` ficou com um valor diferente de zero de uma combinacao
+   anterior (cenario interrompido antes do Twist zero final que
+   `executar_cenario_node` publica ao terminar normalmente), o robo
+   continua obedecendo o comando velho mesmo depois de teleportado pro
+   spawn, podendo ir parar longe de qualquer ator - reproduzido ao vivo,
+   um `/cmd_vel` residual levou o robo pra (-2.4, 9.1) e a deteccao ficou
+   **100% vazia** (0 de 300 mensagens) ate ser corrigido. Corrigido
+   publicando um Twist zero ANTES de resetar a pose, toda combinacao.
+
+**Resultado da bancada** (3 rodadas completas, 6 combinacoes cada - ver
+tabela completa no historico de commits/conversa, nao reproduzida aqui
+por ser grande): robo parado e consistentemente bom (MOTA 0.76-0.92 em
+todas as 9 execucoes "parado" das 3 rodadas); robo andando e instavel
+(MOTA de -0.17 a 0.60) ate o achado 3 acima ser corrigido - ainda a
+validar se a correcao do achado 3 estabiliza os testes "andando" tambem
+(proximo passo).
+
+Testes: `test_4_9_verdade_atores.py` (verdade analitica bate com a formula
+do mover node, sem ROS).
+
 ## Dependencias
 
 `ultralytics` e `motmetrics` nao tem rosdep key — instale via pip (convencao do workspace):

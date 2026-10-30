@@ -24,6 +24,16 @@ O robo nasce em `(-1.0, 1.0)`, olhando pra +x (yaw=0); a pessoa esta em
   obstaculos dinamicos do mundo (que patrulham sozinhos, ver achado do 3.8)
   passam entre camera e pessoa por conta propria - MELHOR ESFORCO, nao
   deterministico (a patrulha dos obstaculos nao e limpa, ver README).
+
+Os dois a seguir sao do `rodar_suite_pessoas.py` (4.9 - bancada
+multi-pessoa, atores andando de verdade em vez da `pessoa_detectavel`
+estatica): duracao bem mais longa (30s, nao 8-15s) pra dar tempo dos
+atores percorrerem boa parte do proprio caminho em loop.
+- `parado_pessoas`: baseline da bancada 4.9, robo parado.
+- `andando_pessoas`: avanca bem devagar (0.1 m/s) - rapido o bastante pra
+  testar o robo em movimento, devagar o bastante pra nao sair da zona
+  onde os atores circulam nem percorrer alem do mundo (ver
+  `config/atores.yaml`) nos 30s de duracao.
 """
 
 CENARIOS = {
@@ -45,6 +55,12 @@ CENARIOS = {
     ],
     'oclusao_obstaculo': [
         (0.0, 0.0, 15.0),
+    ],
+    'parado_pessoas': [
+        (0.0, 0.0, 30.0),
+    ],
+    'andando_pessoas': [
+        (0.1, 0.0, 30.0),
     ],
 }
 

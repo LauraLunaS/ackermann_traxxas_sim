@@ -17,12 +17,16 @@ import csv
 CABECALHO = ['tempo', 'id', 'x', 'y']
 
 
+CABECALHO_ROBO = ['tempo', 'x', 'y', 'yaw']
+
+
 class Gravador:
     """Acumula linhas de hipotese/verdade e salva como CSV."""
 
     def __init__(self):
         self.hipoteses = []  # lista de (tempo, id, x, y)
         self.verdade = []    # lista de (tempo, id, x, y)
+        self.robo = []       # lista de (tempo, x, y, yaw) - pose real do robo (4.9)
 
     def registrar_hipotese(self, tempo, id_track, x, y):
         self.hipoteses.append((float(tempo), str(id_track), float(x), float(y)))
@@ -30,15 +34,20 @@ class Gravador:
     def registrar_verdade(self, tempo, id_objeto, x, y):
         self.verdade.append((float(tempo), str(id_objeto), float(x), float(y)))
 
-    def salvar(self, caminho_hipoteses, caminho_verdade):
+    def registrar_robo(self, tempo, x, y, yaw):
+        self.robo.append((float(tempo), float(x), float(y), float(yaw)))
+
+    def salvar(self, caminho_hipoteses, caminho_verdade, caminho_robo=None):
         _salvar_csv(caminho_hipoteses, self.hipoteses)
         _salvar_csv(caminho_verdade, self.verdade)
+        if caminho_robo is not None:
+            _salvar_csv(caminho_robo, self.robo, cabecalho=CABECALHO_ROBO)
 
 
-def _salvar_csv(caminho, linhas):
+def _salvar_csv(caminho, linhas, cabecalho=CABECALHO):
     with open(caminho, 'w', newline='') as arquivo:
         escritor = csv.writer(arquivo)
-        escritor.writerow(CABECALHO)
+        escritor.writerow(cabecalho)
         escritor.writerows(linhas)
 
 

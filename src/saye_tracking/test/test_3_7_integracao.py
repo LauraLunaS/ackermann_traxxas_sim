@@ -15,6 +15,7 @@ from rclpy.node import Node
 from rclpy.parameter import Parameter
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 from saye_tracking.tracker_node import TrackerNode
+from std_srvs.srv import Trigger
 from vision_msgs.msg import Detection3D, Detection3DArray, ObjectHypothesisWithPose
 from visualization_msgs.msg import Marker, MarkerArray
 
@@ -80,14 +81,14 @@ def ambiente():
             exe.spin_once(timeout_sec=0.02)
 
     spin(1.0)  # descoberta pub/sub
-    yield pub, capturado, spin
+    yield pub, capturado, spin, node
     node.destroy_node()
     pub.destroy_node()
     rclpy.shutdown()
 
 
 def test_track_confirmado_e_publicado_com_id_estavel(ambiente):
-    pub, capturado, spin = ambiente
+    pub, capturado, spin, _node = ambiente
 
     posicao = 0.0
     for k in range(4):
@@ -103,7 +104,7 @@ def test_track_confirmado_e_publicado_com_id_estavel(ambiente):
 
 
 def test_marcadores_incluem_seta_de_velocidade(ambiente):
-    pub, capturado, spin = ambiente
+    pub, capturado, spin, _node = ambiente
 
     posicao = 0.0
     for k in range(5):
@@ -122,7 +123,7 @@ def test_marcadores_incluem_seta_de_velocidade(ambiente):
 
 
 def test_mensagem_sem_deteccoes_nao_quebra(ambiente):
-    pub, capturado, spin = ambiente
+    pub, capturado, spin, _node = ambiente
 
     pub.pub.publish(Detection3DArray())
     spin(0.5)
@@ -130,3 +131,39 @@ def test_mensagem_sem_deteccoes_nao_quebra(ambiente):
     msg = capturado.get('tracks')
     assert msg is not None
     assert len(msg.detections) == 0
+
+
+def test_servico_resetar_limpa_tracks(ambiente):
+    """
+    Submodulo 4.9 - achado da bancada multi-pessoa.
+
+    `tracker_node` e um processo de vida longa (ligado 1x, reaproveitado
+    por toda uma bateria de testes) - sem um jeito de limpar o estado
+    entre testes, um track de um cenario anterior sobrevive e pode
+    contaminar o proximo (confirmado ao vivo: a mesma combinacao de teste
+    dava resultado bem diferente dependendo da ordem de execucao). Este
+    teste confere que `~/resetar` realmente esvazia `rastreador.tracks` -
+    depois dele, uma deteccao na MESMA posicao de antes tem que comecar um
+    track `TENTATIVO` novo (nao confirmado so com 1 observacao), nao
+    recuperar o id antigo.
+    """
+    pub, capturado, spin, node = ambiente
+
+    posicao = 0.0
+    for k in range(4):
+        pub.pub.publish(_deteccoes_3d((posicao, 1.0), _stamp(k * 0.1)))
+        spin(0.3)
+        posicao += 0.05
+
+    assert len(node.rastreador.tracks) > 0  # confirma que ha algo pra limpar
+
+    cliente = node.create_client(Trigger, '~/resetar')
+    assert cliente.wait_for_service(timeout_sec=2.0)
+    futuro = cliente.call_async(Trigger.Request())
+    t0 = time.time()
+    while not futuro.done() and time.time() - t0 < 2.0:
+        spin(0.05)
+
+    assert futuro.done()
+    assert futuro.result().success
+    assert node.rastreador.tracks == []

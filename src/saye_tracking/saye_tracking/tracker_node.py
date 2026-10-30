@@ -29,6 +29,7 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy
 from saye_tracking.projecao3d_node import TAMANHOS_BBOX
 from saye_tracking.rastreador import Rastreador3D
 from std_msgs.msg import ColorRGBA
+from std_srvs.srv import Trigger
 from vision_msgs.msg import (
     BoundingBox3D,
     Detection3D,
@@ -91,6 +92,7 @@ class TrackerNode(Node):
             Detection3DArray, topico, self.callback_deteccoes, qos_confiavel)
         self.pub_tracks = self.create_publisher(Detection3DArray, '~/tracks', 10)
         self.pub_marcadores = self.create_publisher(MarkerArray, '~/marcadores', 10)
+        self.srv_resetar = self.create_service(Trigger, '~/resetar', self.callback_resetar)
 
         self.n_mensagens = 0
         self.n_deteccoes_total = 0
@@ -101,6 +103,32 @@ class TrackerNode(Node):
             f'publicando tracks em "{self.frame_saida}"')
 
     # ------------------------------------------------------------------
+    def callback_resetar(self, request, response):
+        """
+        Limpa todos os tracks (estado interno do `Rastreador3D`).
+
+        Submodulo 4.9 - achado na bancada multi-pessoa: o `tracker_node` e
+        um processo de VIDA LONGA, ligado uma vez e reaproveitado por toda
+        uma bateria de testes (`rodar_suite_pessoas.py`) - sem isso, um
+        track `PERDIDO` de um teste anterior (com atores/posicoes
+        DIFERENTES) pode sobreviver (dentro de `tolerancia_perdido_segundos`)
+        ate o proximo teste comecar, e ser "recuperado" (OCR) por engano
+        contra a cena NOVA - contaminando a gravacao com hipoteses que nao
+        correspondem a nenhum ator do teste atual. Confirmado ao vivo: a
+        mesma combinacao de teste produzia resultados bem diferentes (MOTA
+        de -0.16 a 0.55) rodando a bancada inteira 2x, e a combinacao que
+        "dava errado" mudava de posicao entre as duas rodadas - sintoma
+        classico de contaminacao entre testes, nao de uma dificuldade real
+        especifica de alguma combinacao. `rodar_suite_pessoas.py` chama
+        este servico antes de cada combinacao, depois de resetar a pose do
+        robo e antes de religar os `mover_pessoa_animada_node`.
+        """
+        self.rastreador.tracks = []
+        response.success = True
+        response.message = 'tracks limpos'
+        self.get_logger().info('tracker_node resetado (4.9) - tracks limpos.')
+        return response
+
     def callback_deteccoes(self, msg: Detection3DArray):
         self.n_mensagens += 1
         self.n_deteccoes_total += len(msg.detections)
