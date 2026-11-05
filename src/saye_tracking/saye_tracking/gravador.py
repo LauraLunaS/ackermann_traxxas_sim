@@ -60,3 +60,14 @@ def carregar_csv(caminho):
         for tempo, id_, x, y in leitor:
             linhas.append((float(tempo), id_, float(x), float(y)))
     return linhas
+
+
+def carregar_robo_csv(caminho):
+    """Le um `robo.csv` (CABECALHO_ROBO, sem coluna `id`) de volta como lista de tuplas."""
+    linhas = []
+    with open(caminho, newline='') as arquivo:
+        leitor = csv.reader(arquivo)
+        next(leitor)  # cabecalho
+        for tempo, x, y, yaw in leitor:
+            linhas.append((float(tempo), float(x), float(y), float(yaw)))
+    return linhas
