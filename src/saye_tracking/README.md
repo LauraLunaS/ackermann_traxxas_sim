@@ -699,14 +699,20 @@ completas com a arquitetura corrigida - `mover_pessoas_node` + verdade
 medida + checagens de validade do item 2, nenhuma combinacao invalidada
 nas 18 execucoes):
 
-| n_pessoas | robo | MOTA (media ± desvio) | MOTP (media) | switches (media) | falsos positivos (media) | perdas (media) |
-|---|---|---|---|---|---|---|
-| 1 | parado | 0.858 ± 0.026 | 0.017 | 0.0 | 0.0 | 46.7 |
-| 2 | parado | 0.804 ± 0.009 | 0.016 | 2.7 | 0.3 | 122.0 |
-| 3 | parado | 0.727 ± 0.009 | 0.016 | 6.7 | 1.0 | 257.0 |
-| 1 | andando | 0.610 ± 0.049 | 0.019 | 6.7 | 2.0 | 117.7 |
-| 2 | andando | 0.491 ± 0.017 | 0.020 | 7.3 | 1.7 | 318.3 |
-| 3 | andando | 0.524 ± 0.009 | 0.018 | 10.7 | 1.7 | 443.0 |
+| n_pessoas | robo | MOTA (media ± desvio) | **IDF1** (media ± desvio) | MOTP | switches (media) | falsos positivos (media) | perdas (media) |
+|---|---|---|---|---|---|---|---|
+| 1 | **parado** | 0.858 ± 0.026 | **0.923 ± 0.015** | 0.017 | 0.0 | 0.0 | 46.7 |
+| 2 | **parado** | 0.804 ± 0.009 | **0.806 ± 0.059** | 0.016 | 2.7 | 0.3 | 122.0 |
+| 3 | **parado** | 0.727 ± 0.009 | **0.722 ± 0.057** | 0.016 | 6.7 | 1.0 | 257.0 |
+| 1 | andando | **0.610 ± 0.049** | 0.715 ± 0.043 | 0.019 | 6.7 | 2.0 | 117.7 |
+| 2 | andando | **0.491 ± 0.017** | 0.603 ± 0.034 | 0.020 | 7.3 | 1.7 | 318.3 |
+| 3 | andando | **0.524 ± 0.009** | 0.446 ± 0.009 | 0.018 | 10.7 | 1.7 | 443.0 |
+
+(item 4 do roteiro - metrica em **negrito** por linha e a que importa pra
+decidir se aquele cenario esta bom: `idf1` pro robo parado - prioridade e
+manter o id certo por pessoa, por decisao do usuario -, `mota` pro robo
+andando - prioridade e rastreamento geral, ja filtrado pelo FOV da
+camera.)
 
 Comparado com o resultado contaminado: **o desvio despencou** (ex.: robo
 andando com 1 pessoa ia de -0.17 a 0.60 - amplitude de 0.77 - e agora e
@@ -720,12 +726,16 @@ erratica) conforme mais pessoas sao adicionadas - esperado, mais pessoas
 robo PARADO (onde, por acordo com o usuario, a prioridade e identidade -
 nao trocar o id de uma pessoa), ha troca de id real (nao mais artefato de
 infraestrutura): media de 2.7 switches/execucao com 2 pessoas, 6.7 com 3
-pessoas. Isso confirma que a investigacao original de "troca de id com o
-robo parado" (que motivou abrir toda esta correcao) tem, sim, uma causa
-residual real no RASTREADOR, a ser investigada no item 5 do roteiro - so
-que agora com um numero confiavel pra comparar antes/depois de qualquer
-mudanca no rastreador, em vez do ruido de infraestrutura que mascarava
-tudo antes.
+pessoas - e o IDF1 cai de 0.923 (1 pessoa, sem cruzamento possivel) pra
+0.806 e 0.722 conforme pessoas (e cruzamentos) sao adicionadas. Isso
+confirma que a investigacao original de "troca de id com o robo parado"
+(que motivou abrir toda esta correcao) tem, sim, uma causa residual real
+no RASTREADOR, a ser investigada no item 5 do roteiro - so que agora com
+um numero confiavel pra comparar antes/depois de qualquer mudanca no
+rastreador, em vez do ruido de infraestrutura que mascarava tudo antes.
+Note tambem que IDF1 e MOTA NEM SEMPRE se movem juntos (ex.: robo
+andando com 3 pessoas: MOTA 0.524 mas IDF1 so 0.446) - exatamente a
+razao de reportar os dois em vez de confiar em so um numero agregado.
 
 CSVs completos das 18 execucoes (3 rodadas x 6 combinacoes) nao sao
 versionados (arquivos grandes, regeneraveis rodando `rodar_suite_pessoas`

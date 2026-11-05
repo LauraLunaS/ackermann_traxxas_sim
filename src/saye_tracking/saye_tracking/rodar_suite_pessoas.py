@@ -156,7 +156,7 @@ def _caminho_atores_yaml():
 CAMINHO_ATORES_YAML = _caminho_atores_yaml()
 
 COLUNAS_RELATORIO = [
-    'n_pessoas', 'robo', 'num_frames', 'mota', 'motp',
+    'n_pessoas', 'robo', 'num_frames', 'mota', 'motp', 'idf1',
     'num_switches', 'num_false_positives', 'num_misses', 'num_matches',
 ]
 

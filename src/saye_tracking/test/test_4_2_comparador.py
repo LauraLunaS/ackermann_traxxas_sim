@@ -69,6 +69,37 @@ def test_troca_de_id_da_hipotese_conta_como_switch():
     assert resumo['num_matches'].iloc[0] == 2
 
 
+def test_hipotese_perfeita_da_idf1_1_sem_falha():
+    hip = [(t, '1', 2.0, 1.0) for t in [0.0, 0.1, 0.2, 0.3, 0.4]]
+    gt = [(t, 'pessoa', 2.0, 1.0) for t in [0.0, 0.1, 0.2, 0.3, 0.4]]
+
+    resumo = calcular_metricas(hip, gt, limiar_distancia=0.5, tamanho_frame_segundos=0.1)
+
+    assert resumo['idf1'].iloc[0] == 1.0
+
+
+def test_idf1_e_mais_sensivel_a_troca_de_id_do_que_o_mota():
+    """
+    Confere que idf1 penaliza troca de id mais do que o mota.
+
+    Item 4 do roteiro pos-correcao: o MOTA mistura varios erros num numero
+    so, e pode ficar "alto" mesmo com troca de id (posicao continua
+    casando, so o id muda) - a razao de reportar `idf1` junto, nao so o
+    MOTA, pro cenario "robo parado" (onde identidade e a prioridade).
+    """
+    # posicao sempre casa (nenhum miss/FP) - so o id da hipotese troca na metade
+    gt = [(t, 'pessoa', 2.0, 1.0) for t in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]]
+    hip = [
+        (0.0, '1', 2.0, 1.0), (0.1, '1', 2.0, 1.0), (0.2, '1', 2.0, 1.0),
+        (0.3, '2', 2.0, 1.0), (0.4, '2', 2.0, 1.0), (0.5, '2', 2.0, 1.0),
+    ]
+
+    resumo = calcular_metricas(hip, gt, limiar_distancia=0.5, tamanho_frame_segundos=0.1)
+
+    assert resumo['mota'].iloc[0] > 0.8  # posicao sempre casou, so 1 switch
+    assert resumo['idf1'].iloc[0] < resumo['mota'].iloc[0]  # idf1 penaliza mais a troca
+
+
 def test_outlier_de_relogio_de_parede_e_descartado_sem_quebrar_o_calculo():
     # replica o achado do 4.1: 1a leitura da hipotese vem com timestamp de
     # relogio de parede (epoch, ~1.7 bilhao) em vez de tempo de sim - nao

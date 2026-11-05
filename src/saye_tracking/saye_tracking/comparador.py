@@ -7,6 +7,19 @@ e calcula metricas padrao de MOT (MOTA, trocas de ID, falsos
 positivos/negativos) com a biblioteca `motmetrics`. Sem ROS - roda offline
 em cima dos CSVs gravados.
 
+Metricas (item 4 do roteiro pos-correcao de movimentacao): o MOTA mistura
+3 tipos de erro diferentes (perda, fantasma, troca de id) num unico
+numero - por isso `METRICAS_PADRAO` sempre reporta `num_switches`
+(trocas de id), `num_false_positives` (fantasmas) e `num_misses`
+(perdas) separados, alem do MOTA agregado. Tambem inclui `idf1`
+(identity F1 - fracao do tempo que cada objeto manteve o id certo,
+olhando a trajetoria inteira, nao frame a frame) - metrica mais sensivel
+a troca de id do que o MOTA, relevante principalmente pro cenario "robo
+parado" (onde, por decisao do usuario, manter o MESMO id por pessoa e a
+prioridade); pro cenario "robo andando" o MOTA (ja filtrado pelo FOV da
+camera, ver `gravador_atores_node.py`) continua sendo a referencia
+principal - rastreamento geral importa mais que permanencia de id ali.
+
 Duas adaptacoes necessarias pros dados do 4.1:
   1. `motmetrics` exige ids NUMERICOS - nao aceita string como
      "pessoa_detectavel" (testado: a biblioteca quebra tentando converter
@@ -28,7 +41,7 @@ import motmetrics as mm
 from saye_tracking.gravador import carregar_csv
 
 METRICAS_PADRAO = [
-    'num_frames', 'mota', 'motp', 'num_switches',
+    'num_frames', 'mota', 'motp', 'idf1', 'num_switches',
     'num_false_positives', 'num_misses', 'num_matches',
 ]
 
