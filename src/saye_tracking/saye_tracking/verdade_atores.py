@@ -23,8 +23,25 @@ mesma formula - verdade exata por construcao, sem nenhuma dependencia do
 bridge de pose do Gazebo.
 
 Sem ROS - so a logica, testavel com configs fabricadas.
+
+Tambem expoe `nome_quadro_ativo` - qual sub-modelo do flipbook (ver
+`gz_pose_vector.py`/`mover_pessoas_node.py`) deveria estar visivel agora.
+Desde a correcao da bancada (achado do set_pose concorrente - ver
+`gz_pose_vector.py`), o `gravador_atores_node` usa esse nome pra ler a
+posicao REAL/MEDIDA do Gazebo (nao mais recalcular a verdade so pela
+formula) - assim a verdade gravada reflete o que de fato aconteceu na
+simulacao, mesmo se algum teleporte tiver falhado.
 """
-from saye_tracking.caminhada import posicao_no_caminho
+from saye_tracking.caminhada import indice_quadro, posicao_no_caminho
+
+
+def nome_quadro_ativo(ator, tempo_desde_inicio):
+    """Nome do sub-modelo do flipbook que deveria estar visivel agora."""
+    quadro = indice_quadro(
+        tempo_desde_inicio, velocidade=ator['velocidade'],
+        n_quadros=int(ator['n_quadros']),
+        comprimento_passada=float(ator['comprimento_passada']))
+    return f"{ator['prefixo_modelo']}{quadro}"
 
 
 def posicao_verdadeira(ator, tempo_desde_inicio):

@@ -79,6 +79,23 @@ nao sair da zona onde as pessoas andam nem percorrer alem do mundo
 (ao fim de 30s, ~3m, terminando perto do centro da area onde os atores
 circulam - ver `config/atores.yaml`).
 
+Achado 4 (correcao de movimentacao, pos-4.9): o antigo `mover_pessoa_
+animada_node` subia 1 PROCESSO POR ATOR, cada um com seu proprio cliente
+gz-transport chamando `/world/<mundo>/set_pose` concorrentemente - sob essa
+concorrencia, um dos clientes podia passar a falhar 100% das chamadas pelo
+resto do teste, SEM AVISO (o retorno de `request()` era descartado sem
+checar). O sintoma: um ator "congelado" no pose de estacionamento durante
+parte do teste, contaminando a verdade com uma posicao que nunca existiu -
+indistinguivel, ao olhar so pro MOTA final, de uma troca de id real do
+rastreador (foi exatamente essa confusao que motivou reabrir a
+investigacao das "trocas de id com o robo parado"). Corrigido trocando por
+1 SO processo (`mover_pessoas_node`) que move TODOS os atores do teste numa
+unica chamada de `set_pose_vector` por tick (ver `gz_pose_vector.py` pro
+achado completo) - e a verdade gravada (`gravador_atores_node`) passou a
+ler a posicao REAL/medida do Gazebo em vez de recalcular pela formula, pra
+qualquer falha futura aparecer como "ator parado" na propria verdade, nunca
+mais mascarada.
+
 Sem rclpy direto - orquestra tudo via subprocess, mesmo estilo de
 `rodar_suite.py` (4.4).
 """
@@ -91,6 +108,7 @@ import time
 from ament_index_python.packages import get_package_share_directory
 from saye_tracking.cenarios import duracao_total
 from saye_tracking.comparador import calcular_metricas_de_arquivos
+from saye_tracking.gz_pose_vector import TeleportadorEmLote
 from saye_tracking.rodar_suite import comando_resetar_pose, MUNDO, POSE_SPAWN, ROBO
 import yaml
 
@@ -133,28 +151,41 @@ def _carregar_atores():
 
 
 def _estacionar_todos_os_atores(atores):
-    """Teleporta TODO quadro de TODO ator pra bem longe - limpa a cena."""
-    for ator in atores:
-        for i in range(int(ator['n_quadros'])):
-            nome_quadro = f"{ator['prefixo_modelo']}{i}"
-            subprocess.run(
-                comando_resetar_pose(MUNDO, nome_quadro, 0.0, 0.0, Z_ESTACIONADO),
-                check=False, capture_output=True)
+    """
+    Teleporta TODO quadro de TODO ator pra bem longe - limpa a cena.
+
+    1 SO chamada de `set_pose_vector` pra todos os quadros de todos os
+    atores (ate 3 atores x ~30 quadros = ~90 poses de uma vez), em vez da
+    versao antiga (1 chamada de `set_pose` por quadro, via subprocess `gz
+    service` - ~90 processos novos por combinacao da bancada, lento e
+    sujeito ao mesmo tipo de falha silenciosa documentado em
+    `gz_pose_vector.py`). Falha aqui e logada (nao e so cosmetico: se a
+    cena nao for limpa de verdade, o teste seguinte comeca contaminado com
+    "gente fantasma" - acha do 1 original desta bancada).
+    """
+    poses = [
+        (f"{ator['prefixo_modelo']}{i}", 0.0, 0.0, Z_ESTACIONADO, 0.0)
+        for ator in atores
+        for i in range(int(ator['n_quadros']))
+    ]
+    teleportador = TeleportadorEmLote(MUNDO, timeout_ms=3000)
+    ok, sucesso = teleportador.teleportar(poses)
+    if not sucesso:
+        print(
+            f'  aviso: falha ao estacionar {len(poses)} quadro(s) via '
+            f'"{teleportador.servico}" (resposta recebida={ok}) - a cena '
+            f'pode ter "gente fantasma" de um teste anterior.')
 
 
-def _comando_mover_pessoa(ator, nome_no):
-    flat = [c for ponto in ator['waypoints'] for c in ponto]
-    waypoints_str = '[' + ','.join(str(float(c)) for c in flat) + ']'
+def _comando_mover_pessoas(atores_deste_teste, nome_no):
+    nomes_str = '[' + ','.join(a['nome'] for a in atores_deste_teste) + ']'
     return [
-        'ros2', 'run', 'saye_tracking', 'mover_pessoa_animada_node',
+        'ros2', 'run', 'saye_tracking', 'mover_pessoas_node',
         '--ros-args',
         '-r', f'__node:={nome_no}',
         '-p', 'use_sim_time:=true',
-        '-p', f"prefixo_modelo:={ator['prefixo_modelo']}",
-        '-p', f"n_quadros:={int(ator['n_quadros'])}",
-        '-p', f"comprimento_passada:={float(ator['comprimento_passada'])}",
-        '-p', f"velocidade:={float(ator['velocidade'])}",
-        '-p', f'waypoints:={waypoints_str}',
+        '-p', f'atores_yaml:={CAMINHO_ATORES_YAML}',
+        '-p', f'nomes_atores:={nomes_str}',
         '-p', 'taxa_hz:=30.0',
     ]
 
@@ -238,10 +269,8 @@ def _rodar_uma_combinacao(n_pessoas, nome_robo, atores, diretorio_saida):
     ], check=True, capture_output=True)
     time.sleep(1.0)
 
-    processos_movers = [
-        _popen_em_grupo_proprio(_comando_mover_pessoa(ator, f"mover_{ator['nome']}_teste_node"))
-        for ator in atores_deste_teste
-    ]
+    processo_mover = _popen_em_grupo_proprio(
+        _comando_mover_pessoas(atores_deste_teste, 'mover_pessoas_teste_node'))
     time.sleep(1.0)  # deixa a 1a teleportacao assentar antes de gravar
 
     gravador = _popen_em_grupo_proprio([
@@ -269,8 +298,7 @@ def _rodar_uma_combinacao(n_pessoas, nome_robo, atores, diretorio_saida):
         # salvar falharem no meio - um teste ruim nao pode vazar processo
         # pro PROXIMO teste da bancada.
         _encerrar_processo(gravador, 'gravador_atores_node')
-        for p in processos_movers:
-            _encerrar_processo(p, 'mover_pessoa_animada_node')
+        _encerrar_processo(processo_mover, 'mover_pessoas_node')
         time.sleep(1.0)
 
     caminho_hipoteses = os.path.join(diretorio_saida, 'hipoteses.csv')

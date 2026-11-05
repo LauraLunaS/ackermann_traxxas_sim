@@ -459,12 +459,15 @@ O primeiro extrai os quadros (skinning manual: hierarquia de juntas do
 empacota cada quadro como um modelo Gazebo (`model.config` + `model.sdf`)
 dentro de `saye_description/models/`.
 
-`mover_pessoa_animada_node.py` (novo, ao lado do `mover_pessoa_node.py` da
-4.5) gerencia os N modelos-quadro de uma pessoa: a cada tick, calcula a
-posicao (igual a 4.5) e o INDICE DO QUADRO ativo
+`mover_pessoas_node.py` (novo, ao lado do `mover_pessoa_node.py` da 4.5;
+substituiu o `mover_pessoa_animada_node.py` original desta fase - ver
+achado 4 da bancada 4.9, secao abaixo) gerencia os N modelos-quadro de
+QUALQUER quantidade de pessoas num SO processo: a cada tick, calcula a
+posicao (igual a 4.5) e o INDICE DO QUADRO ativo de cada uma
 (`caminhada.indice_quadro`, baseado em distancia percorrida / comprimento
-de passada), teleporta so o quadro ativo pra posicao real e estaciona os
-outros em `z=-50` (fora de qualquer camera).
+de passada), e teleporta todos os quadros ativos + os quadros que
+acabaram de deixar de ser ativos (pra `z=-50`, fora de qualquer camera)
+numa UNICA chamada em lote (`gz_pose_vector.TeleportadorEmLote`).
 
 ```bash
 ros2 launch saye_tracking mover_pessoas_animadas.launch.py
@@ -640,17 +643,66 @@ resultado nao bater com o esperado - nao adivinhados de antemao:
    um `/cmd_vel` residual levou o robo pra (-2.4, 9.1) e a deteccao ficou
    **100% vazia** (0 de 300 mensagens) ate ser corrigido. Corrigido
    publicando um Twist zero ANTES de resetar a pose, toda combinacao.
+4. **Teleporte de ator falhando em silencio sob concorrencia** (o achado
+   mais caro desta fase - levou a reabrir e depois DESCARTAR uma hipotese
+   de "troca de id do rastreador" que na verdade era isto): cada ator
+   (`mover_pessoa_animada_node`, antigo) subia como um PROCESSO PROPRIO,
+   cada um com seu proprio cliente gz-transport chamando
+   `/world/<mundo>/set_pose` (1 pose por chamada, 30Hz) - com 3 atores, 3
+   clientes concorrentes martelando o MESMO servico nomeado. Reproduzido
+   ao vivo (5+ rodadas): em ~33-50% delas, UM dos clientes passava a
+   falhar 100% das chamadas pelo resto do teste (nao intermitente -
+   sistematico), porque o `_teleportar` original descartava o retorno
+   `(bool, resposta)` do `request()` sem checar - confirmado consultando a
+   pose REAL no Gazebo (`gz model -p`) durante um teste "ruim": a pessoa
+   estava literalmente parada no pose de estacionamento (z=-50) por boa
+   parte do teste, o que a verdade ANALITICA antiga (calculada so pela
+   formula, sem olhar o Gazebo) nao conseguia detectar - ela assumia que o
+   teleporte sempre funcionava. Recriar o cliente gz-transport apos falhas
+   consecutivas NAO recuperava (testado: ainda 0% de sucesso apos 6
+   recriacoes).
 
-**Resultado da bancada** (3 rodadas completas, 6 combinacoes cada - ver
-tabela completa no historico de commits/conversa, nao reproduzida aqui
-por ser grande): robo parado e consistentemente bom (MOTA 0.76-0.92 em
-todas as 9 execucoes "parado" das 3 rodadas); robo andando e instavel
-(MOTA de -0.17 a 0.60) ate o achado 3 acima ser corrigido - ainda a
-validar se a correcao do achado 3 estabiliza os testes "andando" tambem
-(proximo passo).
+   **Correcao** (detalhe tecnico completo em `gz_pose_vector.py`): troca
+   por 1 SO processo (`mover_pessoas_node`, novo) que move TODOS os atores
+   do teste numa unica chamada de `/world/<mundo>/set_pose_vector` por
+   tick - sem concorrencia entre clientes, sem a falha. Toda chamada tem o
+   retorno checado; uma falha e logada (nunca mais silenciosa). Alem
+   disso, `gravador_atores_node` parou de CALCULAR a verdade pela formula
+   e passou a LER a pose REAL de volta do Gazebo (gz-transport direto no
+   topico nativo `/world/<mundo>/pose/info`, que preserva o campo `name` -
+   diferente da ponte `ros_gz_bridge` pra `tf2_msgs/TFMessage` usada no
+   `gravador_node`/4.1, que descarta nome e timestamp por transform).
+   Detalhe que so apareceu testando ao vivo: inicialmente a verdade tentou
+   CALCULAR qual quadro do flipbook deveria estar ativo (mesma formula do
+   mover) e so entao ler a pose medida DAQUELE nome - isso gravou
+   100% (0, 0) do inicio ao fim, porque o gravador sobe ~1-2s depois do
+   mover (tempo de assentamento da bancada) e um ciclo INTEIRO do flipbook
+   dura so ~1s, entao qualquer defasagem de tick faz a formula apontar pro
+   quadro ERRADO (quase sempre um estacionado). Corrigido DETECTANDO o
+   quadro ativo pelos dados medidos (o unico, entre os N quadros de um
+   ator, que nao esta com `z` perto de -50), sem depender de nenhuma
+   sincronizacao de tick entre os dois nos.
 
-Testes: `test_4_9_verdade_atores.py` (verdade analitica bate com a formula
-do mover node, sem ROS).
+   Validado ao vivo apos a correcao: 3 atores andando simultaneamente por
+   ~24s, 1416 amostras de verdade gravadas, **zero** amostras em (0, 0) ou
+   em qualquer posicao de estacionamento - todas as posicoes medidas
+   condizem com os caminhos configurados em `atores.yaml`.
+
+**Resultado da bancada** (3 rodadas completas, 6 combinacoes cada, ANTES
+do achado 4 acima): robo parado parecia consistentemente bom (MOTA
+0.76-0.92 em todas as 9 execucoes "parado" das 3 rodadas); robo andando
+era instavel (MOTA de -0.17 a 0.60). **Esses numeros estao contaminados**
+pelo achado 4 (teleporte de ator falhando em silencio) e NAO devem ser
+usados como referencia - descartados. Proximo passo: remedir a bancada
+inteira do zero com a arquitetura corrigida (`mover_pessoas_node` +
+verdade medida) e estabelecer um baseline oficial novo (media + variancia
+por combinacao, N rodadas).
+
+Testes: `test_4_9_verdade_atores.py` (formula de movimento/quadro ativo,
+sem ROS - a verdade GRAVADA pela bancada ja nao usa mais essa formula
+diretamente, ver achado 4) + `test_4_10_teleportador_em_lote.py`
+(`TeleportadorEmLote` nunca mascara falha de teleporte como sucesso, sem
+Gazebo de verdade - cliente gz-transport fake).
 
 ## Dependencias
 

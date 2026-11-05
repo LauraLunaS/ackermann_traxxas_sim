@@ -3,25 +3,10 @@ No gravador para atores andando.
 
 Submodulo 4.9 - bancada de avaliacao multi-pessoa. Igual ao
 `gravador_node.py` (4.1) do lado das HIPOTESES (assina
-`/tracker_node/tracks`), mas troca o lado da VERDADE: em vez de ler de
-volta do bridge de pose do Gazebo (fragil pros atores com flipbook - ver
-`verdade_atores.py`), RECALCULA a posicao de cada ator com a mesma formula
-que o `mover_pessoa_animada_node` dele usa, numa taxa fixa.
-
-Sincronizacao do "tempo zero": os `mover_pessoa_animada_node` contam
-ticks PROPRIOS a partir de quando CADA UM comeca (`n_ticks / taxa_hz`,
-nao uma subtracao de `Time` absoluto - exatamente pra evitar o problema
-descrito em `executar_cenario_node.py`: com `use_sim_time=true`,
-`self.get_clock().now()` no `__init__` costuma vir zerado, antes do 1o
-`/clock` chegar). Este gravador faz o mesmo: conta os proprios ticks
-(`_callback_verdade`) em vez de guardar um `Time` de referencia. A
-bancada (`rodar_suite_pessoas.py`) sobe os movers primeiro, espera 1s
-assentar (mesma convencao de `rodar_suite.py` apos resetar pose) e so
-entao sobe este gravador - entao o "zero" daqui fica levemente ATRASADO
-em relacao ao zero real de cada mover (por ~1s). Isso desloca a verdade
-por `velocidade * ~1s` (poucos decimetros, a 0.24-0.3 m/s) - constante
-durante todo o teste, nao cresce com o tempo, e fica bem abaixo do
-`limiar_distancia` do comparador (0.5m).
+`/tracker_node/tracks`); o lado da VERDADE le a posicao REAL de cada ator
+de volta do Gazebo (ver "Verdade dos ATORES" mais abaixo - secao reescrita
+na correcao da bancada, que trocou calculo pela formula por leitura
+medida).
 
 Tambem grava a pose REAL do robo (assina `/odom`), nao mais estimada
 analiticamente a partir do cmd_vel do cenario. Motivo: ao investigar por
@@ -35,29 +20,66 @@ yaw real de spawn) nao e precisa o suficiente pra decidir visibilidade
 com confianca. Gravando a pose real, o pos-processamento que decide
 "a pessoa estava dentro do cone da camera nesse instante" fica exato,
 em vez de aproximado.
+
+Verdade dos ATORES: desde a correcao da bancada (ver achado completo em
+`gz_pose_vector.py` - o antigo `mover_pessoa_animada_node` tinha 1 processo
+por ator chamando `set_pose` concorrentemente, e uma falha silenciosa podia
+deixar um ator parado sem que nada avisasse), a verdade NAO E MAIS a
+posicao calculada pela formula (`verdade_atores.posicoes_verdadeiras`) -
+e a posicao REAL/MEDIDA, lida de volta do Gazebo via gz-transport
+(topico `/world/<mundo>/pose/info`, mensagem nativa `gz.msgs.Pose_V`, que
+- diferente da ponte `ros_gz_bridge` pra `tf2_msgs/TFMessage` usada no
+`gravador_node`/4.1 - preserva o campo `name` de cada pose, entao da pra
+buscar por NOME em vez de indice fragil).
+
+Achado (ao implementar isto): a 1a versao tentou calcular qual quadro
+DEVERIA estar ativo agora com a mesma formula do mover
+(`verdade_atores.nome_quadro_ativo`) e so entao ler a pose REAL daquele
+nome especifico - testado ao vivo, resultado: verdade.csv gravado 100%
+como (0, 0) do inicio ao fim. Causa: esse gravador conta ticks PROPRIOS a
+partir de QUANDO ELE SOBE (ver nota de sincronizacao acima), defasado do
+tick do mover por ~1-2s (tempo de assentamento da bancada) - e um ciclo
+INTEIRO do flipbook (todos os N quadros) dura so ~1s (`comprimento_passada`
+/ `velocidade` ≈ 0.3/0.3 ≈ 1s). Pra POSICAO continua isso daria so um erro
+pequeno e aceitavel (a pessoa anda pouco em 1-2s) - mas pra escolher QUAL
+QUADRO olhar, 1-2s de defasagem pode apontar pra QUALQUER quadro do ciclo,
+quase sempre um que esta ESTACIONADO (`z=-50`, logo x=y=0) nesse instante,
+nao o que esta ativo de verdade. Ou seja: calcular o nome e olhar DEPOIS
+reintroduz a mesma fragilidade de sincronizacao que estavamos corrigindo.
+
+Solucao: em vez de CALCULAR qual quadro deveria estar ativo, DETECTA direto
+dos dados medidos - dentre os N nomes de quadro de um ator, o ativo e o
+(no maximo 1) que NAO esta em `z` perto de -50. Nao depende de nenhuma
+sincronizacao de tick entre mover e gravador - so do que o Gazebo
+realmente reportou agora.
 """
 import math
 import os
 
+from gz.msgs10.pose_v_pb2 import Pose_V
+from gz.transport13 import Node as NodeGz
 from nav_msgs.msg import Odometry
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 from saye_tracking.gravador import Gravador
-from saye_tracking.verdade_atores import posicoes_verdadeiras
 from std_srvs.srv import Trigger
 from vision_msgs.msg import Detection3DArray
 import yaml
 
+# acima disto = quadro ativo (ver Z_ESTACIONADO em mover_pessoas_node.py)
+Z_ESTACIONADO_LIMIAR = -40.0
+
 
 class GravadorAtoresNode(Node):
-    """Fase 4.9 - grava hipoteses do tracker vs verdade analitica de N atores andando."""
+    """Fase 4.9 - grava hipoteses do tracker vs verdade REAL/medida de N atores andando."""
 
     def __init__(self, **kwargs):
         super().__init__('gravador_atores_node', **kwargs)
 
         self.declare_parameter('topico_tracks', '/tracker_node/tracks')
         self.declare_parameter('topico_odom', '/odom')
+        self.declare_parameter('mundo', 'beach_world')
         self.declare_parameter('atores_yaml', '')
         self.declare_parameter('nomes_atores', [''])  # subconjunto de atores_yaml a usar
         self.declare_parameter('taxa_verdade_hz', 20.0)
@@ -65,11 +87,11 @@ class GravadorAtoresNode(Node):
 
         topico_tracks = self.get_parameter('topico_tracks').value
         topico_odom = self.get_parameter('topico_odom').value
+        mundo = self.get_parameter('mundo').value
         caminho_yaml = self.get_parameter('atores_yaml').value
         nomes_desejados = set(self.get_parameter('nomes_atores').value)
         self.taxa_verdade_hz = float(self.get_parameter('taxa_verdade_hz').value)
         self.diretorio_saida = self.get_parameter('diretorio_saida').value
-        self.n_ticks_verdade = 0  # contagem de ticks, nao Time absoluto - ver nota acima
 
         with open(caminho_yaml, encoding='utf-8') as f:
             todos_atores = yaml.safe_load(f)['atores']
@@ -79,6 +101,20 @@ class GravadorAtoresNode(Node):
                 f'nenhum ator de {nomes_desejados} encontrado em {caminho_yaml}')
 
         self.gravador = Gravador()
+
+        # pose REAL dos atores (ver nota no topo do arquivo) - gz-transport
+        # direto, NAO ros_gz_bridge (precisa do campo `name`, que a ponte
+        # pra tf2_msgs descarta). {nome_do_quadro: (x, y, z)}, atualizado a
+        # cada mensagem de `/world/<mundo>/pose/info`.
+        self.pose_real_por_nome = {}
+        self.nomes_quadros_por_ator = {
+            a['nome']: [f"{a['prefixo_modelo']}{i}" for i in range(int(a['n_quadros']))]
+            for a in self.atores
+        }
+        self.topico_pose_gz = f'/world/{mundo}/pose/info'
+        self.no_gz = NodeGz()
+        self.no_gz.subscribe(Pose_V, self.topico_pose_gz, self._callback_pose_gz)
+        self._avisou_pose_ausente = set()  # nao repetir o mesmo aviso todo tick
 
         qos_confiavel = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
         self.sub_tracks = self.create_subscription(
@@ -91,8 +127,9 @@ class GravadorAtoresNode(Node):
         self.srv_salvar = self.create_service(Trigger, '~/salvar', self.callback_salvar)
 
         self.get_logger().info(
-            f'gravador_atores_node iniciado (4.9). Hipoteses de "{topico_tracks}", '
-            f'verdade analitica de {[a["nome"] for a in self.atores]}. '
+            f'gravador_atores_node iniciado (4.9, verdade MEDIDA pos-correcao). '
+            f'Hipoteses de "{topico_tracks}", verdade real de '
+            f'{[a["nome"] for a in self.atores]} via "{self.topico_pose_gz}". '
             f'Ctrl+C ou servico "~/salvar" grava em "{self.diretorio_saida}".')
 
     # ------------------------------------------------------------------
@@ -106,6 +143,14 @@ class GravadorAtoresNode(Node):
             pos = d.results[0].pose.pose.position
             self.gravador.registrar_hipotese(tempo, d.id, pos.x, pos.y)
 
+    def _callback_pose_gz(self, msg: Pose_V):
+        # roda na thread interna do gz-transport, nao na do rclpy - so
+        # substitui entradas de um dict, sem lock (GIL cobre essa troca
+        # simples; o pior caso e ler um valor 1 msg "atrasado", irrelevante
+        # a 20Hz de verdade vs. a taxa bem mais alta deste topico).
+        for p in msg.pose:
+            self.pose_real_por_nome[p.name] = (p.position.x, p.position.y, p.position.z)
+
     def callback_odom(self, msg: Odometry):
         tempo = self.get_clock().now().nanoseconds * 1e-9
         if tempo <= 0.0:
@@ -116,12 +161,6 @@ class GravadorAtoresNode(Node):
         self.gravador.registrar_robo(tempo, pos.x, pos.y, yaw)
 
     def _callback_verdade(self):
-        tempo_desde_inicio = self.n_ticks_verdade / self.taxa_verdade_hz
-        self.n_ticks_verdade += 1
-        # tempo gravado na hipotese/verdade (pro comparador agrupar em frames)
-        # pode usar o Time absoluto normalmente - so a REFERENCIA do caminho
-        # andado (tempo_desde_inicio, acima) e que precisa ser por tick.
-        #
         # Achado (4.9): com `use_sim_time=true`, as primeiras chamadas de
         # callback (tanto aqui quanto em `callback_tracks`) podem acontecer
         # ANTES do 1o `/clock` chegar - `self.get_clock().now()` volta 0.0
@@ -136,9 +175,33 @@ class GravadorAtoresNode(Node):
         tempo_sim = self.get_clock().now().nanoseconds * 1e-9
         if tempo_sim <= 0.0:
             return
-        posicoes = posicoes_verdadeiras(self.atores, tempo_desde_inicio)
-        for nome, (x, y) in posicoes.items():
-            self.gravador.registrar_verdade(tempo_sim, nome, x, y)
+        for ator in self.atores:
+            pose = self._pose_ativa_medida(ator['nome'])
+            if pose is None:
+                # ou nenhuma msg de pose/info chegou ainda (normal nos 1os
+                # instantes - subscricao gz-transport e assincrona), ou
+                # nenhum quadro deste ator esta "ativo" agora (ex.: estado
+                # transitorio de 1 unico tick entre o teleporte do quadro
+                # novo e o estacionamento do antigo). Pula a amostra em vez
+                # de inventar uma posicao - se persistir por muitos ticks,
+                # e sinal real de problema, por isso avisa (1x por ator).
+                if ator['nome'] not in self._avisou_pose_ausente:
+                    self._avisou_pose_ausente.add(ator['nome'])
+                    self.get_logger().warn(
+                        f'nenhum quadro ATIVO de "{ator["nome"]}" encontrado em '
+                        f'"{self.topico_pose_gz}" ainda - pulando amostra(s) de '
+                        f'verdade dele ate aparecer um.')
+                continue
+            x, y = pose
+            self.gravador.registrar_verdade(tempo_sim, ator['nome'], x, y)
+
+    def _pose_ativa_medida(self, nome_ator):
+        """Dentre os quadros de `nome_ator`, devolve (x, y) do que NAO esta estacionado."""
+        for nome_quadro in self.nomes_quadros_por_ator[nome_ator]:
+            pose = self.pose_real_por_nome.get(nome_quadro)
+            if pose is not None and pose[2] > Z_ESTACIONADO_LIMIAR:
+                return pose[0], pose[1]
+        return None
 
     # ------------------------------------------------------------------
     def callback_salvar(self, request, response):

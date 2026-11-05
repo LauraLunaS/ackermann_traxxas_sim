@@ -1,9 +1,17 @@
 """
-Sobe os atores da simulacao a partir de config/atores.yaml (Fase 4.6).
+Sobe o `mover_pessoas_node` com TODOS os atores `andando` de config/atores.yaml.
 
-Cada entrada do YAML vira um no: `andando` usa o flipbook de quadros de
-caminhada, `pose_unica` teleporta um modelo estatico. Caminhos sao listas de
-waypoints; editar o YAML muda trajetorias sem tocar em codigo.
+Ate a correcao da bancada (ver achado completo em `gz_pose_vector.py`),
+cada ator `andando` subia seu PROPRIO `mover_pessoa_animada_node` - N
+processos, cada um com um cliente gz-transport proprio chamando
+`/world/<mundo>/set_pose` concorrentemente, o que causava falhas
+silenciosas de teleporte sob concorrencia (confirmado ao vivo). Agora e 1
+SO no (`mover_pessoas_node`) movendo todos de uma vez, 1 chamada de
+`set_pose_vector` por tick - sem concorrencia entre processos.
+
+Atores `pose_unica` continuam, cada um, com seu proprio `mover_pessoa_node`
+(nao tem flipbook, nao foi onde o bug apareceu - fora do escopo desta
+correcao).
 """
 import os
 
@@ -18,41 +26,6 @@ def _caminho_config():
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config', 'atores.yaml')
 
 
-def _waypoints_planos(waypoints):
-    return [coord for ponto in waypoints for coord in ponto]
-
-
-def _no_ator(ator, use_sim_time):
-    base = {
-        'use_sim_time': use_sim_time,
-        'velocidade': float(ator['velocidade']),
-        'waypoints': _waypoints_planos(ator['waypoints']),
-    }
-    if ator['tipo'] == 'andando':
-        return Node(
-            package='saye_tracking',
-            executable='mover_pessoa_animada_node',
-            name=f"mover_{ator['nome']}_node",
-            output='screen',
-            parameters=[{
-                **base,
-                'prefixo_modelo': ator['prefixo_modelo'],
-                'n_quadros': int(ator['n_quadros']),
-                'comprimento_passada': float(ator['comprimento_passada']),
-                'taxa_hz': 30.0,
-            }],
-        )
-    if ator['tipo'] == 'pose_unica':
-        return Node(
-            package='saye_tracking',
-            executable='mover_pessoa_node',
-            name=f"mover_{ator['nome']}_node",
-            output='screen',
-            parameters=[{**base, 'nome_modelo': ator['nome_modelo'], 'taxa_hz': 10.0}],
-        )
-    raise ValueError(f"tipo de ator desconhecido: {ator['tipo']}")
-
-
 def generate_launch_description():
     arg_sim_time = DeclareLaunchArgument(
         'use_sim_time', default_value='true',
@@ -61,5 +34,35 @@ def generate_launch_description():
     with open(_caminho_config(), encoding='utf-8') as f:
         atores = yaml.safe_load(f)['atores']
 
-    nos = [_no_ator(ator, LaunchConfiguration('use_sim_time')) for ator in atores]
+    nos = []
+
+    andando = [a for a in atores if a['tipo'] == 'andando']
+    if andando:
+        nos.append(Node(
+            package='saye_tracking',
+            executable='mover_pessoas_node',
+            name='mover_pessoas_node',
+            output='screen',
+            parameters=[{
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'atores_yaml': _caminho_config(),
+                'nomes_atores': [a['nome'] for a in andando],
+            }],
+        ))
+
+    for ator in [a for a in atores if a['tipo'] == 'pose_unica']:
+        nos.append(Node(
+            package='saye_tracking',
+            executable='mover_pessoa_node',
+            name=f"mover_{ator['nome']}_node",
+            output='screen',
+            parameters=[{
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'nome_modelo': ator['nome_modelo'],
+                'velocidade': float(ator['velocidade']),
+                'waypoints': [c for ponto in ator['waypoints'] for c in ponto],
+                'taxa_hz': 10.0,
+            }],
+        ))
+
     return LaunchDescription([arg_sim_time, *nos])

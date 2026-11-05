@@ -35,7 +35,7 @@ setup(
             'rodar_suite = saye_tracking.rodar_suite:main',
             'rodar_suite_pessoas = saye_tracking.rodar_suite_pessoas:main',
             'mover_pessoa_node = saye_tracking.mover_pessoa_node:main',
-            'mover_pessoa_animada_node = saye_tracking.mover_pessoa_animada_node:main',
+            'mover_pessoas_node = saye_tracking.mover_pessoas_node:main',
         ],
     },
 )
