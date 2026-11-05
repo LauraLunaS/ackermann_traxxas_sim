@@ -688,21 +688,56 @@ resultado nao bater com o esperado - nao adivinhados de antemao:
    em qualquer posicao de estacionamento - todas as posicoes medidas
    condizem com os caminhos configurados em `atores.yaml`.
 
-**Resultado da bancada** (3 rodadas completas, 6 combinacoes cada, ANTES
-do achado 4 acima): robo parado parecia consistentemente bom (MOTA
-0.76-0.92 em todas as 9 execucoes "parado" das 3 rodadas); robo andando
-era instavel (MOTA de -0.17 a 0.60). **Esses numeros estao contaminados**
-pelo achado 4 (teleporte de ator falhando em silencio) e NAO devem ser
-usados como referencia - descartados. Proximo passo: remedir a bancada
-inteira do zero com a arquitetura corrigida (`mover_pessoas_node` +
-verdade medida) e estabelecer um baseline oficial novo (media + variancia
-por combinacao, N rodadas).
+**Resultado ANTES do achado 4** (3 rodadas completas, 6 combinacoes cada):
+robo parado parecia consistentemente bom (MOTA 0.76-0.92 em todas as 9
+execucoes "parado" das 3 rodadas); robo andando era instavel (MOTA de
+-0.17 a 0.60). Esses numeros estavam contaminados pelo achado 4
+(teleporte de ator falhando em silencio) - descartados.
+
+**Baseline oficial** (pos-correcao, item 3 do roteiro: 3 rodadas
+completas com a arquitetura corrigida - `mover_pessoas_node` + verdade
+medida + checagens de validade do item 2, nenhuma combinacao invalidada
+nas 18 execucoes):
+
+| n_pessoas | robo | MOTA (media ± desvio) | MOTP (media) | switches (media) | falsos positivos (media) | perdas (media) |
+|---|---|---|---|---|---|---|
+| 1 | parado | 0.858 ± 0.026 | 0.017 | 0.0 | 0.0 | 46.7 |
+| 2 | parado | 0.804 ± 0.009 | 0.016 | 2.7 | 0.3 | 122.0 |
+| 3 | parado | 0.727 ± 0.009 | 0.016 | 6.7 | 1.0 | 257.0 |
+| 1 | andando | 0.610 ± 0.049 | 0.019 | 6.7 | 2.0 | 117.7 |
+| 2 | andando | 0.491 ± 0.017 | 0.020 | 7.3 | 1.7 | 318.3 |
+| 3 | andando | 0.524 ± 0.009 | 0.018 | 10.7 | 1.7 | 443.0 |
+
+Comparado com o resultado contaminado: **o desvio despencou** (ex.: robo
+andando com 1 pessoa ia de -0.17 a 0.60 - amplitude de 0.77 - e agora e
+0.610 ± 0.049, desvio de so 0.05) - forte confirmacao de que o achado 4
+(nao a dificuldade intrinseca do cenario) era a causa dominante da
+instabilidade anterior. MOTA cai de forma consistente (nao mais
+erratica) conforme mais pessoas sao adicionadas - esperado, mais pessoas
+= mais cruzamentos/oclusao real.
+
+**Achado novo, exposto so agora que a verdade e confiavel**: mesmo com o
+robo PARADO (onde, por acordo com o usuario, a prioridade e identidade -
+nao trocar o id de uma pessoa), ha troca de id real (nao mais artefato de
+infraestrutura): media de 2.7 switches/execucao com 2 pessoas, 6.7 com 3
+pessoas. Isso confirma que a investigacao original de "troca de id com o
+robo parado" (que motivou abrir toda esta correcao) tem, sim, uma causa
+residual real no RASTREADOR, a ser investigada no item 5 do roteiro - so
+que agora com um numero confiavel pra comparar antes/depois de qualquer
+mudanca no rastreador, em vez do ruido de infraestrutura que mascarava
+tudo antes.
+
+CSVs completos das 18 execucoes (3 rodadas x 6 combinacoes) nao sao
+versionados (arquivos grandes, regeneraveis rodando `rodar_suite_pessoas`
+3x) - so este resumo agregado fica no README.
 
 Testes: `test_4_9_verdade_atores.py` (formula de movimento/quadro ativo,
 sem ROS - a verdade GRAVADA pela bancada ja nao usa mais essa formula
 diretamente, ver achado 4) + `test_4_10_teleportador_em_lote.py`
 (`TeleportadorEmLote` nunca mascara falha de teleporte como sucesso, sem
-Gazebo de verdade - cliente gz-transport fake).
+Gazebo de verdade - cliente gz-transport fake) + `test_4_11_validacao_
+bancada.py` (checagens de validade do item 2 - distancia andada por
+ator, robo parado no spawn - sem ROS).
 
 ## Dependencias
 
