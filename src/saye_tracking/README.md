@@ -694,10 +694,10 @@ execucoes "parado" das 3 rodadas); robo andando era instavel (MOTA de
 -0.17 a 0.60). Esses numeros estavam contaminados pelo achado 4
 (teleporte de ator falhando em silencio) - descartados.
 
-**Baseline oficial** (pos-correcao, item 3 do roteiro: 3 rodadas
+**Baseline (pos-correcao de movimentacao, item 3 do roteiro: 3 rodadas
 completas com a arquitetura corrigida - `mover_pessoas_node` + verdade
 medida + checagens de validade do item 2, nenhuma combinacao invalidada
-nas 18 execucoes):
+nas 18 execucoes):**
 
 | n_pessoas | robo | MOTA (media ± desvio) | **IDF1** (media ± desvio) | MOTP | switches (media) | falsos positivos (media) | perdas (media) |
 |---|---|---|---|---|---|---|---|
@@ -722,24 +722,67 @@ instabilidade anterior. MOTA cai de forma consistente (nao mais
 erratica) conforme mais pessoas sao adicionadas - esperado, mais pessoas
 = mais cruzamentos/oclusao real.
 
-**Achado novo, exposto so agora que a verdade e confiavel**: mesmo com o
-robo PARADO (onde, por acordo com o usuario, a prioridade e identidade -
-nao trocar o id de uma pessoa), ha troca de id real (nao mais artefato de
-infraestrutura): media de 2.7 switches/execucao com 2 pessoas, 6.7 com 3
-pessoas - e o IDF1 cai de 0.923 (1 pessoa, sem cruzamento possivel) pra
-0.806 e 0.722 conforme pessoas (e cruzamentos) sao adicionadas. Isso
-confirma que a investigacao original de "troca de id com o robo parado"
-(que motivou abrir toda esta correcao) tem, sim, uma causa residual real
-no RASTREADOR, a ser investigada no item 5 do roteiro - so que agora com
-um numero confiavel pra comparar antes/depois de qualquer mudanca no
-rastreador, em vez do ruido de infraestrutura que mascarava tudo antes.
-Note tambem que IDF1 e MOTA NEM SEMPRE se movem juntos (ex.: robo
-andando com 3 pessoas: MOTA 0.524 mas IDF1 so 0.446) - exatamente a
-razao de reportar os dois em vez de confiar em so um numero agregado.
+**Achado (item 5): o teto do gate de recuperacao escondia o beneficio de
+qualquer ajuste de tolerancia.** Mesmo com o robo PARADO (onde a
+prioridade e identidade), o baseline acima mostrava troca de id real:
+2.7 switches/execucao com 2 pessoas, 6.7 com 3. Analisando os 28 eventos
+de troca das 6 execucoes "parado" (`motmetrics` events, nao so o numero
+agregado), a MAIORIA nao era confusao entre 2 pessoas - era o track
+MORRENDO e NASCENDO com id novo apos um buraco de deteccao mais longo
+que `tolerancia_perdido_segundos` (1.5s). Confirmado num caso concreto:
+a pessoa_1 fica 2.64s sem NENHUMA deteccao bem no meio do cruzamento com
+a pessoa_2 (ocultacao visual real na camera, nao so "perto") - mais que
+a tolerancia, o track e apagado antes do OCR (3.5) ter chance de
+recuperar.
 
-CSVs completos das 18 execucoes (3 rodadas x 6 combinacoes) nao sao
-versionados (arquivos grandes, regeneraveis rodando `rodar_suite_pessoas`
-3x) - so este resumo agregado fica no README.
+Testado ao vivo so aumentando a tolerancia (1.5->5.0s, 1 execucao cada,
+n_pessoas=3/parado): trocas de id cairam (6->3) mas MOTA/IDF1 NAO
+melhoraram e misses pioraram (227->263). Causa: o gate de recuperacao
+(OCR, `recuperacao.recuperar_perdidos`) reusava `gate_distancia` (0.4m)
+como teto absoluto - isso CAPAVA a formula que cresce com o tempo
+perdido (`velocidade_maxima_esperada * tempo_perdido + margem`) antes
+dela fazer qualquer efeito (0.35 m/s * tempo_perdido + 0.1 ja passa de
+0.4 com so ~0.86s perdido). O track so ficava "pendurado" PERDIDO por
+mais tempo sem conseguir ser recuperado - mais misses, sem ganho real.
+
+**Correcao**: `gate_maximo_recuperacao` (novo parametro, `rastreador.py`/
+`tracker_node.py`), DESACOPLADO de `gate_distancia` (que segue servindo
+so o turno normal, de alta frequencia). Por padrao: o maior deslocamento
+que um objeto a `velocidade_maxima_esperada` faria ANTES do proprio
+track ser apagado por tempo - `velocidade_maxima_esperada *
+tolerancia_perdido_segundos + margem_gate_recuperacao` (0.625m com os
+parametros padrao atuais, contra os 0.4m fixos de antes).
+
+**Resultado validado** (3 rodadas completas, `tolerancia_perdido_segundos`
+mantida em 1.5s - so o teto foi desacoplado):
+
+| n_pessoas | robo | MOTA (antes -> depois) | **IDF1** (antes -> depois) | switches (antes -> depois) |
+|---|---|---|---|---|
+| 1 | **parado** | 0.858±0.026 -> 0.860±0.037 | **0.923±0.015 -> 0.924±0.021** | 0.0 -> 0.0 |
+| 2 | **parado** | 0.804±0.009 -> 0.794±0.020 | **0.806±0.059 -> 0.843±0.015** | 2.7 -> 2.0 |
+| 3 | **parado** | 0.727±0.009 -> 0.728±0.014 | **0.722±0.057 -> 0.761±0.009** | 6.7 -> 4.0 |
+| 1 | andando | 0.610±0.049 -> 0.579±0.032 | 0.715±0.043 -> 0.673±0.018 | 6.7 -> 7.0 |
+| 2 | andando | 0.491±0.017 -> 0.491±0.033 | 0.603±0.034 -> 0.578±0.053 | 7.3 -> 5.0 |
+| 3 | andando | 0.524±0.009 -> 0.510±0.020 | 0.446±0.009 -> 0.514±0.046 | 10.7 -> 9.7 |
+
+Exatamente onde a investigacao focou (robo **parado**, metrica **IDF1**):
+melhora real e consistente - IDF1 sobe em TODAS as 3 linhas, e o desvio
+despenca (0.057->0.009 com 3 pessoas, 0.059->0.015 com 2) - a troca de id
+residual ficou menos frequente E mais previsivel entre rodadas. Switches
+com 3 pessoas cairam quase 40% (6.7->4.0). Robo "andando" fica dentro do
+ruido esperado (essa correcao nao visa o que domina aquele cenario -
+pessoas saindo do FOV, nao troca de id).
+
+**Decisao**: manter `tolerancia_perdido_segundos` em 1.5s por agora - o
+sweep ao vivo testando 3.0s e 5.0s (so 1 execucao cada, ruidoso demais
+pra confiar) nao mostrou ganho claro e consistente o bastante pra
+justificar mudar o padrao sem rodar o mesmo protocolo de 3 rodadas usado
+aqui. Registrado como proximo passo, nao fechado.
+
+CSVs completos das execucoes (3 rodadas x 6 combinacoes, repetido 2x -
+baseline original e pos-correcao do gate) nao sao versionados (arquivos
+grandes, regeneraveis rodando `rodar_suite_pessoas` 3x) - so os resumos
+agregados ficam no README.
 
 Testes: `test_4_9_verdade_atores.py` (formula de movimento/quadro ativo,
 sem ROS - a verdade GRAVADA pela bancada ja nao usa mais essa formula
