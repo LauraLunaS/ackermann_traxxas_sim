@@ -38,7 +38,8 @@ class Rastreador3D:
 
     def __init__(self, gate_distancia=0.4, peso_ocm=1.0, n_passos_oru=5,
                  raio_supressao_duplicata=0.5, velocidade_maxima_esperada=0.35,
-                 margem_gate_recuperacao=0.1, **kwargs_track):
+                 margem_gate_recuperacao=0.1, gate_maximo_recuperacao=None,
+                 **kwargs_track):
         self.tracks = []
         # 4.8: o `gate_distancia` original (1.5m) era maior que a MENOR
         # distancia real entre 2 pessoas distintas na cena de validacao
@@ -72,6 +73,31 @@ class Rastreador3D:
         # teste (MOTA variando de -0.14 a 0.55).
         self.velocidade_maxima_esperada = velocidade_maxima_esperada
         self.margem_gate_recuperacao = margem_gate_recuperacao
+        # Item 5 (investigacao pos-correcao de movimentacao): o TETO do
+        # gate de recuperacao reusava `gate_distancia` (0.4) direto - isso
+        # CAPAVA a formula que cresce com o tempo perdido antes dela fazer
+        # qualquer efeito (0.35 m/s * tempo_perdido + 0.1 ja passa de 0.4
+        # com so ~0.86s perdido), escondendo o beneficio de aumentar
+        # `tolerancia_perdido_segundos`. Confirmado num sweep ao vivo: so
+        # aumentar a tolerancia (1.5->5.0s) reduziu trocas de id mas NAO
+        # melhorou MOTA/IDF1 - o track so ficava "pendurado" PERDIDO por
+        # mais tempo sem conseguir ser recuperado (mais misses), porque o
+        # teto de 0.4m ja rejeitava a deteccao real antes mesmo do tempo
+        # extra fazer diferenca. Teto agora DESACOPLADO de `gate_distancia`
+        # (que seguem servindo so o turno normal, de alta frequencia):
+        # por padrao, o maior deslocamento que um objeto a `velocidade_
+        # maxima_esperada` faria ANTES do proprio track ser apagado por
+        # tempo (`tolerancia_perdido_segundos`) - cobre qualquer
+        # recuperacao legitima dentro da janela que o track ja teria
+        # sobrevivido de qualquer jeito, nem mais nem menos (nao e "o
+        # quanto maior, melhor": um teto maior tambem aumenta o risco de
+        # casar com uma pessoa DIFERENTE que por acaso esteja por perto -
+        # o custo de direcao do OCM, abaixo, e o que ajuda a desambiguar
+        # nesse caso).
+        tolerancia_perdido = kwargs_track.get('tolerancia_perdido_segundos', 1.5)
+        self.gate_maximo_recuperacao = (
+            gate_maximo_recuperacao if gate_maximo_recuperacao is not None
+            else velocidade_maxima_esperada * tolerancia_perdido + margem_gate_recuperacao)
         # 4.7: raio (m) abaixo do qual uma deteccao sem par NAO abre track
         # novo, se estiver perto demais de um track ja atualizado nesta
         # mesma rodada - ver `_filtrar_duplicatas` abaixo. Tem que ser bem
@@ -116,7 +142,7 @@ class Rastreador3D:
         if perdidos_para_ocr and len(deteccoes_sobrando):
             matches2, _, sem_det2 = recuperar_perdidos(
                 perdidos_para_ocr, deteccoes_sobrando, tempo_atual,
-                gate_max_distancia=self.gate_distancia,
+                gate_max_distancia=self.gate_maximo_recuperacao,
                 velocidade_maxima_esperada=self.velocidade_maxima_esperada,
                 margem_gate=self.margem_gate_recuperacao,
                 peso_ocm=self.peso_ocm)

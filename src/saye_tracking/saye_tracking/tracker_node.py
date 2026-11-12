@@ -65,6 +65,13 @@ class TrackerNode(Node):
         # pessoa mais rapida configurada, com uma margem pequena.
         self.declare_parameter('velocidade_maxima_esperada', 0.35)
         self.declare_parameter('margem_gate_recuperacao', 0.1)
+        # teto do gate de recuperacao (OCR), DESACOPLADO de `gate_distancia`
+        # desde o item 5 (pos-correcao de movimentacao) - ver achado em
+        # `rastreador.py`. -1.0 = usa o padrao calculado (velocidade_maxima_
+        # esperada * tolerancia_perdido_segundos + margem_gate_recuperacao);
+        # ROS nao tem um jeito limpo de declarar parametro float opcional
+        # (None), daí o sentinela negativo (distancia nunca e negativa).
+        self.declare_parameter('gate_maximo_recuperacao', -1.0)
         self.declare_parameter('min_hits_confirmar', 3)
         self.declare_parameter('tolerancia_tentativo_segundos', 0.4)
         self.declare_parameter('tolerancia_perdido_segundos', 1.5)
@@ -80,6 +87,9 @@ class TrackerNode(Node):
             velocidade_maxima_esperada=self.get_parameter(
                 'velocidade_maxima_esperada').value,
             margem_gate_recuperacao=self.get_parameter('margem_gate_recuperacao').value,
+            gate_maximo_recuperacao=(
+                None if self.get_parameter('gate_maximo_recuperacao').value < 0
+                else self.get_parameter('gate_maximo_recuperacao').value),
             min_hits_confirmar=int(self.get_parameter('min_hits_confirmar').value),
             tolerancia_tentativo_segundos=self.get_parameter(
                 'tolerancia_tentativo_segundos').value,
