@@ -792,7 +792,53 @@ Gazebo de verdade - cliente gz-transport fake) + `test_4_11_validacao_
 bancada.py` (checagens de validade do item 2 - distancia andada por
 ator, robo parado no spawn - sem ROS).
 
-## Dependencias
+### Teste exploratorio com mais pessoas (6 e 8, robo parado)
+
+Pedido pontual do usuario: ver como o rastreador se sai com uma cena mais
+cheia que o baseline de 1-3 pessoas. `config/atores.yaml` ganhou
+`pessoa_4` a `pessoa_8` (caminhos diagonais cruzados, de proposito, na
+mesma area dos 3 originais - mais densidade de cruzamentos reais).
+
+**Sem duplicar nenhum arquivo de mesh/textura**: cada `pessoa_4..8` reusa
+as malhas JA BAKEADAS de `pessoa_andando_1/2/3` (`simple_world.sdf`
+ganhou novos blocos `<include>` apontando pro MESMO `<uri>` dos atores
+originais, so com um `<name>` de instancia diferente por quadro - gz-sim
+permite varias instancias independentes do mesmo recurso de modelo).
+Confirmado ao vivo antes de rodar o teste: as 5 novas instancias de
+`frame_0` existem com posicoes proprias no `pose/info`, independentes
+das originais que compartilham a malha.
+
+**Resultado** (3 rodadas completas, robo parado, so a metrica que importa
+pra esse cenario por decisao do usuario - IDF1):
+
+| n_pessoas | MOTA (media ± desvio) | IDF1 (media ± desvio) | switches (media) | perdas (media) |
+|---|---|---|---|---|
+| 3 (baseline, item 5) | 0.728 ± 0.014 | 0.761 ± 0.009 | 4.0 | 257 |
+| 6 | 0.460 ± 0.011 | **0.411 ± 0.016** | 15.0 | 1017 |
+| 8 | 0.384 ± 0.004 | **0.334 ± 0.024** | 25.0 | 1548 |
+
+Degradacao clara e consistente (desvio baixo nas 3 rodadas, nao e ruido)
+conforme a cena fica mais cheia: IDF1 cai de 0.76 (3 pessoas) pra 0.41 (6)
+pra 0.33 (8). As perdas (misses) sobem muito mais que proporcionalmente
+ao numero de pessoas (257 -> 1017 -> 1548, quase 4x so dobrando de 3 pra
+6) - sinal de que nao e so "mais gente, mais troca de id individual", mas
+uma degradacao de ORDEM MAIOR: com tanta gente numa area pequena (a mesma
+~4x3m dos 3 originais), a oclusao mutua fica quase constante (varias
+pessoas sempre na frente de outras do ponto de vista da camera), nao mais
+um evento ocasional de cruzamento - o regime muda, nao so a magnitude.
+Consistente com o limite ja documentado (4.8): um rastreador so-movimento
+(sem ReID) nao tem como diferenciar pessoas em oclusao mutua sustentada.
+
+**Achado de robustez (nao investigado a fundo, registrado pra nao se
+perder)**: numa das 18 execucoes (rep 3, 6 pessoas), o `gravador_atores_
+node` morreu com `Segmentation fault` dentro do `rclpy.spin` (erro de
+conversao pybind11 ao desserializar uma mensagem de `/world/.../pose/
+info`) - unica ocorrencia em 18 rodadas, nao reproduzida propositalmente.
+O bloco `finally` do no (`node.salvar()`) ainda rodou antes do crash
+propagar, entao os dados daquela combinacao nao se perderam (aparecem
+normalmente no relatorio), mas a causa raiz (provavel colisao de
+mensagens quando MUITOS poses chegam rapido - 6-8 atores sao bem mais
+poses por `Pose_V` que o baseline de 1-3) nao foi investigada.
 
 `ultralytics` e `motmetrics` nao tem rosdep key — instale via pip (convencao do workspace):
 

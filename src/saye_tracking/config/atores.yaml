@@ -26,3 +26,49 @@ atores:
     comprimento_passada: 1.384
     velocidade: 0.24
     waypoints: [[3.5, 0.0], [3.5, 2.0]]
+
+  # pessoa_4 a pessoa_8: teste com mais pessoas (6/8), pedido do usuario.
+  # Reusam as malhas de pessoa_andando_1/2/3 (so o NOME da instancia no
+  # simple_world.sdf muda - gz permite varios <include> com o mesmo <uri>,
+  # cada um com seu proprio <name>, sem duplicar nenhum arquivo de mesh/
+  # textura). Caminhos diagonais/cruzados de proposito, pra aumentar a
+  # densidade de cruzamentos reais na mesma area dos 3 originais.
+  - nome: pessoa_4
+    tipo: andando
+    prefixo_modelo: pessoa_andando_4_frame_
+    n_quadros: 29
+    comprimento_passada: 0.302
+    velocidade: 0.3
+    waypoints: [[0.5, 0.5], [3.5, 2.5]]
+
+  - nome: pessoa_5
+    tipo: andando
+    prefixo_modelo: pessoa_andando_5_frame_
+    n_quadros: 27
+    comprimento_passada: 0.281
+    velocidade: 0.25
+    waypoints: [[3.5, 0.5], [0.5, 2.5]]
+
+  - nome: pessoa_6
+    tipo: andando
+    prefixo_modelo: pessoa_andando_6_frame_
+    n_quadros: 30
+    comprimento_passada: 1.384
+    velocidade: 0.24
+    waypoints: [[0.2, 1.5], [3.8, 1.5]]
+
+  - nome: pessoa_7
+    tipo: andando
+    prefixo_modelo: pessoa_andando_7_frame_
+    n_quadros: 29
+    comprimento_passada: 0.302
+    velocidade: 0.3
+    waypoints: [[1.0, 3.0], [3.0, 0.5]]
+
+  - nome: pessoa_8
+    tipo: andando
+    prefixo_modelo: pessoa_andando_8_frame_
+    n_quadros: 27
+    comprimento_passada: 0.281
+    velocidade: 0.25
+    waypoints: [[0.5, 2.8], [3.8, 0.2]]

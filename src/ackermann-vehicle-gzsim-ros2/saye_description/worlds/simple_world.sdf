@@ -684,6 +684,884 @@
       <static>true</static>
     </include>
 
+    <!-- pessoa_4: reusa as malhas de pessoa_andando_1 (so o NOME da
+         instancia muda - gz permite varios <include> com o mesmo
+         <uri>, cada um com seu proprio <name>, sem duplicar arquivo
+         nenhum) - teste com mais pessoas (6/8), pedido do usuario. -->
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_0</uri>
+      <name>pessoa_andando_4_frame_0</name>
+      <pose>0.5 0.5 0 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_1</uri>
+      <name>pessoa_andando_4_frame_1</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_2</uri>
+      <name>pessoa_andando_4_frame_2</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_3</uri>
+      <name>pessoa_andando_4_frame_3</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_4</uri>
+      <name>pessoa_andando_4_frame_4</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_5</uri>
+      <name>pessoa_andando_4_frame_5</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_6</uri>
+      <name>pessoa_andando_4_frame_6</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_7</uri>
+      <name>pessoa_andando_4_frame_7</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_8</uri>
+      <name>pessoa_andando_4_frame_8</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_9</uri>
+      <name>pessoa_andando_4_frame_9</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_10</uri>
+      <name>pessoa_andando_4_frame_10</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_11</uri>
+      <name>pessoa_andando_4_frame_11</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_12</uri>
+      <name>pessoa_andando_4_frame_12</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_13</uri>
+      <name>pessoa_andando_4_frame_13</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_14</uri>
+      <name>pessoa_andando_4_frame_14</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_15</uri>
+      <name>pessoa_andando_4_frame_15</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_16</uri>
+      <name>pessoa_andando_4_frame_16</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_17</uri>
+      <name>pessoa_andando_4_frame_17</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_18</uri>
+      <name>pessoa_andando_4_frame_18</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_19</uri>
+      <name>pessoa_andando_4_frame_19</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_20</uri>
+      <name>pessoa_andando_4_frame_20</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_21</uri>
+      <name>pessoa_andando_4_frame_21</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_22</uri>
+      <name>pessoa_andando_4_frame_22</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_23</uri>
+      <name>pessoa_andando_4_frame_23</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_24</uri>
+      <name>pessoa_andando_4_frame_24</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_25</uri>
+      <name>pessoa_andando_4_frame_25</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_26</uri>
+      <name>pessoa_andando_4_frame_26</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_27</uri>
+      <name>pessoa_andando_4_frame_27</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_28</uri>
+      <name>pessoa_andando_4_frame_28</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+
+    <!-- pessoa_5: reusa as malhas de pessoa_andando_2 (so o NOME da
+         instancia muda - gz permite varios <include> com o mesmo
+         <uri>, cada um com seu proprio <name>, sem duplicar arquivo
+         nenhum) - teste com mais pessoas (6/8), pedido do usuario. -->
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_0</uri>
+      <name>pessoa_andando_5_frame_0</name>
+      <pose>3.5 0.5 0 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_1</uri>
+      <name>pessoa_andando_5_frame_1</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_2</uri>
+      <name>pessoa_andando_5_frame_2</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_3</uri>
+      <name>pessoa_andando_5_frame_3</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_4</uri>
+      <name>pessoa_andando_5_frame_4</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_5</uri>
+      <name>pessoa_andando_5_frame_5</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_6</uri>
+      <name>pessoa_andando_5_frame_6</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_7</uri>
+      <name>pessoa_andando_5_frame_7</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_8</uri>
+      <name>pessoa_andando_5_frame_8</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_9</uri>
+      <name>pessoa_andando_5_frame_9</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_10</uri>
+      <name>pessoa_andando_5_frame_10</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_11</uri>
+      <name>pessoa_andando_5_frame_11</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_12</uri>
+      <name>pessoa_andando_5_frame_12</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_13</uri>
+      <name>pessoa_andando_5_frame_13</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_14</uri>
+      <name>pessoa_andando_5_frame_14</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_15</uri>
+      <name>pessoa_andando_5_frame_15</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_16</uri>
+      <name>pessoa_andando_5_frame_16</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_17</uri>
+      <name>pessoa_andando_5_frame_17</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_18</uri>
+      <name>pessoa_andando_5_frame_18</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_19</uri>
+      <name>pessoa_andando_5_frame_19</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_20</uri>
+      <name>pessoa_andando_5_frame_20</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_21</uri>
+      <name>pessoa_andando_5_frame_21</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_22</uri>
+      <name>pessoa_andando_5_frame_22</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_23</uri>
+      <name>pessoa_andando_5_frame_23</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_24</uri>
+      <name>pessoa_andando_5_frame_24</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_25</uri>
+      <name>pessoa_andando_5_frame_25</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_26</uri>
+      <name>pessoa_andando_5_frame_26</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+
+    <!-- pessoa_6: reusa as malhas de pessoa_andando_3 (so o NOME da
+         instancia muda - gz permite varios <include> com o mesmo
+         <uri>, cada um com seu proprio <name>, sem duplicar arquivo
+         nenhum) - teste com mais pessoas (6/8), pedido do usuario. -->
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_0</uri>
+      <name>pessoa_andando_6_frame_0</name>
+      <pose>0.2 1.5 0 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_1</uri>
+      <name>pessoa_andando_6_frame_1</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_2</uri>
+      <name>pessoa_andando_6_frame_2</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_3</uri>
+      <name>pessoa_andando_6_frame_3</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_4</uri>
+      <name>pessoa_andando_6_frame_4</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_5</uri>
+      <name>pessoa_andando_6_frame_5</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_6</uri>
+      <name>pessoa_andando_6_frame_6</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_7</uri>
+      <name>pessoa_andando_6_frame_7</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_8</uri>
+      <name>pessoa_andando_6_frame_8</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_9</uri>
+      <name>pessoa_andando_6_frame_9</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_10</uri>
+      <name>pessoa_andando_6_frame_10</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_11</uri>
+      <name>pessoa_andando_6_frame_11</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_12</uri>
+      <name>pessoa_andando_6_frame_12</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_13</uri>
+      <name>pessoa_andando_6_frame_13</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_14</uri>
+      <name>pessoa_andando_6_frame_14</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_15</uri>
+      <name>pessoa_andando_6_frame_15</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_16</uri>
+      <name>pessoa_andando_6_frame_16</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_17</uri>
+      <name>pessoa_andando_6_frame_17</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_18</uri>
+      <name>pessoa_andando_6_frame_18</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_19</uri>
+      <name>pessoa_andando_6_frame_19</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_20</uri>
+      <name>pessoa_andando_6_frame_20</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_21</uri>
+      <name>pessoa_andando_6_frame_21</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_22</uri>
+      <name>pessoa_andando_6_frame_22</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_23</uri>
+      <name>pessoa_andando_6_frame_23</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_24</uri>
+      <name>pessoa_andando_6_frame_24</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_25</uri>
+      <name>pessoa_andando_6_frame_25</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_26</uri>
+      <name>pessoa_andando_6_frame_26</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_27</uri>
+      <name>pessoa_andando_6_frame_27</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_28</uri>
+      <name>pessoa_andando_6_frame_28</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_3_frame_29</uri>
+      <name>pessoa_andando_6_frame_29</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+
+    <!-- pessoa_7: reusa as malhas de pessoa_andando_1 (so o NOME da
+         instancia muda - gz permite varios <include> com o mesmo
+         <uri>, cada um com seu proprio <name>, sem duplicar arquivo
+         nenhum) - teste com mais pessoas (6/8), pedido do usuario. -->
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_0</uri>
+      <name>pessoa_andando_7_frame_0</name>
+      <pose>1.0 3.0 0 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_1</uri>
+      <name>pessoa_andando_7_frame_1</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_2</uri>
+      <name>pessoa_andando_7_frame_2</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_3</uri>
+      <name>pessoa_andando_7_frame_3</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_4</uri>
+      <name>pessoa_andando_7_frame_4</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_5</uri>
+      <name>pessoa_andando_7_frame_5</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_6</uri>
+      <name>pessoa_andando_7_frame_6</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_7</uri>
+      <name>pessoa_andando_7_frame_7</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_8</uri>
+      <name>pessoa_andando_7_frame_8</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_9</uri>
+      <name>pessoa_andando_7_frame_9</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_10</uri>
+      <name>pessoa_andando_7_frame_10</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_11</uri>
+      <name>pessoa_andando_7_frame_11</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_12</uri>
+      <name>pessoa_andando_7_frame_12</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_13</uri>
+      <name>pessoa_andando_7_frame_13</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_14</uri>
+      <name>pessoa_andando_7_frame_14</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_15</uri>
+      <name>pessoa_andando_7_frame_15</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_16</uri>
+      <name>pessoa_andando_7_frame_16</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_17</uri>
+      <name>pessoa_andando_7_frame_17</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_18</uri>
+      <name>pessoa_andando_7_frame_18</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_19</uri>
+      <name>pessoa_andando_7_frame_19</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_20</uri>
+      <name>pessoa_andando_7_frame_20</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_21</uri>
+      <name>pessoa_andando_7_frame_21</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_22</uri>
+      <name>pessoa_andando_7_frame_22</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_23</uri>
+      <name>pessoa_andando_7_frame_23</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_24</uri>
+      <name>pessoa_andando_7_frame_24</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_25</uri>
+      <name>pessoa_andando_7_frame_25</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_26</uri>
+      <name>pessoa_andando_7_frame_26</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_27</uri>
+      <name>pessoa_andando_7_frame_27</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_1_frame_28</uri>
+      <name>pessoa_andando_7_frame_28</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+
+    <!-- pessoa_8: reusa as malhas de pessoa_andando_2 (so o NOME da
+         instancia muda - gz permite varios <include> com o mesmo
+         <uri>, cada um com seu proprio <name>, sem duplicar arquivo
+         nenhum) - teste com mais pessoas (6/8), pedido do usuario. -->
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_0</uri>
+      <name>pessoa_andando_8_frame_0</name>
+      <pose>0.5 2.8 0 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_1</uri>
+      <name>pessoa_andando_8_frame_1</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_2</uri>
+      <name>pessoa_andando_8_frame_2</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_3</uri>
+      <name>pessoa_andando_8_frame_3</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_4</uri>
+      <name>pessoa_andando_8_frame_4</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_5</uri>
+      <name>pessoa_andando_8_frame_5</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_6</uri>
+      <name>pessoa_andando_8_frame_6</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_7</uri>
+      <name>pessoa_andando_8_frame_7</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_8</uri>
+      <name>pessoa_andando_8_frame_8</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_9</uri>
+      <name>pessoa_andando_8_frame_9</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_10</uri>
+      <name>pessoa_andando_8_frame_10</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_11</uri>
+      <name>pessoa_andando_8_frame_11</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_12</uri>
+      <name>pessoa_andando_8_frame_12</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_13</uri>
+      <name>pessoa_andando_8_frame_13</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_14</uri>
+      <name>pessoa_andando_8_frame_14</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_15</uri>
+      <name>pessoa_andando_8_frame_15</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_16</uri>
+      <name>pessoa_andando_8_frame_16</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_17</uri>
+      <name>pessoa_andando_8_frame_17</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_18</uri>
+      <name>pessoa_andando_8_frame_18</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_19</uri>
+      <name>pessoa_andando_8_frame_19</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_20</uri>
+      <name>pessoa_andando_8_frame_20</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_21</uri>
+      <name>pessoa_andando_8_frame_21</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_22</uri>
+      <name>pessoa_andando_8_frame_22</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_23</uri>
+      <name>pessoa_andando_8_frame_23</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_24</uri>
+      <name>pessoa_andando_8_frame_24</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_25</uri>
+      <name>pessoa_andando_8_frame_25</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://saye_description/models/pessoa_andando_2_frame_26</uri>
+      <name>pessoa_andando_8_frame_26</name>
+      <pose>0 0 -50 0 0 0</pose>
+      <static>true</static>
+    </include>
+
+
     <!-- Os 3 obstaculos dinamicos (esfera/caixa/cilindro) ficam comentados
          a partir de agora - a Fase 4 passou a trabalhar so com deteccao
          de "person", e esses obstaculos geometricos nao sao dessa classe
