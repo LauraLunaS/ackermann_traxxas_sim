@@ -927,11 +927,45 @@ resolve de forma limpa, sem trocar um tipo de erro por outro.
   rejeicao de falso positivo de detector.
 
 **Em aberto:**
-- Trechos com o carro ANDANDO (exigem compensar ego-motion via `oxts`,
-  validado primeiro com carros estacionados - tem muito mais amostra que
-  pedestre parado no KITTI) - proximo passo, nao iniciado ainda.
 - `gate_distancia` e `tolerancia_perdido_segundos` nao foram re-testados
   nesta rodada (so os 2 parametros do gate de recuperacao).
+
+### Passo 5 - trechos com o carro andando (compensacao de ego-motion)
+
+Pra usar trechos onde o carro se move, a posicao de um pedestre no frame
+da camera muda tanto pelo movimento dele quanto pelo do proprio carro -
+precisa compor a pose do carro (do `oxts`) com a posicao relativa a
+camera. Codigo em `saye_tracking/kitti_ego_motion.py` (`pose_para_enu`:
+projeta lat/lon pra metros locais, mesma formula de Mercator do devkit
+oficial do KITTI; `ponto_camera_para_mundo`: soma a pose do ego com o
+ponto da camera rotacionado pelo yaw).
+
+**Aproximacao assumida:** sem os arquivos de calibracao do KITTI
+(`calib_imu_to_velo`/`calib_velo_to_cam`, nao baixados), o eixo da camera
+e tratado como alinhado com o eixo do carro - ignora o braco de alavanca
+fisico entre camera e IMU.
+
+**Validacao com carros estacionados** (`scripts/validar_ego_motion_
+kitti.py`, sequencia 0011 - ego andando a 5.77 m/s em media, max 11.70
+m/s): sem rotulo de "estacionado" no KITTI, a evidencia e estatistica -
+depois de compensar, a maioria dos carros de rua deveria ficar com
+velocidade residual baixa (parada de verdade), e so alguns com
+velocidade real (trafego). Resultado, nos 24 carros de vida longa (>=50
+frames): **20 ficaram com velocidade residual mediana entre 0.20 e 0.72
+m/s** (ruido da aproximacao - nao zero exato, mas baixo), e os outros
+**4 ficaram em 7.1-12.3 m/s** - nitidamente trafego de verdade, na mesma
+ordem de grandeza da velocidade do proprio ego. Divisao clara em 2
+grupos, sem nenhum caso ambiguo no meio - a aproximacao (sem calibracao)
+e boa o bastante pra separar estacionado de andando.
+
+**Ressalva importante pro proximo passo:** o ruido residual da
+compensacao (0.2-0.72 m/s) fica proximo da velocidade de um pedestre
+LENTO ou parado por um instante (bem abaixo da mediana real de ~1.4-1.5
+m/s medida na 0017) - ou seja, essa aproximacao serve pra medir pedestre
+andando normalmente, mas vai confundir pedestre quase-parado com ruido
+de compensacao se o carro estiver andando. Fica registrado antes de
+alimentar pedestres de verdade por esses trechos (proximo passo, nao
+iniciado).
 
 **Regressao da bancada do simulador (confirma que o perfil do KITTI nao
 afeta o padrao):** rodada a bancada completa (6 combinacoes, 1 execucao
