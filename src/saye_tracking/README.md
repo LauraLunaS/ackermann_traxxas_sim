@@ -840,6 +840,99 @@ normalmente no relatorio), mas a causa raiz (provavel colisao de
 mensagens quando MUITOS poses chegam rapido - 6-8 atores sao bem mais
 poses por `Pose_V` que o baseline de 1-3) nao foi investigada.
 
+### Validacao com pedestres reais (KITTI Tracking Benchmark)
+
+Pedido pontual do usuario: testar a logica de associacao/OCM/OCR do
+rastreador (3.3-3.5, 4.7-4.9) contra trajetorias de pedestres REAIS, nao
+so os cenarios sinteticos de `atores.yaml`. Abordagem: alimentar o
+`Rastreador3D` direto com as posicoes do gabarito do KITTI (como a
+validacao 3.8 fez com os obstaculos do Gazebo) - decoupled da
+deteccao/Gazebo, sem passar por ROS nem por nenhum topico (licao da fase
+4.3: um script solto publicando num topico real contaminou uma bancada
+inteira). Codigo em `saye_tracking/kitti_adaptador.py` +
+`scripts/avaliar_kitti_parado.py` (reproduz os numeros abaixo sozinho,
+dado o dataset baixado em `--kitti-dir`).
+
+**Escopo desta etapa: so trechos com o carro PARADO** (sem compensar
+ego-motion via `oxts`) - o equivalente do cenario "robo parado", que e a
+prioridade por decisao do usuario. Trechos com o carro andando ficam pra
+depois (ver "em aberto" abaixo).
+
+**Metodo:**
+1. Entre as 21 sequencias de treino do KITTI tracking, acha os trechos
+   continuos de carro parado (`segmentos_carro_parado`, via velocidade do
+   `oxts`) e escolhe o mais denso de pedestres por sequencia.
+2. Os "buracos" de deteccao vem dos campos REAIS `occluded`/`truncated`
+   do proprio gabarito do KITTI (nao sorteio aleatorio) - e separado qual
+   buraco e oclusao de verdade e qual e saida de campo de visao, pra nao
+   misturar os dois no relatorio.
+3. **Sequencia de AJUSTE (0017, 145 frames, 9 pedestres) separada das de
+   MEDICAO (0016 e 0019)** - a calibracao de velocidade/gate usa SO a
+   0017, nunca os dados que depois sao medidos (senão o resultado sai
+   inflado).
+4. Mede com o `comparador.py` de verdade do projeto (zero codigo novo de
+   metrica).
+
+**1a tentativa - reescalar a trajetoria (descartada):** a velocidade real
+medida na 0017 (mediana 1.54 m/s, p90 1.85 m/s) e ~4-5x a calibracao do
+rastreador (pessoas de `atores.yaml` andam 0.24-0.3 m/s). Encolher a
+trajetoria por um fator fixo (0.2, preservando a origem de cada pessoa)
+zerou as trocas de ID, mas **piorou a precisao posicional dos acertos de
+forma desproporcional**: motp subiu de ~0.0004 pra ~0.0123 (m²) - um erro
+~5x maior **na mesma escala ja reduzida** (proporcionalmente bem mais
+que isso). Causa provavel: o ruido do filtro de Kalman e calibrado em
+metros absolutos e nao encolhe junto com a trajetoria - comprimir o
+movimento real faz o ruido dominar relativamente mais o sinal.
+
+**Correcao adotada - ajustar o parametro, nao a trajetoria:** calibrado SO
+na 0017, `velocidade_maxima_esperada` (0.35 -> **2.0 m/s**, cobre o p90
+real com margem) e `margem_gate_recuperacao` (0.1 -> **0.3**), guardados
+num perfil de configuracao SEPARADO
+(`config/tracker_kitti_parado.yaml`) - **os padroes do simulador nao sao
+alterados**. `gate_distancia` (associacao normal, turno 1) ficou em 0.4m
+sem mudar - o deslocamento real por frame (~0.14-0.15m a 10Hz) ja cabia
+nele. Com `tolerancia_perdido_segundos` padrao (1.5s), o teto do gate de
+recuperacao resultante e `2.0 * 1.5 + 0.3 = 3.3m` (era `0.35 * 1.5 + 0.1 =
+0.625m` no perfil padrao do simulador).
+
+**Resultado medido** (sequencias 0016 e 0019, trajetoria real, SEM
+nenhuma reescala):
+
+| sequencia | perfil | MOTA | IDF1 | switches | FP | misses | motp (m²) |
+|---|---|---|---|---|---|---|---|
+| 0016 | padrao do simulador | 0.844 | 0.803 | 22 | 0 | 295 | 0.0004 |
+| 0016 | `tracker_kitti_parado` | **0.877** | **0.934** | **0** | 0 | 250 | 0.0006 |
+| 0019 | padrao do simulador | 0.661 | 0.704 | 6 | 0 | 281 | 0.0007 |
+| 0019 | `tracker_kitti_parado` | **0.688** | **0.815** | **0** | 0 | 264 | 0.0009 |
+
+(0016: 169 buracos por oclusao real + 44 por saida de FOV, ate 13
+pedestres simultaneos; 0019: 213 + 21, ate 11 simultaneos - bem mais
+oclusao sustentada que qualquer cenario sintetico ja testado.)
+
+Diferente da reescala: aqui **tudo melhora junto** - MOTA sobe, IDF1 sobe
+bastante, trocas de ID zeram, perdas ate caem um pouco, e motp quase nao
+muda. Confirma, com dado real e oclusao de verdade, o MESMO mecanismo que
+o item 5 ja tinha achado no simulador (gate de recuperacao subdimensionado
+pra velocidade real causa troca de ID) - e que corrigir o parametro
+resolve de forma limpa, sem trocar um tipo de erro por outro.
+
+**Notas de leitura importantes:**
+- `motp` esta em **METROS QUADRADOS** (`comparador.py` usa
+  `norm2squared_matrix`) - precisa de raiz quadrada pra virar erro linear
+  em metros (ex.: 0.0006 m² ≈ 2.4cm, nao 0.6mm).
+- `FP = 0` em toda rodada **por construcao**, nao por qualidade do
+  rastreador: as "deteccoes" vem direto do gabarito (sem detector real
+  no meio), entao todo ponto alimentado corresponde a uma pessoa de
+  verdade - este teste avalia so a logica de associacao/recuperacao, nao
+  rejeicao de falso positivo de detector.
+
+**Em aberto:**
+- Trechos com o carro ANDANDO (exigem compensar ego-motion via `oxts`,
+  validado primeiro com carros estacionados - tem muito mais amostra que
+  pedestre parado no KITTI) - proximo passo, nao iniciado ainda.
+- `gate_distancia` e `tolerancia_perdido_segundos` nao foram re-testados
+  nesta rodada (so os 2 parametros do gate de recuperacao).
+
 `ultralytics` e `motmetrics` nao tem rosdep key — instale via pip (convencao do workspace):
 
 ```bash

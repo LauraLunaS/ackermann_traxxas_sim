@@ -1,0 +1,26 @@
+# Perfil de parametros do tracker_node PRA VALIDACAO COM O KITTI (carro
+# parado) - NAO e o perfil usado na simulacao (ver README, secao "KITTI
+# Tracking Benchmark"). Os padroes do simulador (gate_distancia=0.4,
+# velocidade_maxima_esperada=0.35, margem_gate_recuperacao=0.1, calibrados
+# pra pessoas andando a 0.24-0.3 m/s em atores.yaml) NAO SAO TOCADOS por
+# este arquivo - ele existe pra nao precisar mudar o default do pacote so
+# pra rodar o teste exploratorio do KITTI.
+#
+# velocidade_maxima_esperada e margem_gate_recuperacao calibrados SO na
+# sequencia de ajuste (0017 do KITTI training, carro parado) - NUNCA nas
+# sequencias usadas pra medir (0016, 0019) - ver
+# `scripts/avaliar_kitti_parado.py`. Velocidade real medida na 0017:
+# mediana 1.54 m/s, p90 1.85 m/s, max 3.23 m/s (10Hz, sem ego-motion).
+#
+# gate_distancia e tolerancia_perdido_segundos ficam OMITIDOS aqui de
+# proposito - o deslocamento real por frame (~0.14-0.15m a 10Hz) ja cabe
+# no gate_distancia padrao (0.4m), e a tolerancia de perda nao foi testada
+# separadamente nesta rodada (ver README).
+tracker_node:
+  ros__parameters:
+    velocidade_maxima_esperada: 2.0   # cobre o p90 real (1.85 m/s) com margem
+    margem_gate_recuperacao: 0.3
+    # gate_maximo_recuperacao resultante (formula de rastreador.py, com
+    # tolerancia_perdido_segundos padrao 1.5s):
+    #   2.0 * 1.5 + 0.3 = 3.3 m
+    # (era 0.35 * 1.5 + 0.1 = 0.625 m no perfil padrao do simulador)
