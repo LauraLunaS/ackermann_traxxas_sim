@@ -933,6 +933,27 @@ resolve de forma limpa, sem trocar um tipo de erro por outro.
 - `gate_distancia` e `tolerancia_perdido_segundos` nao foram re-testados
   nesta rodada (so os 2 parametros do gate de recuperacao).
 
+**Regressao da bancada do simulador (confirma que o perfil do KITTI nao
+afeta o padrao):** rodada a bancada completa (6 combinacoes, 1 execucao
+cada - checagem de regressao, nao substitui o baseline oficial de 3
+rodadas do item 3/5) com o perfil PADRAO do simulador. Nenhum crash,
+nenhuma combinacao invalidada pelas checagens automaticas (item 2), e os
+numeros ficam dentro do ruido ja esperado entre execucoes unicas (ex.:
+IDF1 parado com 1/2/3 pessoas: 0.866/0.767/0.791, contra o baseline de 3
+rodadas 0.924±0.021/0.843±0.015/0.761±0.009 - mesma ordem de grandeza,
+nenhum sinal de regressao de codigo).
+
+**Teste de sensibilidade (`velocidade_maxima_esperada` 0.35 -> 0.45,
+exploratorio, 1 execucao cada - NAO vira padrao):** motivado pelo achado
+do KITTI (ajustar esse parametro direto, sem tocar na trajetoria, resolveu
+de forma limpa). Resultado misto e inconclusivo nesta unica rodada -
+alguns cenarios melhoram (`3_parado`: IDF1 0.791->0.814; `1_andando`:
+switches 7->1), outros nao (`2_andando`: switches 4->7; `2_parado`: MOTA
+0.723->0.665) - ruido alto demais pra decidir com 1 execucao so (mesma
+cautela do sweep de `tolerancia_perdido_segundos` no item 5). Registrado
+como candidato a investigar com o protocolo de 3 rodadas, nao como
+mudanca de padrao.
+
 `ultralytics` e `motmetrics` nao tem rosdep key — instale via pip (convencao do workspace):
 
 ```bash
